@@ -4,7 +4,7 @@
 
 url: http://requiremind.github.io
 title: Require Mind
-subtitle: Learn new things on dev.
+subtitle: Learn. Live. Love. Dev.
 author: RequireMind
 simple_search: http://google.com/search
 description: Learn new things on dev.
@@ -70,7 +70,7 @@ github_skip_forks: true
 
 # Twitter
 twitter_user:
-twitter_tweet_button: true
+twitter_tweet_button: false
 
 # Google +1
 google_plus_one: false
@@ -94,7 +94,7 @@ disqus_short_name:
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-41030310-1
 
 # Facebook Like
 facebook_like: false
