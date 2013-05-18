@@ -3,11 +3,11 @@
 # ----------------------- #
 
 url: http://requiremind.github.io
-title: Require Mind
+title: require 'mind'
 subtitle: Learn. Live. Love. Dev.
 author: RequireMind
 simple_search: http://google.com/search
-description: Learn new things on dev.
+description: Tips'n'Tricks you can learn to live better and love your dev life!
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
