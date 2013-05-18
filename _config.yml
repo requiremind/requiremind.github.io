@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://requiremind.github.io
+url: http://requiremind.com
 title: require 'mind'
 subtitle: Learn. Live. Love. Dev.
-author: RequireMind
+author: requireMind
 simple_search: http://google.com/search
 description: Tips'n'Tricks you can learn to live better and love your dev life!
 
