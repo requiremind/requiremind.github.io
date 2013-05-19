@@ -132,7 +132,7 @@ article {
 			font-size: 17px;
 			padding: 1px;
 			margin-left: 8px;
-			margin-top: 14px;
+			margin-top: 16px;
 			font-style: italic;
 			color: $base1;
 		}
@@ -196,4 +196,54 @@ figure.code {
 
 aside {
 	display: none;
+}
+
+
+// About page
+.box {
+	width: 4px;
+	height: 35px;
+	background-color: $base1;
+	margin-right: 15px;
+	margin-top: -5px;
+	float: left;
+
+	&.box-large {
+		height: 165px;
+	}
+
+	&.box-success {
+		background-color: $success;
+	}
+
+	&.box-info {
+		background-color: $info;
+	}
+}
+
+.social-links {
+	margin-bottom: 35px;
+	padding-left: 19px;
+
+	.social-link {
+		text-decoration: none;
+		white-space: normal;
+		display: inline-block;
+
+		.social-icon {
+			box-shadow: none;
+			border-radius: 0;
+			cursor: pointer;
+		}
+
+		.social-name {
+			position: relative;
+			top: -17px;
+			left: -5px;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
 }
