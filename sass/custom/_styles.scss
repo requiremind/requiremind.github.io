@@ -135,6 +135,15 @@ article {
 			margin-top: 16px;
 			font-style: italic;
 			color: $base1;
+
+			a {
+				color: inherit;
+				text-decoration: none;
+
+				&:hover {
+					text-decoration: underline;
+				}
+			}
 		}
 	}
 }
@@ -192,6 +201,10 @@ figure.code {
 
 .pre-code, html .gist .gist-file .gist-syntax .highlight pre, .highlight code {
 	background: #212C3B !important;
+}
+
+li pre code {
+	color: #93a1a1;
 }
 
 aside {
