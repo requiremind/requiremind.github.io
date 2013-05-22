@@ -7,7 +7,6 @@ author: cyrilf
 categories:
 - linux
 - tips
-published: false
 ---
 
 You're using the command line from time to time and you want to go further? You're at the right place.  

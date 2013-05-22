@@ -2,7 +2,7 @@
 layout: post
 title: "A blog for dev"
 date: 2013-05-17 13:48
-comments: true
+comments: false
 author:
 categories:
 - ruby
