@@ -22,6 +22,10 @@
     <footer>
       <a rel="full-article" href="{{ root_url }}{{ post.url }}">{{ site.excerpt_link }}</a>
     </footer>
+  {% else %}
+    <footer>
+      <a class="goto-comments" href="{{ root_url }}{{ post.url }}#comments-section">Comments</a>
+    </footer>
   {% endif %}
 {% else %}
 <div class="entry-content">{{ content }}</div>
