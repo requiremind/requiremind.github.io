@@ -22,7 +22,7 @@
     <footer>
       <a rel="full-article" href="{{ root_url }}{{ post.url }}">{{ site.excerpt_link }}</a>
     </footer>
-  {% else %}
+  {% elsif site.disqus_short_name and post.comments == true %}
     <footer>
       <a class="goto-comments" href="{{ root_url }}{{ post.url }}#comments-section">Comments</a>
     </footer>
