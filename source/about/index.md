@@ -41,6 +41,19 @@ This blog contains Tips'n'Tricks you can learn to live better and love your dev 
 
 ### Neil Rosenstech
 
-> Lorem Ipsum and other latin things
+> His journey has begun and it's a tough one: taking over the world... but you can sometimes stumble into him roaming in Montreal.
 
-* todo
+<div class="social-links">
+  <a href="https://github.com/Raindal" class="social-link">
+    {% img social-icon /images/social-icons/github.png %}
+    <span class="social-name">Github</span>
+  </a>
+  <a href="http://stackoverflow.com/users/1410031/sparda?tab=summary" class="social-link">
+    {% img social-icon /images/social-icons/stackoverflow.png %}
+    <span class="social-name">StackOverflow</span>
+  </a>
+  <a href="http://www.linkedin.com/pub/neil-rosenstech/51/979/351/en" class="social-link">
+    {% img social-icon /images/social-icons/linkedin.png %}
+    <span class="social-name">LinkedIn</span>
+  </a>
+</div>
