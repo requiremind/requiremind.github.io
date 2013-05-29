@@ -8,6 +8,7 @@ html {
 }
 
 body {
+	color: darken($wet-asphalt, 10%);
 	font-family: $sans !important;
 	font-size: 1em;
 	max-width: 850px;
@@ -25,9 +26,18 @@ body {
 		padding-right: 0px;
 
 		h1 {
-			a, a:visited, a:hover {
-				color: #8C8C8C;
+			display: block;
+
+			a, a:visited {
+				color: $asbestos;
 				font-family: $heading-font-family;
+			}
+			a:hover {
+				color: $wet-asphalt;
+				margin-left: -37px;
+				&:before {
+					content: '> ';
+				}
 			}
 		}
 	}
@@ -46,6 +56,14 @@ body {
 			padding-bottom: 0.3em;
 			padding-left: 0.5em;
 			padding-right: 0.5em;
+			background-color: $clouds;
+			color: $wet-asphalt;
+
+			&:focus {
+				-webkit-box-shadow: $peter-river 0 0 4px, $peter-river 0 0 3px inset;
+				-moz-box-shadow: $peter-river 0 0 4px, $peter-river 0 0 3px inset;
+				box-shadow: $peter-river 0 0 4px, $peter-river 0 0 3px inset;
+			}
 		}
 
 		a {
@@ -77,7 +95,7 @@ body {
 	> footer {
 		background: $white;
 		text-shadow: none;
-		color: #AAAAAA;
+		color: $concrete;
 	  	padding-left: 0;
 	  	padding-right: 0;
 		border-top: 0px;
@@ -114,7 +132,11 @@ article {
 	}
 
 	a, a:visited {
-		color: #1863A1;
+		color: $belize-hole;
+	}
+
+	a:hover {
+		color: $peter-river;
 	}
 
 	a.goto-comments {
@@ -123,16 +145,16 @@ article {
 		padding: .4em .8em;
 		margin-right: .5em;
 		text-decoration: none;
-		color: #666;
+		color: $wet-asphalt;
 		-webkit-transition: background-color 0.5s;
 		-moz-transition: background-color 0.5s;
 		-o-transition: background-color 0.5s;
 		transition: background-color 0.5s;
 
 		&:hover {
-			background: #0181eb;
+			background: $peter-river;
 			text-shadow: none;
-			color: #f8f8f8;
+			color: $clouds;
 		}
 	}
 
@@ -140,9 +162,14 @@ article {
 		h1.entry-title {
 			font-family: $heading-font-family;
 			font-weight: 400;
+			color: $wet-asphalt;
 
 			&.article-title {
 				float: left;
+
+				&:hover {
+					color: $peter-river;
+				}
 			}
 		}
 
@@ -153,7 +180,7 @@ article {
 			margin-left: 8px;
 			margin-top: 16px;
 			font-style: italic;
-			color: $base1;
+			color: $concrete;
 
 			a {
 				color: inherit;
@@ -230,51 +257,47 @@ aside {
 	display: none;
 }
 
+.about-author {
+	border-left: 4px solid $concrete;
+	padding-left: 15px;
 
-// About page
-.box {
-	width: 4px;
-	height: 35px;
-	background-color: $base1;
-	margin-right: 15px;
-	margin-top: -5px;
-	float: left;
-
-	&.box-large {
-		height: 165px;
+	&.about-author-cyril {
+		border-left-color: $emerland;
 	}
 
-	&.box-success {
-		background-color: $success;
+	&.about-author-neil {
+		border-left-color: $peter-river;
 	}
 
-	&.box-info {
-		background-color: $info;
+	blockquote {
+		border-left: none;
 	}
-}
 
-.social-links {
-	margin-bottom: 35px;
-	padding-left: 19px;
+	.social-links {
+		margin-bottom: 35px;
+		padding-left: 19px;
 
-	.social-link {
-		text-decoration: none;
-		white-space: normal;
-		display: inline-block;
+		.social-link {
+			text-align: justify;
+			text-decoration: none;
+			white-space: normal;
+			display: inline-block;
+			width: 160px;
 
-		.social-icon {
-			box-shadow: none;
-			border-radius: 0;
-			cursor: pointer;
-		}
+			.social-icon {
+				box-shadow: none;
+				border-radius: 0;
+				cursor: pointer;
+			}
 
-		.social-name {
-			position: relative;
-			top: -17px;
-			left: -5px;
+			.social-name {
+				position: relative;
+				top: -17px;
+				left: -5px;
 
-			&:hover {
-				text-decoration: underline;
+				&:hover {
+					text-decoration: underline;
+				}
 			}
 		}
 	}
