@@ -2,7 +2,7 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://requiremind.com
+url: requiremind.com
 title: require 'mind'
 subtitle: Learn. Live. Love. Dev.
 author: requireMind
