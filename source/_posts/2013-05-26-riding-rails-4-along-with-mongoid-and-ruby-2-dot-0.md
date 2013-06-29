@@ -5,8 +5,8 @@ date: 2013-05-26 01:38
 comments: true
 author: Neil Rosenstech
 categories:
-- Ruby on Rails
-- Mongoid
+- ruby on rails
+- mongoid
 ---
 
 You're not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine: [6LOCK](https://github.com/Raindal/6lock) (still in construction),
