@@ -6,7 +6,6 @@ comments: true
 author: Neil Rosenstech
 categories:
 - ruby on rails
-- associations
 ---
 
 When getting started with Ruby on Rails, associations between models can become quite confusing especially when there's a thin line between two of them. 
