@@ -192,6 +192,16 @@ article {
 			}
 		}
 	}
+
+	.text-center {
+		text-align: center;
+	}
+
+	.small-text {
+		color: $concrete;
+		font-style: italic;
+		font-size: 80%;
+	}
 }
 
 #content {
