@@ -14,6 +14,8 @@ You're going to learn new tricks, use them and improve your skills with the comm
 
 Ready? Go ahead.
 
+<!-- more -->
+
 ### Move in linux
 
 `cd`, for Change Directory allows you to move easily and quickly across directories in your system.
