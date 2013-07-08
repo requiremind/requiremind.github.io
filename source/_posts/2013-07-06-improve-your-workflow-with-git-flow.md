@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Improve your worflow with Git Flow"
+title: "Improve your workflow with Git Flow"
 date: 2013-07-06 14:58
 comments: true
 author: cyrilf
@@ -40,7 +40,7 @@ But the main idea to keep in mind, is that there is branches with specific roles
 In a few words, you have a master branch containing the production code, then you have a develop branch that allows you to create different features from it. When a feature is done, you merge it back onto the develop branch. When a set of features are closed, you can then create a release branch to be sure that everything is ok and finally, merge it into master.
 
 If you really understand this model then everything will be easier and maintenable over the time on your projects.
-The only problem remaining is that you can easily made mistakes by using `git` and these mistakes can break the worflow.
+The only problem remaining is that you can easily made mistakes by using `git` and these mistakes can break the workflow.
 
 ### Git Flow to the rescue!
 
@@ -70,7 +70,7 @@ Then, it will ask you some questions about your naming convention. I suggest you
     Version tag prefix? [] 
 
 Cool, Git Flow is now ready to use. As you can notice you're on the develop branch.
-As it specified on the worflow, all your development should now start from this branch.
+As it specified on the workflow, all your development should now start from this branch.
 Let's start using Git Flow
 
 #### Use cases
@@ -103,4 +103,4 @@ As the merge is done on both master and develop you don't have to worry about yo
 
 To conclude, Git Flow is a really great tool to apply a consistent and robust branching model. And another good point, it's open source! You can find it [here](https://github.com/nvie/gitflow).
 
-I hope you're going to add this tool to your worflow and appreciate it.
+I hope you're going to add this tool to your workflow and appreciate it.
