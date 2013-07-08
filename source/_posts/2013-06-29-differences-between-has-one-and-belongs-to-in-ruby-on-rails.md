@@ -9,6 +9,7 @@ categories:
 ---
 
 When getting started with Ruby on Rails, associations between models can become quite confusing especially when there's a thin line between two of them. 
+<!-- more -->
 At first we're tempted to use the one that makes more sense when thinking about it... For instance we can say that a *page* belongs to a *book*, but we could say that a 
 *page* has one *book* too. The two of them establish a one-to-one association between both models.
 

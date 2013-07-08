@@ -13,6 +13,8 @@ You're not without knowing that Rails 4 is about to kick in in a few days (weeks
 I tested out MongoDB, together with Mongoid (the ORM that comes in replacement of ActiveRecord for querying the MongoDB database) and other pretty cool stuff. As I had a great time using it
 I wanted to give it a try using the all new and shiny Rails 4 and Ruby 2.
 
+<!-- more -->
+
 If you have a basic understanding of how the framework works, you have already been following some sort of "Getting Started with Ruby on Rails" tutorial (plenty of them out there) 
 and now you want to try MongoDB and see how it feels, this tutorial is made for you.
 
