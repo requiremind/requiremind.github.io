@@ -174,11 +174,7 @@ To kill the current process you can also use `Ctrl + C`
 
 ### Do two things (or more) at once
 
-Use a `&&`
-
-    cd ~/prog/linux && nano article.txt
-
-Or use a semicolon `;` 
+Use a semicolon `;` 
 
     cd ~/prog/linux; nano article.txt
 
@@ -186,6 +182,10 @@ It's really usefull in some case when you write scripts or when you have a GitHu
 For example, you can do :
 
     git clone git@github.com:requiremind/requiremind.github.io.git requiremind ; cd requiremind
+
+To go further, if you want the second instruction to be executed only if the first exited with no errors, then you should use a `&&`
+
+    ./testSomething.sh && echo "You can read me because no previous error happened"
 
 ### Shortcuts
 
