@@ -201,6 +201,8 @@ Simple, easy, perfect !
 
 And if you want to just erase word by word, you can use `Ctrl + W`.
 
+To simplify your navigation you can use `Ctrl + A` and `Ctrl + E` to go respectively to the beginning and to the end of the current line.
+
 ### Define some alias
 
 Sometimes you're going to face a hard-bad-long-painful-forgettable command. Unless you love the pain to type over and over again the same command, you can use `alias`. The syntax to define one is:
