@@ -121,9 +121,10 @@ You know that you've typed a super-shinny-powerful command in the past but you c
 
             !!:p             # prints (but don't execute) nano my-so-long-file-name.txt
 
-        > I've seen that the history keeps only my 1000 previous commands. How to (de|in)crease this limit ?
 
-        You can change this limit in your `~/.bashrc`. Look at the line with `HISTSIZE=1000` and update it to fit your needs.
+> I've seen that the history keeps only my 1000 previous commands. How to (de|in)crease this limit ?
+
+You can change this limit in your `~/.bashrc`. Look at the line with `HISTSIZE=1000` and update it to fit your needs.
 
 If you've written some bad or shameful things in your history you can simply erase it with
 
@@ -156,7 +157,13 @@ Or
 
 It displays a list of the processes you've launched.
 
-Now if you want to kill a specific job, just use `kill`.
+If you want to bring a specific job back to the foreground (because you're nice), simply use `fg`.
+
+    fg %[job-number]
+
+    fg %2
+
+But if you are less emotional then you can kill it without scruples, just use `kill`.
 
 If you've choosen to use `jobs`, you can kill a process by is job-number in the list.
 
@@ -174,18 +181,25 @@ To kill the current process you can also use `Ctrl + C`
 
 ### Do two things (or more) at once
 
-Use a semicolon `;` 
+There is three main differents ways to accomplish that.
 
-    cd ~/prog/linux; nano article.txt
+1 - use a semicolon `;`
 
-It's really usefull in some case when you write scripts or when you have a GitHub repository.  
-For example, you can do :
+It will execute the command regardless of the result of the previous one.
 
-    git clone git@github.com:requiremind/requiremind.github.io.git requiremind ; cd requiremind
+    ./doSomething.sh ; ./doSomethingElseNoMatterWhatHappened.sh
 
-To go further, if you want the second instruction to be executed only if the first exited with no errors, then you should use a `&&`
+2 - use a double ampersand `&&`
 
-    ./testSomething.sh && echo "You can read me because no previous error happened"
+If you want the second command to be executed only if the first exited with no errors.
+    
+    git clone git@github.com:requiremind/requiremind.github.io.git requiremind && cd requiremind
+
+3 - use `||`
+
+It will execute the second command only if the first failed
+
+    ./testNuclearWeapon.sh || echo "Hum.. Sorry. Everything is out of control.."
 
 ### Shortcuts
 
@@ -200,6 +214,8 @@ No more wasted time ! Now you can use `Ctrl + U`.
 Simple, easy, perfect !
 
 And if you want to just erase word by word, you can use `Ctrl + W`.
+
+To remove all the line to the right of the cursor position, use `Ctrl + K` (and `Ctrl + Y` to revert if this was a terrible mistake).
 
 To simplify your navigation you can use `Ctrl + A` and `Ctrl + E` to go respectively to the beginning and to the end of the current line.
 
@@ -218,11 +234,13 @@ Save your file. And you're done! Time saved.
 
 ### The end
 
-Ok, now you've seen a lot of useful command line tips. Learn them, use them and enjoy them. Take your time and once you're done, use `exit` to close the console and enjoy real life !
+Ok, now you've seen a lot of useful command line tips. Learn them, use them and enjoy them. Take your time and once you're done, use `exit` or `Ctrl + D` to close the console and enjoy real life !
 
     exit
 
 Later on this blog will come another article based on `zsh` and `oh-my-zsh` to go even further and be more effective.
+
+For informations, this article is based on a bash shell running on Ubuntu. It may be possible that some commands used here doesn't work on your own shell/OS.
 
 If you're on Twitter and you want to follow funny accounts about Linux commands I recommend : 
 
