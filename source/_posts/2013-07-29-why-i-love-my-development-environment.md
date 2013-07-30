@@ -79,7 +79,7 @@ zsh: correct 'lls' to 'ls' [nyae]?
 Here you have four choices: no, yes, abort, edit. No will continue and execute the previously entered command. Yes will use the suggestion. Abort will just abort
 everything (pretty much straightforward huh) and edit will allow you to edit your command if you wanted to type something similar.
 
-With *oh-my-zsh* you'll be able to get and cool terminal theme and syntax highlighting. 
+With *oh-my-zsh* you'll be able to get a cool terminal theme and syntax highlighting. 
 You'll also be able to see all the time the git branch you're currently using on your prompt:
 
 ```
@@ -94,7 +94,7 @@ For instance when I'm using git I always use these commands instead of the old o
 + `gl` for `git pull`
 + `gco` for `git checkout`
 
-Some say that zsh can make coffee, havn't tried yet.
+Some say that zsh can make coffee but I havn't tried yet...
 
 You should not have any problem finding installation instructions for zsh, here is the page you'll be looking for if you think about using *oh-my-zsh*: 
 [https://github.com/robbyrussell/oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh).
