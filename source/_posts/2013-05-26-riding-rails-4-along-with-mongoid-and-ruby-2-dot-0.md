@@ -26,6 +26,8 @@ All the resources and documentation stuff are at the end of the post, be sure to
 I ran into some compatibility issues when writing this tutorial (nothing to be worried about) but gems versions may now have evolved.  
 FYI: Ubuntu 12.10, rails 4.0.0.rc1, mongoid (github master, something between 3.1.4 and ?) and bson_ext 1.8.6
 
+EDIT: as stated by Shunwen in the comments below, bson_ext seems to no longer be required as of mongoid version 3. Check it out here: <http://mongoid.org/en/mongoid/docs/upgrading.html>.
+
 Application github repo: [https://github.com/Raindal/rails4_mongoid](https://github.com/Raindal/rails4_mongoid)
 
 Finally, I am not going to give you any advice on why you should or should not use MongoDB, lots of topics are listing pros and cons compared to traditional relational databases such as
