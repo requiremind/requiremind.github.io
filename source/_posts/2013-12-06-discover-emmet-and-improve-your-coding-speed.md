@@ -10,7 +10,7 @@ categories:
 ---
 
 If you're here, I assume you're a passionate web developer. If not, you'll become one after reading this article.
-Indeed, [Emmet](http://emmet.io) is an essential toolkit for you! It will improve your coding speed in an instant and easily!
+Indeed, [Emmet](http://emmet.io) is an essential toolkit for you! It will improve your coding speed instantly and easily!
 
 You seem interested, then keep reading to discover more.
 
@@ -23,7 +23,7 @@ You seem interested, then keep reading to discover more.
 Ok, to begin I want to say that if you already heard about Zen Coding, then you'll find that Emmet is pretty similar.
 In fact, Zen Coding has evolved into Emmet adding a bunch of new cool features that you'll discover soon.
 
-In a nutshell, Emmet is a toolkit for web developpers that improve your HTML and CSS workflow.
+In a nutshell, Emmet is a toolkit for web developpers that improves your HTML and CSS workflow.
 You'll use CSS-like expressions to generate your HTML and a smart syntax to generate your CSS.
 
 Enough talking, as always the best is to see some examples!
@@ -34,8 +34,8 @@ Warning! This is an important step!
 Once you'll read and learn what is following, you'll
 
   + First, fall in love with these new coding habits.
-  + Second, you'll never, ever type a full balise anymore in your html.
-  + Third you'll gain an amazing amount of time.
+  + Second, you'll never, ever type a full tag anymore in your html.
+  + Third you'll save an amazing amount of time.
 
 So if you are ok with this, keep reading.
 
@@ -55,7 +55,7 @@ Here, it simply generates a `div` element.
 
 > Ok, that's cool but is it all?
 
-Of course not! Let's see some magic happens!
+Of course not! Let's see some magic happening!
 
 ``` html
 <ul>
@@ -77,10 +77,10 @@ can be simplified by using:
 Ok let's review this one, step by step.
 
 `ul`is our parent element.  
-Then we use the `>` symbol which represent a child in html. `ul` contains `li`.  
-The `*` is a multiplication operator that allows us to define how many time we want to output the element. Here 3 times.  
+Then we use the `>` symbol which represents a child in html. `ul` contains `li`.  
+The `*` is a multiplication operator that allows us to define how many times we want to output the element. Here 3 times.  
 In each of these elements we got a `p` element with an id (represented by the `#`, for a class we should have used a `.`).  
-The `$` is a specific symbol. It's an integer that will increments by one for each item.  
+The `$` is a specific symbol. It's an integer that will increment by one for each item.  
 The curly braces `{}` represent the text. Here Element plus the current item number.
 
 Ok I feel that you want one more example. Here you are:
@@ -108,7 +108,7 @@ You can refer to the [official documenation](http://docs.emmet.io) whenever you 
 
 ### CSS
 
-Emmet also allows you to write CSS faster than never before. I really use it a lot and it easy to learn.  
+Emmet also allows you to write CSS faster than ever before. I really use it a lot and it's easy to learn.  
 It defines a lot of shorcuts for the CSS properties.
 
 I can't show them all, but here is a list of common examples (remember to press the `tab` key to execute Emmet):
@@ -122,18 +122,18 @@ I can't show them all, but here is a list of common examples (remember to press 
     f5#f       => font: 5px #fff
     bd+        => border:1px solid #000;
 
-And it also take care of the vendor prefixes:
+And it also takes care of the vendor prefixes:
 
     bdrs25 => -webkit-border-radius: 25px;
               -moz-border-radius: 25px;
               border-radius: 25px;
 
-It so intuitive that you'll learn them easily by practising and discovering them by yourself.  
+It's so intuitive that you'll learn them easily by practising and discovering them by yourself.  
 But as always, here is the [documentation](http://docs.emmet.io/css-abbreviations).
 
 ### Fuzzy search
 
-Emmet is really smart and implement a cool feature called [fuzzy search](http://docs.emmet.io/css-abbreviations/fuzzy-search).
+Emmet is really smart and implements a cool feature called [fuzzy search](http://docs.emmet.io/css-abbreviations/fuzzy-search).
 This one is being used when we write an unknown abbreviation. Emmet will try to find the closest snippet definition and apply it.
 
 For instance, 
@@ -151,6 +151,6 @@ The power of Emmet also resides on the fact that it's available on a large amoun
 ### Conclusion
 
 So, this was the introduction to Emmet. I hope you will use it a lot and see the improvement in your coding speed.
-If you know others tools or anything like this one, feel free to leave a comment, I'm definitely interested!
+If you know other tools or anything like this one, feel free to leave a comment, I'm definitely interested!
 
 Here is my last present. If you're the kind of long cheat-sheet lovers then [here is your hapiness](http://docs.emmet.io/cheat-sheet). You won't be disappointed ;)
