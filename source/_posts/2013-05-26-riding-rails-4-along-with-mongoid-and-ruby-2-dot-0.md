@@ -9,7 +9,7 @@ categories:
 - mongoid
 ---
 
-You're not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine: [6LOCK](https://github.com/Raindal/6lock) (still in construction),
+You're not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine: [6LOCK](https://6lock.com),
 I tested out MongoDB, together with Mongoid (the ORM that comes in replacement of ActiveRecord for querying the MongoDB database) and other pretty cool stuff. As I had a great time using it
 I wanted to give it a try using the all new and shiny Rails 4 and Ruby 2.
 
