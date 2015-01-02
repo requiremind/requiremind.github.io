@@ -1,0 +1,654 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Currying, spice up your javascript functions - require 'mind'</title>
+  <meta name="author" content="requireMind">
+
+  
+  <meta name="description" content="Currying is an interesting technique that will power up your functions usage. In this article we&rsquo;re going to explain it from basic example to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://requiremind.com/currying-spice-up-your-javascript-functions">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41030310-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">require 'mind'</a></h1>
+  
+    <h2>Learn. Live. Love. Dev.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:requiremind.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title article-title">Currying, Spice Up Your Javascript Functions</h1><div class="by-author">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://cyrilf.com">cyrilf</a>
+            
+        </span>
+    </span>
+</div><div class="clear"></div>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-02T14:41:00+01:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Currying is an interesting technique that will power up your functions usage. In this article we&rsquo;re going to explain it from basic example to some more advanced use cases and you&rsquo;ll see that knowing this pattern, will give you some extra power as a developer.</p>
+
+<p>It&rsquo;s time to cook, let&rsquo;s spice it up!</p>
+
+<!-- more -->
+
+
+<p><img class="center" src="/images/currying/spices.png" title="spices" alt="spices"></p>
+
+<h3>Definition</h3>
+
+<p>To begin, a definition won&rsquo;t hurt.</p>
+
+<p>So, currying allows you to invoke a function that build and return you another one prefilled with the arguments you gave.  You can see it as partially applying a function.
+And now you&rsquo;re supposed to say:</p>
+
+<blockquote><p><em>What?!</em></p></blockquote>
+
+<p>Yeah it might be blurry.. so it&rsquo;s a perfect time for a basic example!</p>
+
+<h3>Basic example</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">liker</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="s1">&#39;I like this &#39;</span> <span class="o">+</span> <span class="nx">type</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bookLiker</span> <span class="o">=</span> <span class="nx">liker</span><span class="p">(</span><span class="s1">&#39;book&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">bookLiker</span><span class="p">(</span><span class="s1">&#39;Oro&#39;</span><span class="p">);</span>  <span class="c1">// I like this book: Oro</span>
+</span><span class='line'><span class="nx">bookLiker</span><span class="p">(</span><span class="s1">&#39;Wild: A journey from lost to found&#39;</span><span class="p">);</span> <span class="c1">// I like this book: Wild: A journey from lost to found</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">tedLiker</span> <span class="o">=</span> <span class="nx">liker</span><span class="p">(</span><span class="s1">&#39;TED talk&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">tedLiker</span><span class="p">(</span><span class="s1">&#39;The art of misdirection&#39;</span><span class="p">);</span> <span class="c1">// I like this TED talk: The art of misdirection</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ok so now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
+This allows us to create more specific likers function as <em>bookLiker</em> or <em>tedTalkLiker</em> in our case.</p>
+
+<blockquote><p>Cool, but.. what if we just specified two arguments in the first one?</p></blockquote>
+
+<p>Yes! You&rsquo;re right. The following function can easily do the same job:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">liker</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="s1">&#39;I like this &#39;</span> <span class="o">+</span> <span class="nx">type</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But this one was a basic example to introduce you with this pattern.
+It&rsquo;s now time to move forward into the concept.</p>
+
+<h3>Advanced usage</h3>
+
+<p>We can write a curry helper function that is going to transform any &ldquo;<em>standard</em>&rdquo; function into a curried one.
+We&rsquo;ll move from step to step on the implementation, so that you can absorb more easily the process.</p>
+
+<p>So, let&rsquo;s start with the first one.</p>
+
+<h4>1 &ndash; A naive implementation</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">naiveCurry</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">args</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span>
+</span><span class='line'>          <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">))</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&rsquo;s have a look.
+First, it stores the arguments passed to our function in a <code>args</code> property. Except for the first argument (the function we want to curry).
+It then returns a function. When you then call this function, the old arguments (stored in the <code>args</code> property) are concatenated with the new arguments received and applied to the curried function <code>fn</code>.</p>
+
+<p><em>For those who didn&rsquo;t know, <code>arguments</code> is a specific word in Javascript and it corresponds to the arguments passed as parameters (even if they are not specified in the function signature). This <code>arguments</code> variable behaves like an <code>Array</code> but it&rsquo;s not from an <code>Array</code> type, that&rsquo;s why you&rsquo;re seeing those <code>Array.prototype</code> calls.</em></p>
+
+<p>To illustrated it, a use case can be a <code>sendMessage</code> function:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">sendMessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">text</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="s1">&#39;@&#39;</span> <span class="o">+</span> <span class="nx">to</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">text</span> <span class="o">+</span> <span class="s1">&#39; - &#39;</span> <span class="o">+</span> <span class="nx">from</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// return &quot;@Irene Adler: Stop boring me and think. It&#39;s the new sexy - Sherlock Holmes&quot;</span>
+</span><span class='line'><span class="nx">sendMessage</span><span class="p">(</span><span class="s1">&#39;Sherlock Holmes&#39;</span><span class="p">,</span> <span class="s1">&#39;Irene Adler&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop boring me and think. It\&#39;s the new sexy.&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">naiveCurry</span><span class="p">(</span><span class="nx">sendMessage</span><span class="p">,</span> <span class="s1">&#39;SH&#39;</span><span class="p">)(</span><span class="s1">&#39;IA&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop boring me and think. It\&#39;s the new sexy.&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">naiveCurry</span><span class="p">(</span><span class="nx">sendMessage</span><span class="p">,</span> <span class="s1">&#39;SH&#39;</span><span class="p">,</span> <span class="s1">&#39;IA&#39;</span><span class="p">)(</span><span class="s1">&#39;Stop boring me and think. It\&#39;s the new sexy.&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">sendMessageFromSherlock</span> <span class="o">=</span> <span class="nx">naiveCurry</span><span class="p">(</span><span class="nx">sendMessage</span><span class="p">,</span> <span class="s1">&#39;SH&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">sendMessageFromSherlock</span><span class="p">(</span><span class="s1">&#39;IA&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop boring me and think. It\&#39;s the new sexy.&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re moving towards the final syntax.</p>
+
+<h4>2 &ndash; A better implementation</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">curry</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Give us the function&#39;s arity (number of arguments)</span>
+</span><span class='line'>    <span class="nx">length</span> <span class="o">=</span> <span class="nx">length</span> <span class="o">||</span><span class="err"> </span><span class="nx">fn</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">allArgumentsSpecified</span> <span class="o">=</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>      <span class="c1">// We have all arguments, we can apply them to the function</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">allArgumentsSpecified</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// We&#39;re missing some arguments, so we keep currying</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">partial</span> <span class="o">=</span> <span class="p">[</span><span class="nx">fn</span><span class="p">].</span><span class="nx">concat</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">));</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">curry</span><span class="p">(</span><span class="nx">naiveCurry</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">partial</span><span class="p">),</span> <span class="nx">length</span> <span class="o">-</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the magic is on! This curry implementation is now way more robust.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">sendMessageCurried</span> <span class="o">=</span> <span class="nx">curry</span><span class="p">(</span><span class="nx">sendMessage</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">sendMessageCurried</span><span class="p">(</span><span class="s1">&#39;Sherlock&#39;</span><span class="p">,</span> <span class="s1">&#39;Watson&#39;</span><span class="p">,</span> <span class="s1">&#39;You see, but you do not observe&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">sendMessageCurried</span><span class="p">(</span><span class="s1">&#39;Sherlock&#39;</span><span class="p">)(</span><span class="s1">&#39;Watson&#39;</span><span class="p">,</span> <span class="s1">&#39;You see, but you do not observe&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">sendMessageCurried</span><span class="p">(</span><span class="s1">&#39;Sherlock&#39;</span><span class="p">,</span> <span class="s1">&#39;Watson&#39;</span><span class="p">)(</span><span class="s1">&#39;You see, but you do not observe&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">sendMessageCurried</span><span class="p">(</span><span class="s1">&#39;Sherlock&#39;</span><span class="p">)(</span><span class="s1">&#39;Watson&#39;</span><span class="p">)(</span><span class="s1">&#39;You see, but you do not observe&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fromSherlocktoWatson</span> <span class="o">=</span> <span class="nx">sendMessageCurried</span><span class="p">(</span><span class="s1">&#39;Sherlock&#39;</span><span class="p">,</span> <span class="s1">&#39;Watson&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">fromSherlocktoWatson</span><span class="p">(</span><span class="s1">&#39;You see, but you do not observe&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
+
+<p>And we&rsquo;re done! I hope you liked it.</p>
+
+<blockquote><p>No. You can go further!</p></blockquote>
+
+<p>Wait, <strong>what</strong>? Isn&rsquo;t that enough? You&rsquo;re not impressed yet?<br/>
+Ok ok, it&rsquo;s only because I like you, nice reader, (and because you&rsquo;ve managed to read it so far), that we&rsquo;re going to improve this function.</p>
+
+<h4>3 &ndash; The spiciest curry function</h4>
+
+<p>I hope you&rsquo;re ready because this is going to be tastier than a <a href="http://en.wikipedia.org/wiki/Bhut_Jolokia">ghost pepper</a> (a pepper 900.5 times hotter than a Tabasco sauce according to wikipedia!).</p>
+
+<p><img class="center" src="/images/currying/ghost-pepper.jpg" title="ghost pepper" alt="ghost pepper"></p>
+
+<p>For this last example I&rsquo;m using the <code>_</code> notation to refer to an &lsquo;empty&rsquo; or a &lsquo;placeholder&rsquo; variable.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">_</span> <span class="o">=</span> <span class="p">{};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Attention, this could enter in conflict if you&rsquo;re using a library as <a href="https://lodash.com">lo-dash</a>. So, to avoid this conflict you can easily replace the <code>_</code> variable on the following examples with the keyword <code>undefined</code>. Also, if you need one of your parameters to be equal to <code>{}</code>, this code won&rsquo;t work. So going with <code>undefined</code> is a way more bullet-proof solution. But the <code>_</code> notation is more simple to read.</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">curry</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">length</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">holes</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">length</span> <span class="o">=</span> <span class="nx">length</span> <span class="o">||</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">args</span>   <span class="o">=</span> <span class="nx">args</span>   <span class="o">||</span> <span class="p">[];</span>
+</span><span class='line'>    <span class="nx">holes</span>  <span class="o">=</span> <span class="nx">holes</span>  <span class="o">||</span> <span class="p">[];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">_args</span>       <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span>
+</span><span class='line'>            <span class="nx">_holes</span>      <span class="o">=</span> <span class="nx">holes</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Store the length of the args and holes received</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">argLength</span>   <span class="o">=</span> <span class="nx">_args</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">holeLength</span>  <span class="o">=</span> <span class="nx">_holes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">allArgumentsSpecified</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Loop vars</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">arg</span>     <span class="o">=</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">i</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">aLength</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span><span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">aLength</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">arg</span> <span class="o">===</span> <span class="nx">_</span> <span class="o">&amp;&amp;</span> <span class="nx">holeLength</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">holeLength</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>                <span class="nx">_holes</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">_holes</span><span class="p">.</span><span class="nx">shift</span><span class="p">());</span> <span class="c1">// first hole became the last one</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">arg</span> <span class="o">===</span> <span class="nx">_</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">_holes</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">argLength</span> <span class="o">+</span> <span class="nx">i</span><span class="p">);</span> <span class="c1">// stores the hole&#39;s position</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">holeLength</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// is there a hole available?</span>
+</span><span class='line'>                <span class="nx">holeLength</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>                <span class="nx">_args</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">_holes</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">arg</span><span class="p">);</span> <span class="c1">// insert arg into the args list at the hole&#39;s index</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// just an arg with no hole to fill, add him to the args list</span>
+</span><span class='line'>                <span class="nx">_args</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">arg</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">allArgumentsSpecified</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nx">allArgumentsSpecified</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">_args</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// keep currying</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">curry</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">length</span><span class="p">,</span> <span class="nx">_args</span><span class="p">,</span> <span class="nx">_holes</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is it! The implementation is really different from our initial naive implementation. Because here we have to handle the <code>holes</code> and manage our <code>args</code> differently.
+Basically, the main difference here is the <code>for</code> loop. We just keep references to our arguments <code>holes</code> and we use them to build our <code>args</code> correctly.
+This is more complex but now the usages are really interesting.</p>
+
+<p>Let&rsquo;s have a look:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// #1 - rgbCreator</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">rgbCreator</span> <span class="o">=</span> <span class="nx">curry</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">red</span><span class="p">,</span> <span class="nx">green</span><span class="p">,</span> <span class="nx">blue</span><span class="p">,</span> <span class="nx">alpha</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="s1">&#39;rgba(&#39;</span> <span class="o">+</span> <span class="nx">red</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">green</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">blue</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">alpha</span> <span class="o">+</span> <span class="s1">&#39;);&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// prints &quot;rgba(204, 160, 29, 0.9);&quot;</span>
+</span><span class='line'><span class="nx">rgbCreator</span><span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="p">.</span><span class="mi">9</span><span class="p">);</span>
+</span><span class='line'><span class="nx">rgbCreator</span><span class="p">(</span><span class="mi">204</span><span class="p">)(</span><span class="mi">160</span><span class="p">)(</span><span class="mi">29</span><span class="p">)(.</span><span class="mi">9</span><span class="p">);</span>
+</span><span class='line'><span class="nx">rgbCreator</span><span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">160</span><span class="p">)(</span><span class="mi">29</span><span class="p">)(.</span><span class="mi">9</span><span class="p">);</span>
+</span><span class='line'><span class="nx">rgbCreator</span><span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="p">.</span><span class="mi">9</span><span class="p">)(</span><span class="mi">160</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// prints &quot;rgba(204, 160, 29, 0.5);&quot;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">halfOpacity</span> <span class="o">=</span> <span class="nx">rgbCreator</span><span class="p">(</span><span class="nx">_</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="p">.</span><span class="mi">5</span><span class="p">);</span>
+</span><span class='line'><span class="nx">halfOpacity</span><span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">29</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">shadeOfGrey</span> <span class="o">=</span> <span class="nx">rgbCreator</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">_</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">opacity</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">shades</span>   <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'><span class="k">for</span><span class="p">(;</span> <span class="nx">opacity</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">opacity</span> <span class="o">+=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">shades</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">shadeOfGrey</span><span class="p">(</span><span class="nx">opacity</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">shades</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// #2 - bind functions</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">logger</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Event occured!&#39;</span><span class="p">);</span> <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// We&#39;re expecting 3 arguments. It&#39;s due to the fact that document.addEventListener is a native function.</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bindEvent</span>     <span class="o">=</span> <span class="nx">curry</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">,</span> <span class="mi">3</span><span class="p">)(</span><span class="nx">_</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bindClick</span>     <span class="o">=</span> <span class="nx">bindEvent</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">_</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bindMouseMove</span> <span class="o">=</span> <span class="nx">bindEvent</span><span class="p">(</span><span class="s1">&#39;mousemove&#39;</span><span class="p">,</span> <span class="nx">_</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">bindClick</span><span class="p">(</span><span class="nx">logger</span><span class="p">);</span>
+</span><span class='line'><span class="nx">bindMouseMove</span><span class="p">(</span><span class="nx">logger</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I kept the examples simple so that you easily understand the concept. If you run the second one in your console, you&rsquo;ll see that it&rsquo;s logging everytime you move/click with your mouse.</p>
+
+<p>Voilà, you reached the end of this article! To go further you can even try to refactor and then add the <code>curry</code> function to the <code>Function.prototype</code> itself.<br/>
+I hope you&rsquo;ve learn something new here and that you&rsquo;re going to use it on your own projects. Feel free to write any comments.<br/>
+See you and have fun with your developments!</p>
+</div>
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://cyrilf.com">cyrilf</a>
+            
+        </span>
+    </span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-02T14:41:00+01:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/javascript/'>javascript</a>, <a class='category' href='/categories/learning/'>learning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/git-bisect-your-bug-hunting-best-friend" title="Previous Post: Git bisect your bug hunting best friend">&laquo; Git bisect your bug hunting best friend</a> /
+      
+        &nbsp;&nbsp; <a class="basic-alignment" href="/" title="Home">Home</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section id="comments-section">
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/currying-spice-up-your-javascript-functions">Currying, spice up your javascript functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/git-bisect-your-bug-hunting-best-friend">Git bisect your bug hunting best friend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">Deploying a Rails App on Your Own Server - The Ultimate Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/discover-emmet-and-improve-your-coding-speed">Discover Emmet and improve your coding speed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - requireMind -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/currying-spice-up-your-javascript-functions';
+        var disqus_url = 'http://requiremind.com/currying-spice-up-your-javascript-functions';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

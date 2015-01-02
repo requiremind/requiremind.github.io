@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: git | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/git/atom.xml" rel="self"/>
+  <link href="http://requiremind.com/"/>
+  <updated>2015-01-03T00:51:25+01:00</updated>
+  <id>http://requiremind.com/</id>
+  <author>
+    <name><![CDATA[requireMind]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Git bisect your bug hunting best friend]]></title>
+    <link href="http://requiremind.com/git-bisect-your-bug-hunting-best-friend"/>
+    <updated>2014-04-07T01:23:00+02:00</updated>
+    <id>http://requiremind.com/git-bisect-your-bug-hunting-best-friend</id>
+    <content type="html"><![CDATA[<p>Are you a bug hunter? Are you desperately trying to find where a bug was introduced in your long git history? If the answer is yes, you&rsquo;re going to be happy to meet <a href="http://git-scm.com/book/en/git-Tools-Debugging-with-git">git bisect</a></p>
+
+<!-- more -->
+
+
+<p><img class="center" src="/images/gitbisect/bug.jpg" title="&lsquo;bug&rsquo; &lsquo;bug&rsquo;" ></p>
+
+<h3>What is it?</h3>
+
+<p><code>git bisect</code> is installed by default with git. There is no tools or extra things to install.</p>
+
+<p><code>bisect</code> command is performing a <a href="http://en.wikipedia.org/wiki/Binary_search_algorithm">binary search</a> between a commit in which everything was working as expected and one in which a bug was present until it finds the responsible.</p>
+
+<h3>When should I use it?</h3>
+
+<p>Whenever you need to find whe(n|re) a bug was introduced.<br/>
+Let&rsquo;s assume that your working on a big project with a lot of developers on it. You&rsquo;re using git on a daily basis and some day someone report you that a functionality is broken.
+(Obviously this can&rsquo;t happened in reality because you have a good testing strategy implemented, don&rsquo;t you? ;) ).
+So you don&rsquo;t really know when the application stopped working as expected.</p>
+
+<p>So you need to know which specific commit is guilty (and furthermore which developer is to blame!)</p>
+
+<p>This is where <code>git bisect</code> <strong>kicks in</strong>!</p>
+
+<h3>Usage</h3>
+
+<p>We&rsquo;re going to review how to use it in a standard use case.
+For this example, I have create a <a href="https://github.com/requiremind/git-bisect-demo">git repository</a></p>
+
+<p>You can clone it on your computer using:</p>
+
+<pre><code>git clone https://github.com/requiremind/git-bisect-demo.git
+</code></pre>
+
+<p>and/or simply follow this tutorial.</p>
+
+<p>So, I have created a webpage (<code>index.html</code>)</p>
+
+<p><img class="center" src="/images/gitbisect/tuto-git-bisect.png" title="&lsquo;tuto 1&rsquo; &lsquo;tuto 1&rsquo;" ></p>
+
+<p>and as you can see there is a <span style="background:#d9534f; color:white; padding-left:7px;padding-right:7px;">wrong</span> label on this page. Consider it as a bug or an unwanted behavior. We&rsquo;re going to track it down and found where this was introduced.</p>
+
+<p>So, first you run this command to launch bisect:</p>
+
+<pre><code>git bisect start
+</code></pre>
+
+<p>Then you type:</p>
+
+<pre><code>git bisect bad
+</code></pre>
+
+<p>This one says that the current commit (HEAD, but you can specify another one)  contains the bug.</p>
+
+<p>The next step is to give <code>bisect</code> a good commit (where you&rsquo;re sure everything was working fine, like a release for instance). In our case we&rsquo;re sure that the first commit was sane.</p>
+
+<pre><code>git bisect good 0db16be
+</code></pre>
+
+<p>So now, bisect is &lsquo;calibrated&rsquo; and know the section in your git history to work on.<br/>
+It then picks some commits (based on the <a href="http://en.wikipedia.org/wiki/Binary_search_algorithm">binary search algorthm</a>) and all you have to do is to look if the bug is still present in your application/page/whatever.</p>
+
+<p>In our case, we simply refresh the page.</p>
+
+<p><img class="center" src="/images/gitbisect/tuto-git-bisect-2.png" title="&lsquo;tuto 2&rsquo; &lsquo;tuto 2&rsquo;" ></p>
+
+<p>We can see that the red label is still present. So we say:</p>
+
+<pre><code>git bisect bad
+</code></pre>
+
+<p><code>bisect</code> picks another commit for us and we need to test it again.</p>
+
+<p><img class="center" src="/images/gitbisect/tuto-git-bisect-3.png" title="&lsquo;tuto 3&rsquo; &lsquo;tuto 3&rsquo;" ></p>
+
+<p>Yes! Good news, the red label isn&rsquo;t present anymore! So we type in:</p>
+
+<pre><code>git bisect good
+</code></pre>
+
+<p>And we&rsquo;re done! <code>git bisect</code> have find out which commit is guilty. In our case it&rsquo;s the <code>b768e24 - Lorem ipsum is cooooool!</code>. We have successfuly found the problem origin and we now can easily fix it.</p>
+
+<p>Before going back to work you need to enter</p>
+
+<pre><code>git bisect reset
+</code></pre>
+
+<p>to reset your <code>HEAD</code> to where you were before you started.</p>
+
+<p>This example was really simple because it contains only a few commits and there is only one file. But in a real life case, it could be really useful!</p>
+
+<h3>Going further</h3>
+
+<p>You have found the bad commit. This is great, you can now check the files that this commit contains and you will easily find where the bug has been introduced. In our case, it&rsquo;s in the <code>index.html</code> file on line 21.</p>
+
+<p>So you can run the following to see who is guilty:</p>
+
+<pre><code>git blame index.html -L 21,21
+</code></pre>
+
+<p>In this case it&rsquo;s.. me! Of course. This is a really cool feature that you could play with.</p>
+
+<p>Last information about <code>git bisect</code>. In this example we were required to say manually on each commits picked by bisect if it was a good or a bad one.<br/>
+This is really not a good way to go if you have a long git history.</p>
+
+<p>Fortunately you can use a script to automate <code>git bisect</code>.<br/>
+Your script should return 0 if it&rsquo;s good or non-0 if a bug occured.
+Then you simply run:</p>
+
+<pre><code>git bisect run bug-hunter.sh
+</code></pre>
+
+<p>You can retrieve all official documentation about <a href="http://git-scm.com/book/en/git-Tools-Debugging-with-git">git bisect</a>.</p>
+
+<p>Hope it will help you on your next bug hunting!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Improve your workflow with Git Flow]]></title>
+    <link href="http://requiremind.com/improve-your-workflow-with-git-flow"/>
+    <updated>2013-07-06T14:58:00+02:00</updated>
+    <id>http://requiremind.com/improve-your-workflow-with-git-flow</id>
+    <content type="html"><![CDATA[<p>You&rsquo;re using Git on a day-to-day basis, but you often feel lost or your branching model looks like a spaghetti bowl?
+Let me introduce you a perfect tool to end your headaches. It&rsquo;s Git Flow, it will help you by keeping a perfect branching model and make your team happy.</p>
+
+<!-- more -->
+
+
+<p><img class="center" src="/images/gitflow/spaghetti-head.jpg" width="350" height="350" title="&lsquo;spaghetti bowl&rsquo; &lsquo;spaghetti bowl&rsquo;" ></p>
+
+<p class="text-center small-text">Don't cry little boy, Git Flow to the rescue, keep reading.</p>
+
+
+<h3>Git</h3>
+
+<p>Ok, so first I assume that if you still reading this, you know what is <code>git</code>. In a nutshell, <code>git</code> is a version controlled system which you can use to maintain code for your project. Through it the collaboration with your team and the versioning is made easier.</p>
+
+<p><code>git</code> contains an interesting feature called <code>branching</code>. It allows you to create different lines of development with independant history and evolution. You can see this as a copy of your working directory and you continue your work in this new copy.</p>
+
+<blockquote><p>Got it, I use Git and I already know that, where is the problem?</p></blockquote>
+
+<p>At this point, there is not.
+The problem occurs when you start having a lot (plenty?) of branches. You could easily get lost and don&rsquo;t know what is up to date, what should be merged, is the master branch synchronized with the release branch and many many more questions.</p>
+
+<p>For instance, you find a bug on your production site. You want to fix this as quickly as possible. To do so, you modify the code on master branch and push it back onto production. This is great, but this fix is now lost only on the master branch and won&rsquo;t be replicated on the other branchs.</p>
+
+<p>That&rsquo;s why <a href="http://nvie.com">@nvie</a> published an article of a <a href="http://nvie.com/posts/a-successful-git-branching-model">&ldquo;Successful Git branching model&rdquo;</a> which explain, for me, the best branching model we can use for both private and work projects.</p>
+
+<h3>Git branching model</h3>
+
+<p>I truly suggest you to read his article. It worth it.</p>
+
+<p>But the main idea to keep in mind, is that there is branches with specific roles and all of these stay consistent and perfectly synchronized.</p>
+
+<p>In a few words, you have a master branch containing the production code, then you have a develop branch that allows you to create different features from it. When a feature is done, you merge it back onto the develop branch. When a set of features are closed, you can then create a release branch to be sure that everything is ok and finally, merge it into master.</p>
+
+<p>If you really understand this model then everything will be easier and maintenable over the time on your projects.
+The only problem remaining is that you can easily made mistakes by using <code>git</code> and these mistakes can break the workflow.</p>
+
+<h3>Git Flow to the rescue!</h3>
+
+<p><a href="https://github.com/nvie/gitflow">Git Flow</a> is a tool created by <a href="http://nvie.com">@nvie</a> (again!). It&rsquo;s a collection of Git extensions that help us to follow his model really easily.</p>
+
+<h4>Installation</h4>
+
+<p>You can find some instructions <a href="https://github.com/nvie/gitflow/wiki/Installation">here</a> about how to install it on your plateform.</p>
+
+<h4>Init</h4>
+
+<p>Once the instalation is done you can apply the branching model to a new directory or convert an existing one by entering the following in your console:</p>
+
+<pre><code>git flow init
+</code></pre>
+
+<p>Then, it will ask you some questions about your naming convention. I suggest you to keep the default one, so just press <code>Enter</code> on each questions. (To avoid this step, enter <code>git flow init -d</code> on the previous command, it will accept all defaults).</p>
+
+<pre><code>No branches exist yet. Base branches must be created now.
+Branch name for production releases: [master] 
+Branch name for "next release" development: [develop] 
+
+How to name your supporting branch prefixes?
+Feature branches? [feature/] 
+Release branches? [release/] 
+Hotfix branches? [hotfix/] 
+Support branches? [support/] 
+Version tag prefix? [] 
+</code></pre>
+
+<p>Cool, Git Flow is now ready to use. As you can notice you&rsquo;re on the develop branch.
+As it specified on the workflow, all your development should now start from this branch.
+Let&rsquo;s start using Git Flow</p>
+
+<h4>Use cases</h4>
+
+<p>Let&rsquo;s say that you want to start a new feature, for instance a contact form:</p>
+
+<pre><code>git flow feature start contactForm
+</code></pre>
+
+<p>Behind the scenes, Git Flow will create a new branch called <code>feature/contactForm</code> and set it as the current working branch. From there you can continue to work as usual. You code, commit, code, commit, take a tea, code, commit..
+Once your job on this feature is done, just finish it.</p>
+
+<pre><code>git flow feature finish contactForm
+</code></pre>
+
+<p>In the background, Git Flow just merged your changes back to develop and removed your feature branch.</p>
+
+<p>You can do the same process with other kind of branches like: release, support or hotfix. The behavior won&rsquo;t be the same depending on which one you choose.</p>
+
+<p>For instance, let&rsquo;s talk about hotfix. You can start it as you&rsquo;ve done for a feature:</p>
+
+<pre><code>git flow hotfix start 1.0.3
+</code></pre>
+
+<p>This time, it will create a branch based on master. Then you fix what’s wrong on your code. Once you&rsquo;ve dealt with it:</p>
+
+<pre><code>git flow hotfix finish 1.0.3
+</code></pre>
+
+<p>It will merge this hotfix into master AND into develop too. It also add a tag to your branch for an easier versioning of your project and it erase this hotfix branch.
+As the merge is done on both master and develop you don&rsquo;t have to worry about your master being ahead of you develop branch.</p>
+
+<p><img class="center" src="/images/gitflow/aligned_pasta.jpg" width="350" height="350" title="&lsquo;aligned pasta&rsquo; &lsquo;aligned pasta&rsquo;" ></p>
+
+<p>To conclude, Git Flow is a really great tool to apply a consistent and robust branching model. And another good point, it&rsquo;s open source! You can find it <a href="https://github.com/nvie/gitflow">here</a>.</p>
+
+<p>I hope you&rsquo;re going to add this tool to your workflow and appreciate it.</p>
+]]></content>
+  </entry>
+  
+</feed>

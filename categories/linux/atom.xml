@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: linux | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/linux/atom.xml" rel="self"/>
+  <link href="http://requiremind.com/"/>
+  <updated>2015-01-03T00:51:25+01:00</updated>
+  <id>http://requiremind.com/</id>
+  <author>
+    <name><![CDATA[requireMind]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Why I love my development environment]]></title>
+    <link href="http://requiremind.com/why-i-love-my-development-environment"/>
+    <updated>2013-07-29T20:08:00+02:00</updated>
+    <id>http://requiremind.com/why-i-love-my-development-environment</id>
+    <content type="html"><![CDATA[<p>Today I&rsquo;ve decided to talk about the tools I use on a day-to-day basis. Why? Because I love them. That&rsquo;s it, now you know that I&rsquo;m not going to be objective. This being
+said, if you don&rsquo;t know or havn&rsquo;t tried them yet, then maybe now is a good time to do so and make your own opinion about it.</p>
+
+<!-- more -->
+
+
+<p>Note: I&rsquo;m using Ubuntu with gnome but most of the stuff I talk about is working on OS X too.</p>
+
+<p>But enough talking&hellip; : p</p>
+
+<h3>Z</h3>
+
+<p>z&hellip; yes this is its name. z is probably one of the most useful things I&rsquo;ve discovered the past year. z is actually a script that remembers where you&rsquo;ve <code>cd</code> for the past
+x days/weeks/months (I don&rsquo;t know the threshold) and saves you a tremendous amount of time.</p>
+
+<p><code>
+cd /home/neil/dev/prism_secret_project
+</code></p>
+
+<p>Here I&rsquo;m using the <code>cd</code> command as usual (well at least if you&rsquo;re not using zsh, but we&rsquo;ll get to that later) to enter my <em>prism_secret_project/</em> directory. Now that I&rsquo;ve done
+this once, z is aware of that directory. I can just type</p>
+
+<p><code>
+z pris
+</code></p>
+
+<p>for instance, hit <code>tab</code> and z will autocomplete my command:</p>
+
+<p><code>
+z /home/neil/dev/prism_secret_project
+</code></p>
+
+<p>At this point you just have to hit <code>Enter</code> to navigate to that directory.</p>
+
+<p>You probably get it by now, z is some sort of fuzzy matching tool for navigating on your os.</p>
+
+<p>Here you will find the script and the installation instructions: <a href="https://github.com/rupa/z">https://github.com/rupa/z</a>.</p>
+
+<h3>zsh with oh-my-zsh</h3>
+
+<p>zsh stands for Z Shell and replaces the default shell (bash).
+Let&rsquo;s see what we can do with it.</p>
+
+<p>First you do not need to use <code>cd</code> anymore. Typing a directory name as a command and hitting <code>tab</code> or <code>Enter</code> is now enough to navigate.</p>
+
+<p><code>
+/home/neil/dev/prism_secret_project
+</code></p>
+
+<p>Just hit <code>Enter</code> and you&rsquo;ll be there.
+You don&rsquo;t have to hit <code>tab</code> to autocomplete each directory, you can just type:</p>
+
+<p>```
+/h/n/d/pr</p>
+
+<h1>=> hit tab here</h1>
+
+<p>/home/neil/dev/prism_secret_project
+```</p>
+
+<p>zsh will offer suggestions when you hit <code>tab</code> and when multiple directories/commands match what you&rsquo;ve typed. What comes in handy here is that you can actually navigate through
+these suggestions with the arrow keys.</p>
+
+<p>When you make a typo, zsh will try and find the closest command. For instance if you type something like <code>lls</code> instead of <code>ls</code>&hellip;:</p>
+
+<p><code>
+lls
+zsh: correct 'lls' to 'ls' [nyae]?
+</code></p>
+
+<p>Here you have four choices: no, yes, abort, edit. No will continue and execute the previously entered command. Yes will use the suggestion. Abort will just abort
+everything (pretty much straightforward huh) and edit will allow you to edit your command if you wanted to type something similar.</p>
+
+<p>With <em>oh-my-zsh</em> you&rsquo;ll be able to get a cool terminal theme and syntax highlighting.
+You&rsquo;ll also be able to see all the time the git branch you&rsquo;re currently using on your prompt:</p>
+
+<p><code>
+-&gt; requiremind.github.io git:(source)
+</code></p>
+
+<p><em>oh-my-zsh</em> brings with him a great number of plugins and really handy aliases.
+For instance when I&rsquo;m using git I always use these commands instead of the old ones:</p>
+
+<ul>
+<li><code>gst</code> for <code>git status</code></li>
+<li><code>gp</code> for <code>git push</code></li>
+<li><code>gl</code> for <code>git pull</code></li>
+<li><code>gco</code> for <code>git checkout</code></li>
+</ul>
+
+
+<p>Some say that zsh can make coffee but I havn&rsquo;t tried yet&hellip;</p>
+
+<p>You should not have any problem finding installation instructions for zsh, here is the page you&rsquo;ll be looking for if you think about using <em>oh-my-zsh</em>:
+<a href="https://github.com/robbyrussell/oh-my-zsh">https://github.com/robbyrussell/oh-my-zsh</a>.</p>
+
+<h3>Sublime Text</h3>
+
+<p>I won&rsquo;t go into details here, there are already plenty of blog posts that talk about Sublime Text and the whys and hows as to why it works wonders. So I&rsquo;m just gonna
+give you the main &ldquo;shortcuts&rdquo; I use that made me first like the editor and then love it.</p>
+
+<ul>
+<li>you can actually <code>ctrl + click</code> on your document to place multiple cursors and edit multiple things the same way and at the same time</li>
+<li>select some text and then hit <code>ctrl + d</code> multiple times: this will highlight all the occurencies of that text in the document allowing a quick edit again</li>
+<li>use <code>ctrl + c</code> to copy the current line directly, <code>ctrl + v</code> to paste it above the line you&rsquo;re at, use <code>ctrl + x</code> to cut the line and <code>ctrl + l</code> to select it</li>
+<li>use <code>ctrl + shift + up/down</code> to move the line</li>
+<li>use <code>ctrl + p</code> to fuzzy open documents</li>
+<li>use <code>ctrl + shift + p</code> then type <em>ssjs</em> and hit <code>Enter</code> to set the current highlighting to javascript for instance (<em>Set Syntax: JavaScript</em>)</li>
+</ul>
+
+
+<p>And some more advantages:</p>
+
+<ul>
+<li>you can set a layout with one to four columns and one to four rows</li>
+<li>when you click on a file, you get to see a preview of that file without having to open it</li>
+</ul>
+
+
+<p>That&rsquo;s it for today! : )</p>
+
+<p>Don&rsquo;t hesitate to share your tips below!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux command line Tips: Become a master]]></title>
+    <link href="http://requiremind.com/linux-command-line-tips-become-a-master"/>
+    <updated>2013-05-19T01:24:00+02:00</updated>
+    <id>http://requiremind.com/linux-command-line-tips-become-a-master</id>
+    <content type="html"><![CDATA[<p>You&rsquo;re using the command line from time to time and you want to go further? You&rsquo;re at the right place.<br/>
+You&rsquo;re going to learn new tricks, use them and improve your skills with the command line.</p>
+
+<p>Ready? Go ahead.</p>
+
+<!-- more -->
+
+
+<h3>Move in linux</h3>
+
+<p><code>cd</code>, for Change Directory allows you to move easily and quickly across directories in your system.</p>
+
+<blockquote><p>Ok Linux. I want to go to my pictures directory</p></blockquote>
+
+<pre><code>cd ~/Pictures
+</code></pre>
+
+<blockquote><p>Ok, now I want to go back home</p></blockquote>
+
+<pre><code>cd
+</code></pre>
+
+<blockquote><p>Good, and if I want to move back a folder</p></blockquote>
+
+<pre><code>cd ..
+</code></pre>
+
+<blockquote><p>Nice. I want to return to the last directory I was before, possible?</p></blockquote>
+
+<pre><code>cd -
+</code></pre>
+
+<blockquote><p>Awesome! Thanks.</p></blockquote>
+
+<p>Don&rsquo;t forget to use the tab key <code>⇥</code> for auto-completion, it&rsquo;s very useful!</p>
+
+<h3>History master</h3>
+
+<p>You type many commands in your terminal, 10, then 100, then 100 000 000 &hellip;
+You know that you&rsquo;ve typed a super-shinny-powerful command in the past but you can&rsquo;t remember what it was. You&rsquo;re going to discover how to find it back.</p>
+
+<ul>
+<li><p>Up Arrow Key</p>
+
+<p>  To find the previous commands you&rsquo;ve typed, you can use the upper arrow key <code>↑</code> (multiple times) and it will show you the history. Press Enter <code>⏎</code> when you find what you want.</p></li>
+<li><p>History</p>
+
+<p>  A usefull command in linux is <code>history</code>, it allows you to see a list of commands you&rsquo;ve done previously.
+  You can combine it with grep to find something specific.</p>
+
+<pre><code>  history | grep "myarticle.txt"
+</code></pre>
+
+<p>  On the left of every commands listed in the history you can see a number. You can use it to execute a specific command.</p>
+
+<pre><code>  ![number]
+  !951      # execute the command number 951
+</code></pre></li>
+<li><p>Ctrl + R</p>
+
+<p>  But if you want to be quicker you have to use <code>Ctrl + R</code>.
+  It will display &ldquo;reverse-i-search&rdquo; and you can type any combination of letters. For example, &ldquo;myarticle&rdquo;.<br/>
+  This will display a match of the most recent command in your history containing &ldquo;myarticle&rdquo;.
+  When you find what you were looking for, press Enter <code>⏎</code> to execute the suggested command.</p></li>
+<li><p>Exclamation point or &ldquo;bang&rdquo;</p>
+
+<ul>
+<li><p>&ldquo;bang bang&rdquo; command</p>
+
+<blockquote><p>I&rsquo;ve typed a command that requires privileges but I&rsquo;ve forgot to use <code>sudo</code>.<br/>
+  Any advice?</p></blockquote>
+
+<p>  Enter <code>!!</code> (known as &ldquo;bang bang&rdquo;) to run the previous command.</p>
+
+<pre><code>  apt-get update
+  sudo !!         # will run sudo apt-get update
+</code></pre></li>
+<li><p>Exclamation point</p>
+
+<blockquote><p>Ok, I have a super-awesome memory and I can remember every commands I&rsquo;ve typed. How can I run what I&rsquo;ve typed seven commands ago ?</p></blockquote>
+
+<p>  Easy ! Use <code>!-[number]</code></p>
+
+<pre><code>  !-7
+</code></pre>
+
+<blockquote><p>I want to find the last command that started with a specific text (e.g. &ldquo;ls&rdquo;)</p></blockquote>
+
+<p>  Use <code>![expression]</code></p>
+
+<pre><code>  !ls             # will run ls -la ~/Pictures
+</code></pre>
+
+<blockquote><p>I want to get the previous command without the first word</p></blockquote>
+
+<p>  Use <code>!*</code></p>
+
+<pre><code>  cp article.txt ./blog/article.txt
+  mv !*         # will run mv article.txt ./blog/article.txt
+</code></pre>
+
+<blockquote><p>I want to get the first argument of the previous command</p></blockquote>
+
+<p>  Use <code>!^</code></p>
+
+<pre><code>  cp article.txt ./blog/article.txt
+  nano !^         # will run nano article.txt
+</code></pre>
+
+<blockquote><p>I want to get the last argument of the previous command</p></blockquote>
+
+<p>  Use <code>!$</code></p>
+
+<pre><code>  cp article.txt ./blog/article.txt
+  nano !$         # will run nano ./blog/article.txt
+</code></pre>
+
+<p>  To go a little bit further you can use all the previous commands with the following syntax:</p>
+
+<p>  <code>[command]:p</code> : It prints out the command instead of running it</p>
+
+<pre><code>  !!:p             # prints (but don't execute) nano my-so-long-file-name.txt
+</code></pre></li>
+</ul>
+</li>
+</ul>
+
+
+<blockquote><p>I&rsquo;ve seen that the history keeps only my 1000 previous commands. How to (de|in)crease this limit ?</p></blockquote>
+
+<p>You can change this limit in your <code>~/.bashrc</code>. Look at the line with <code>HISTSIZE=1000</code> and update it to fit your needs.</p>
+
+<p>If you&rsquo;ve written some bad or shameful things in your history you can simply erase it with</p>
+
+<pre><code>history -c
+</code></pre>
+
+<h3>Play with jobs</h3>
+
+<p>When you execute a script or a command that can take a long time to execute, you can run it as a background job.</p>
+
+<p>Run a process in background by appending an ampersand <code>&amp;</code></p>
+
+<pre><code>node server.js &amp;
+</code></pre>
+
+<blockquote><p>Wait, wait! I forgot to add the ampersand. I need to kill the process, right?</p></blockquote>
+
+<p>The answer is : No. You can put the current job to the background without having to kill it.</p>
+
+<p>To do so, you need <code>Ctrl + Z</code> to suspend the current job.<br/>
+Then, <code>bg</code> to run it in background.</p>
+
+<blockquote><p>Ok fine, my job is working in the background but how do I see it ?</p></blockquote>
+
+<p>Simple you can use,</p>
+
+<pre><code>jobs
+</code></pre>
+
+<p>Or</p>
+
+<pre><code>ps
+</code></pre>
+
+<p>It displays a list of the processes you&rsquo;ve launched.</p>
+
+<p>If you want to bring a specific job back to the foreground (because you&rsquo;re nice), simply use <code>fg</code>.</p>
+
+<pre><code>fg %[job-number]
+
+fg %2
+</code></pre>
+
+<p>But if you are less emotional then you can kill it without scruples, just use <code>kill</code>.</p>
+
+<p>If you&rsquo;ve choosen to use <code>jobs</code>, you can kill a process by is job-number in the list.</p>
+
+<pre><code>kill %[job-number]
+
+kill %2
+</code></pre>
+
+<p>If you&rsquo;ve choosen to use <code>ps</code>, you can kill a process by is process id (PID).</p>
+
+<pre><code>kill [PID]
+
+kill 1293
+</code></pre>
+
+<p>To kill the current process you can also use <code>Ctrl + C</code></p>
+
+<h3>Do two things (or more) at once</h3>
+
+<p>There is three main differents ways to accomplish that.</p>
+
+<p>1 &ndash; use a semicolon <code>;</code></p>
+
+<p>It will execute the command regardless of the result of the previous one.</p>
+
+<pre><code>./doSomething.sh ; ./doSomethingElseNoMatterWhatHappened.sh
+</code></pre>
+
+<p>2 &ndash; use a double ampersand <code>&amp;&amp;</code></p>
+
+<p>If you want the second command to be executed only if the first exited with no errors.</p>
+
+<pre><code>git clone git@github.com:requiremind/requiremind.github.io.git requiremind &amp;&amp; cd requiremind
+</code></pre>
+
+<p>3 &ndash; use <code>||</code></p>
+
+<p>It will execute the second command only if the first failed</p>
+
+<pre><code>./testNuclearWeapon.sh || echo "Hum.. Sorry. Everything is out of control.."
+</code></pre>
+
+<h3>Shortcuts</h3>
+
+<blockquote><p>I&rsquo;m writing a command and suddenly I realize that this isn&rsquo;t what I wanted to type or I&rsquo;ve made a typo in the first word. What do I do now?</p></blockquote>
+
+<p>So this is what you usually do (based on my case):</p>
+
+<ul>
+<li>Press Shift key <code>⇧</code> and top key <code>↖</code>: you&rsquo;re in a terminal, this isn&rsquo;t working..</li>
+<li>Press the erase key <code>⌫</code> to the left of the line: works, but this is boring..</li>
+</ul>
+
+
+<p>No more wasted time ! Now you can use <code>Ctrl + U</code>. <br/>
+Simple, easy, perfect !</p>
+
+<p>And if you want to just erase word by word, you can use <code>Ctrl + W</code>.</p>
+
+<p>To remove all the line to the right of the cursor position, use <code>Ctrl + K</code> (and <code>Ctrl + Y</code> to revert if this was a terrible mistake).</p>
+
+<p>To simplify your navigation you can use <code>Ctrl + A</code> and <code>Ctrl + E</code> to go respectively to the beginning and to the end of the current line.</p>
+
+<h3>Define some alias</h3>
+
+<p>Sometimes you&rsquo;re going to face a hard-bad-long-painful-forgettable command. Unless you love the pain to type over and over again the same command, you can use <code>alias</code>. The syntax to define one is:</p>
+
+<pre><code>alias [alias-name]=[command]
+</code></pre>
+
+<p>If you want your alias to persist across different sessions (close the terminal, reboot, ..) you have to add it to your <code>~/.bashrc</code>. So open your bashrc file and look for the <code>#some more aliases</code> section. Below this, type all your aliases. For example:</p>
+
+<pre><code>alias ai='sudo apt-get install'
+alias au='sudo apt-get update'
+</code></pre>
+
+<p>Save your file. And you&rsquo;re done! Time saved.</p>
+
+<h3>The end</h3>
+
+<p>Ok, now you&rsquo;ve seen a lot of useful command line tips. Learn them, use them and enjoy them. Take your time and once you&rsquo;re done, use <code>exit</code> or <code>Ctrl + D</code> to close the console and enjoy real life !</p>
+
+<pre><code>exit
+</code></pre>
+
+<p>Later on this blog will come another article based on <code>zsh</code> and <code>oh-my-zsh</code> to go even further and be more effective.</p>
+
+<p>For informations, this article is based on a bash shell running on Ubuntu. It may be possible that some commands used here doesn&rsquo;t work on your own shell/OS.</p>
+
+<p>If you&rsquo;re on Twitter and you want to follow funny accounts about Linux commands I recommend :</p>
+
+<ul>
+<li><a href="http://twitter.com/climagic">@climagic</a></li>
+<li><a href="http://twitter.com/unixtooltip">@UnixToolTip</a></li>
+</ul>
+
+
+<p>And don&rsquo;t forget to follow us too <a href="http:///twitter.com/requiremind">@requiremind</a></p>
+]]></content>
+  </entry>
+  
+</feed>

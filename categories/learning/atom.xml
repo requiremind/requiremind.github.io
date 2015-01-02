@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: learning | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/learning/atom.xml" rel="self"/>
+  <link href="http://requiremind.com/"/>
+  <updated>2015-01-03T00:51:25+01:00</updated>
+  <id>http://requiremind.com/</id>
+  <author>
+    <name><![CDATA[requireMind]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Currying, spice up your javascript functions]]></title>
+    <link href="http://requiremind.com/currying-spice-up-your-javascript-functions"/>
+    <updated>2015-01-02T14:41:00+01:00</updated>
+    <id>http://requiremind.com/currying-spice-up-your-javascript-functions</id>
+    <content type="html"><![CDATA[<p>Currying is an interesting technique that will power up your functions usage. In this article we&rsquo;re going to explain it from basic example to some more advanced use cases and you&rsquo;ll see that knowing this pattern, will give you some extra power as a developer.</p>
+
+<p>It&rsquo;s time to cook, let&rsquo;s spice it up!</p>
+
+<!-- more -->
+
+
+<p><img class="center" src="/images/currying/spices.png" title="&lsquo;spices&rsquo; &lsquo;spices&rsquo;" ></p>
+
+<h3>Definition</h3>
+
+<p>To begin, a definition won&rsquo;t hurt.</p>
+
+<p>So, currying allows you to invoke a function that build and return you another one prefilled with the arguments you gave.  You can see it as partially applying a function.
+And now you&rsquo;re supposed to say:</p>
+
+<blockquote><p><em>What?!</em></p></blockquote>
+
+<p>Yeah it might be blurry.. so it&rsquo;s a perfect time for a basic example!</p>
+
+<h3>Basic example</h3>
+
+<p>``` js
+var liker = function(type) {</p>
+
+<pre><code>return function(name) {
+    var result = 'I like this ' + type + ': ' + name;
+    return result;
+};
+</code></pre>
+
+<p>};</p>
+
+<p>var bookLiker = liker(&lsquo;book&rsquo;);
+bookLiker(&lsquo;Oro&rsquo;);  // I like this book: Oro
+bookLiker(&lsquo;Wild: A journey from lost to found&rsquo;); // I like this book: Wild: A journey from lost to found</p>
+
+<p>var tedLiker = liker(&lsquo;TED talk&rsquo;);
+tedLiker(&lsquo;The art of misdirection&rsquo;); // I like this TED talk: The art of misdirection</p>
+
+<p>```</p>
+
+<p>Ok so now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
+This allows us to create more specific likers function as <em>bookLiker</em> or <em>tedTalkLiker</em> in our case.</p>
+
+<blockquote><p>Cool, but.. what if we just specified two arguments in the first one?</p></blockquote>
+
+<p>Yes! You&rsquo;re right. The following function can easily do the same job:</p>
+
+<p>``` js
+var liker = function(type, name) {</p>
+
+<pre><code>return 'I like this ' + type + ': ' + name;
+</code></pre>
+
+<p>}
+```
+But this one was a basic example to introduce you with this pattern.
+It&rsquo;s now time to move forward into the concept.</p>
+
+<h3>Advanced usage</h3>
+
+<p>We can write a curry helper function that is going to transform any &ldquo;<em>standard</em>&rdquo; function into a curried one.
+We&rsquo;ll move from step to step on the implementation, so that you can absorb more easily the process.</p>
+
+<p>So, let&rsquo;s start with the first one.</p>
+
+<h4>1 &ndash; A naive implementation</h4>
+
+<p>``` js
+function naiveCurry(fn) {</p>
+
+<pre><code>var args = Array.prototype.slice.call(arguments, 1);
+return function() {
+    return fn.apply(this, args.concat(
+        Array.prototype.slice.call(arguments))
+    );
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Let&rsquo;s have a look.
+First, it stores the arguments passed to our function in a <code>args</code> property. Except for the first argument (the function we want to curry).
+It then returns a function. When you then call this function, the old arguments (stored in the <code>args</code> property) are concatenated with the new arguments received and applied to the curried function <code>fn</code>.</p>
+
+<p><em>For those who didn&rsquo;t know, <code>arguments</code> is a specific word in Javascript and it corresponds to the arguments passed as parameters (even if they are not specified in the function signature). This <code>arguments</code> variable behaves like an <code>Array</code> but it&rsquo;s not from an <code>Array</code> type, that&rsquo;s why you&rsquo;re seeing those <code>Array.prototype</code> calls.</em></p>
+
+<p>To illustrated it, a use case can be a <code>sendMessage</code> function:</p>
+
+<p>``` js
+var sendMessage = function(from, to, text) {</p>
+
+<pre><code>return '@' + to + ': ' + text + ' - ' + from;
+</code></pre>
+
+<p>};</p>
+
+<p>// return &ldquo;@Irene Adler: Stop boring me and think. It&rsquo;s the new sexy &ndash; Sherlock Holmes&rdquo;
+sendMessage(&lsquo;Sherlock Holmes&rsquo;, &lsquo;Irene Adler&rsquo;, &lsquo;Stop boring me and think. It\&rsquo;s the new sexy.&rsquo;);
+naiveCurry(sendMessage, &lsquo;SH&rsquo;)(&lsquo;IA&rsquo;, &lsquo;Stop boring me and think. It\&rsquo;s the new sexy.&rsquo;);
+naiveCurry(sendMessage, &lsquo;SH&rsquo;, &lsquo;IA&rsquo;)(&lsquo;Stop boring me and think. It\&rsquo;s the new sexy.&rsquo;);</p>
+
+<p>var sendMessageFromSherlock = naiveCurry(sendMessage, &lsquo;SH&rsquo;);
+sendMessageFromSherlock(&lsquo;IA&rsquo;, &lsquo;Stop boring me and think. It\&rsquo;s the new sexy.&rsquo;);
+```</p>
+
+<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re moving towards the final syntax.</p>
+
+<h4>2 &ndash; A better implementation</h4>
+
+<p>``` js
+function curry(fn, length) {</p>
+
+<pre><code>// Give us the function's arity (number of arguments)
+length = length || fn.length;
+return function () {
+    var allArgumentsSpecified = (arguments.length &gt;= length);
+    // We have all arguments, we can apply them to the function
+    if(allArgumentsSpecified) {
+        return fn.apply(this, arguments);
+    }
+
+    // We're missing some arguments, so we keep currying
+    var partial = [fn].concat(Array.prototype.slice.call(arguments));
+    return curry(naiveCurry.apply(this, partial), length - arguments.length);
+};
+</code></pre>
+
+<p>}
+```</p>
+
+<p>And the magic is on! This curry implementation is now way more robust.</p>
+
+<p>``` js
+var sendMessageCurried = curry(sendMessage);</p>
+
+<p>sendMessageCurried(&lsquo;Sherlock&rsquo;, &lsquo;Watson&rsquo;, &lsquo;You see, but you do not observe&rsquo;);
+sendMessageCurried(&lsquo;Sherlock&rsquo;)(&lsquo;Watson&rsquo;, &lsquo;You see, but you do not observe&rsquo;);
+sendMessageCurried(&lsquo;Sherlock&rsquo;, &lsquo;Watson&rsquo;)(&lsquo;You see, but you do not observe&rsquo;);
+sendMessageCurried(&lsquo;Sherlock&rsquo;)(&lsquo;Watson&rsquo;)(&lsquo;You see, but you do not observe&rsquo;);</p>
+
+<p>var fromSherlocktoWatson = sendMessageCurried(&lsquo;Sherlock&rsquo;, &lsquo;Watson&rsquo;);
+fromSherlocktoWatson(&lsquo;You see, but you do not observe&rsquo;);
+```</p>
+
+<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
+
+<p>And we&rsquo;re done! I hope you liked it.</p>
+
+<blockquote><p>No. You can go further!</p></blockquote>
+
+<p>Wait, <strong>what</strong>? Isn&rsquo;t that enough? You&rsquo;re not impressed yet?<br/>
+Ok ok, it&rsquo;s only because I like you, nice reader, (and because you&rsquo;ve managed to read it so far), that we&rsquo;re going to improve this function.</p>
+
+<h4>3 &ndash; The spiciest curry function</h4>
+
+<p>I hope you&rsquo;re ready because this is going to be tastier than a <a href="http://en.wikipedia.org/wiki/Bhut_Jolokia">ghost pepper</a> (a pepper 900.5 times hotter than a Tabasco sauce according to wikipedia!).</p>
+
+<p><img class="center" src="/images/currying/ghost-pepper.jpg" title="&lsquo;ghost pepper&rsquo; &lsquo;ghost pepper&rsquo;" ></p>
+
+<p>For this last example I&rsquo;m using the <code>_</code> notation to refer to an &lsquo;empty&rsquo; or a &lsquo;placeholder&rsquo; variable.</p>
+
+<p><code>js
+var _ = {};
+</code>
+<em>Attention, this could enter in conflict if you&rsquo;re using a library as <a href="https://lodash.com">lo-dash</a>. So, to avoid this conflict you can easily replace the <code>_</code> variable on the following examples with the keyword <code>undefined</code>. Also, if you need one of your parameters to be equal to <code>{}</code>, this code won&rsquo;t work. So going with <code>undefined</code> is a way more bullet-proof solution. But the <code>_</code> notation is more simple to read.</em></p>
+
+<p>``` js
+function curry(fn, length, args, holes) {</p>
+
+<pre><code>length = length || fn.length;
+args   = args   || [];
+holes  = holes  || [];
+
+return function() {
+    var _args       = args.slice(),
+        _holes      = holes.slice();
+
+    // Store the length of the args and holes received
+    var argLength   = _args.length,
+        holeLength  = _holes.length;
+
+    var allArgumentsSpecified = false;
+
+    // Loop vars
+    var arg     = null,
+        i       = 0,
+        aLength = arguments.length;
+
+    for(; i &lt; aLength; i++) {
+        arg = arguments[i];
+
+        if(arg === _ &amp;&amp; holeLength) {
+            holeLength--;
+            _holes.push(_holes.shift()); // first hole became the last one
+        } else if (arg === _) {
+            _holes.push(argLength + i); // stores the hole's position
+        } else if (holeLength) { // is there a hole available?
+            holeLength--;
+            _args.splice(_holes.shift(), 0, arg); // insert arg into the args list at the hole's index
+        } else { // just an arg with no hole to fill, add him to the args list
+            _args.push(arg);
+        }
+    }
+
+    allArgumentsSpecified = (_args.length &gt;= length);
+    if(allArgumentsSpecified) {
+        return fn.apply(this, _args);
+    }
+
+    // keep currying
+    return curry.call(this, fn, length, _args, _holes);
+};
+</code></pre>
+
+<p>}
+```</p>
+
+<p>This is it! The implementation is really different from our initial naive implementation. Because here we have to handle the <code>holes</code> and manage our <code>args</code> differently.
+Basically, the main difference here is the <code>for</code> loop. We just keep references to our arguments <code>holes</code> and we use them to build our <code>args</code> correctly.
+This is more complex but now the usages are really interesting.</p>
+
+<p>Let&rsquo;s have a look:</p>
+
+<p>``` js
+// #1 &ndash; rgbCreator</p>
+
+<p>var rgbCreator = curry(function(red, green, blue, alpha) {</p>
+
+<pre><code>return 'rgba(' + red + ', ' + green + ', ' + blue + ', ' + alpha + ');';
+</code></pre>
+
+<p>});</p>
+
+<p>// prints &ldquo;rgba(204, 160, 29, 0.9);&rdquo;
+rgbCreator(204, 160, 29, .9);
+rgbCreator(204)(160)(29)(.9);
+rgbCreator(204, 160)(29)(.9);
+rgbCreator(204, _, 29, .9)(160);</p>
+
+<p>// prints &ldquo;rgba(204, 160, 29, 0.5);&rdquo;
+var halfOpacity = rgbCreator(<em>, </em>, _, .5);
+halfOpacity(204, 160, 29);</p>
+
+<p>var shadeOfGrey = rgbCreator(0, 0, 0, _);
+var opacity  = 0;
+var shades   = [];
+for(; opacity &lt;= 1; opacity += 0.1) {</p>
+
+<pre><code>shades.push(shadeOfGrey(opacity));
+</code></pre>
+
+<p>}</p>
+
+<p>console.log(shades);</p>
+
+<p>// #2 &ndash; bind functions
+var logger = function() { console.log(&lsquo;Event occured!&rsquo;); };</p>
+
+<p>// We&rsquo;re expecting 3 arguments. It&rsquo;s due to the fact that document.addEventListener is a native function.
+var bindEvent     = curry(document.addEventListener, 3)(<em>, </em>, false);
+var bindClick     = bindEvent(&lsquo;click&rsquo;, <em>);
+var bindMouseMove = bindEvent(&lsquo;mousemove&rsquo;, </em>);</p>
+
+<p>bindClick(logger);
+bindMouseMove(logger);</p>
+
+<p>```</p>
+
+<p>I kept the examples simple so that you easily understand the concept. If you run the second one in your console, you&rsquo;ll see that it&rsquo;s logging everytime you move/click with your mouse.</p>
+
+<p>Voilà, you reached the end of this article! To go further you can even try to refactor and then add the <code>curry</code> function to the <code>Function.prototype</code> itself.<br/>
+I hope you&rsquo;ve learn something new here and that you&rsquo;re going to use it on your own projects. Feel free to write any comments.<br/>
+See you and have fun with your developments!</p>
+]]></content>
+  </entry>
+  
+</feed>

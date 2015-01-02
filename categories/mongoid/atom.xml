@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mongoid | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/mongoid/atom.xml" rel="self"/>
+  <link href="http://requiremind.com/"/>
+  <updated>2015-01-03T00:51:25+01:00</updated>
+  <id>http://requiremind.com/</id>
+  <author>
+    <name><![CDATA[requireMind]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Riding Rails 4 along with Mongoid and Ruby 2.0]]></title>
+    <link href="http://requiremind.com/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0"/>
+    <updated>2013-05-26T01:38:00+02:00</updated>
+    <id>http://requiremind.com/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0</id>
+    <content type="html"><![CDATA[<p>You&rsquo;re not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine: <a href="https://6lock.com">6LOCK</a>,
+I tested out MongoDB, together with Mongoid (the ORM that comes in replacement of ActiveRecord for querying the MongoDB database) and other pretty cool stuff. As I had a great time using it
+I wanted to give it a try using the all new and shiny Rails 4 and Ruby 2.</p>
+
+<!-- more -->
+
+
+<p>If you have a basic understanding of how the framework works, you have already been following some sort of &ldquo;Getting Started with Ruby on Rails&rdquo; tutorial (plenty of them out there)
+and now you want to try MongoDB and see how it feels, this tutorial is made for you.</p>
+
+<p>Note: I am not going to list the new features of Rails 4, if you want to know more, check out this great post:
+<a href="http://net.tutsplus.com/tutorials/ruby/digging-into-rails-4/">digging-into-rails-4</a></p>
+
+<p>All the resources and documentation stuff are at the end of the post, be sure to check them out, you&rsquo;ll probably learn very interesting stuff and subtleties.</p>
+
+<p>I ran into some compatibility issues when writing this tutorial (nothing to be worried about) but gems versions may now have evolved.<br/>
+FYI: Ubuntu 12.10, rails 4.0.0.rc1, mongoid (github master, something between 3.1.4 and ?) and bson_ext 1.8.6</p>
+
+<p>EDIT: as stated by Shunwen in the comments below, bson_ext seems to no longer be required as of mongoid version 3. Check it out here: <a href="http://mongoid.org/en/mongoid/docs/upgrading.html">http://mongoid.org/en/mongoid/docs/upgrading.html</a>.</p>
+
+<p>Application github repo: <a href="https://github.com/Raindal/rails4_mongoid">https://github.com/Raindal/rails4_mongoid</a></p>
+
+<p>Finally, I am not going to give you any advice on why you should or should not use MongoDB, lots of topics are listing pros and cons compared to traditional relational databases such as
+MySQL. To give you some leads you could dig into, MongoDB brings to the table things like dynamic fields, embedding, map/reduce, indexing and so on.</p>
+
+<p>But enough talking, let&rsquo;s dive in!</p>
+
+<h3>Install MongoDB</h3>
+
+<blockquote><p><a href="http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/">Install MongoDB on Ubuntu</a></p></blockquote>
+
+<p>First you&rsquo;ll need to import the 10gen public GPG key (MongoDB is mainly maintained by 10gen), which is used to ensure package consistency and authenticity</p>
+
+<pre><code>sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+</code></pre>
+
+<p>Create a /etc/apt/sources.list.d/10gen.list file using the following command</p>
+
+<pre><code>echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/10gen.list
+</code></pre>
+
+<p>Now you can update your repository</p>
+
+<pre><code>sudo apt-get update
+</code></pre>
+
+<p>And then install the package</p>
+
+<pre><code>sudo apt-get install mongodb-10gen
+</code></pre>
+
+<p>To check that it works, just issue a <code>mongo</code> in your shell and you should see something like</p>
+
+<pre><code>MongoDB shell version: x.x.x
+connecting to: test
+&gt;
+</code></pre>
+
+<h3>Set up RVM</h3>
+
+<blockquote><p><a href="http://net.tutsplus.com/tutorials/why-you-should-use-rvm/">Why you should use RVM</a></p></blockquote>
+
+<p>Now we are going to set up RVM to use Ruby 2.0.0. We only have to install the Ruby version we want and use it.</p>
+
+<pre><code>rvm install 2.0.0
+rvm use 2.0.0
+</code></pre>
+
+<p>And finally we are going to create a gemset for our application, it will contain all the gems we need</p>
+
+<pre><code>rvm gemset create rails4_mongoid
+</code></pre>
+
+<h3>Set up the application</h3>
+
+<p>First we need to install the Rails 4 gem.</p>
+
+<pre><code>gem install rails --version 4.0.0.rc1 --no-ri --no-rdoc
+</code></pre>
+
+<p>Now we can create the application and cd inside</p>
+
+<pre><code>rails new rails4_mongoid
+cd rails4_mongoid/
+</code></pre>
+
+<p>For convinience, we are creating a .rvmrc file at the root of our application. The file will tell RVM to use the right version of Ruby with the right gemset when we cd inside the directory.<br/>
+Just use your favorite text editor</p>
+
+<pre><code>nano .rvmrc
+</code></pre>
+
+<p>And paste this inside</p>
+
+<p><code>ruby .rvmrc
+rvm use 2.0.0@rails4_mongoid --create
+</code></p>
+
+<p>This basically tells RVM to use Ruby 2.0.0 with the gemset rails4_mongoid and that it should create the gemset if it doesn&rsquo;t already exist.</p>
+
+<p>To make sure everything works as expected, you can go back and then cd again in the directory.</p>
+
+<pre><code>cd ..
+cd rails4_mongoid
+</code></pre>
+
+<p>You should see something like this</p>
+
+<pre><code>Using /home/neil/.rvm/gems/ruby-2.0.0-p0 with gemset rails4_mongoid
+</code></pre>
+
+<p>Now, we have to edit the Gemfile to install the gems we want.<br/>
+First, remove sqlite: delete these lines</p>
+
+<p>``` ruby Gemfile</p>
+
+<h1>Use sqlite3 as the database for Active Record</h1>
+
+<p>gem &lsquo;sqlite3&rsquo;
+```
+Now we can add mongoid and bson_ext</p>
+
+<p><code>ruby Gemfile
+gem 'mongoid', github: 'mongoid/mongoid'
+gem 'bson_ext', '~&gt; 1.8.6'
+</code></p>
+
+<p>At the time I&rsquo;m writing these lines, <a href="http://rubygems.org/gems/mongoid/versions/3.1.4">mongoid 3.1.4 relies on ActiveModel 3.2</a> but we are using ActiveModel 4.0.0-rc1, so we need to use directly
+the github repo that supports it.<br/>
+bson_ext is a C extension which basically makes things faster with MongoDB.</p>
+
+<p>Now, just run a</p>
+
+<pre><code>bundle update
+</code></pre>
+
+<p>If you run into errors of some kind (mine was related to bson_ext), try to update your gem version with</p>
+
+<pre><code>rvm rubygems latest --verify-downloads 1
+</code></pre>
+
+<p>And <code>bundle update</code> again.</p>
+
+<h3>Configure Mongoid</h3>
+
+<p>Still in the root of the application, run the following command</p>
+
+<pre><code>rails g mongoid:config
+</code></pre>
+
+<p>This will generate a <strong>mongoid.yml</strong> file under <strong>config/</strong>.<br/>
+We can edit the file to suit our needs.</p>
+
+<p>Find the line that says <code># consistency: :eventual</code> and change it for</p>
+
+<p><code>yaml config/mongoid.yml
+consistency: :strong
+</code></p>
+
+<p><code>:eventual</code> will send reads to secondaries, <code>:strong</code> sends everything to master.</p>
+
+<p>As we are not using ActiveRecord, we need to get rid of it.<br/>
+First in <strong>config/application.rb</strong> comment out the line</p>
+
+<p>``` ruby config/application.rb</p>
+
+<h1>require &lsquo;rails/all&rsquo;</h1>
+
+<p>```</p>
+
+<p>And add these lines right underneath the first one</p>
+
+<p>``` ruby config/application.rb
+require &ldquo;action_controller/railtie&rdquo;
+require &ldquo;action_mailer/railtie&rdquo;</p>
+
+<h1>require &ldquo;active_resource/railtie&rdquo;</h1>
+
+<p>require &ldquo;sprockets/railtie&rdquo;
+```</p>
+
+<p>The 3rd line is commented out because normally you would need it but Rails 4 has extracted the ActiveResource gem and now you need to specify its name in the Gemfile if you want to use it. But here we won&rsquo;t
+use it.</p>
+
+<p>There are some more ActiveRecord settings we have to get rid of out there.<br/>
+In <strong>config/environments/development.rb</strong>, comment out this line</p>
+
+<p>``` ruby config/environments/development.rb</p>
+
+<h1>config.active_record.migration_error = :page_load</h1>
+
+<p>```</p>
+
+<p>To check that everything is working like a charm, run a <code>rails s</code> and then go check that the application is running on <a href="http://localhost:3000">http://localhost:3000</a>.</p>
+
+<p>Now you should see the usual <strong>Welcome aboard</strong> message.</p>
+
+<h3>Now we&rsquo;re talking!</h3>
+
+<p>Let&rsquo;s write some code, finally! But first we will have to generate our first model. For that we are going to use the builtin <em>scaffold</em> command in order to generate our model, controller,
+views and everything else at the same time.</p>
+
+<blockquote><p>In a real project, unless you&rsquo;re sure you&rsquo;re going to use all the generated files, I personnaly don&rsquo;t recommend using the scaffold command. You could quickly end up with a messy application.
+I would rather recommend using each command one by one: <code>rails g model xxx</code>, <code>rails g controller xxx</code> etc.</p></blockquote>
+
+<p>For this example I&rsquo;ll be using the usual Post > Comment stuff which is actually a perfect example for demonstrating the embedding capabilities of MongoDB.</p>
+
+<p>Let&rsquo;s generate our Post first, it will have 3 fields: a <strong>title</strong>, a <strong>body</strong> and it can be <strong>starred</strong>.</p>
+
+<pre><code>rails g scaffold post title:string body:string starred:boolean
+</code></pre>
+
+<blockquote><p><a href="http://mongoid.org/en/mongoid/docs/documents.html#fields">Mongoid document field types</a></p></blockquote>
+
+<p>This generated all the files we wanted.<br/>
+Let&rsquo;s first edit the model to add the <strong>created_at</strong> and <strong>updated_at</strong> fields that are not present by default.<br/>
+We can also add an index on the <strong>starred</strong> field because we will often be querying on it with a <code>where</code> clause for example (not in this application actually).</p>
+
+<p>Your Post model should look like so</p>
+
+<p>``` ruby app/models/post.rb
+class Post
+  include Mongoid::Document
+  include Mongoid::Timestamps</p>
+
+<p>  field :title, type: String
+  field :body, type: String
+  field :starred, type: Boolean</p>
+
+<p>  index({ starred: 1 })
+end
+```</p>
+
+<p>Now we have a command to enforce indexes on the database</p>
+
+<pre><code>rake db:mongoid:create_indexes
+</code></pre>
+
+<p>This will set an index on the <em>starred</em> field of the <em>post</em> collection.</p>
+
+<blockquote><p>Quick tip: use <code>rake -T</code> to see a list a available tasks</p>
+
+<p>Wait&hellip; we didn&rsquo;t create the database, did we? No we didn&rsquo;t, the database is automatically created.</p></blockquote>
+
+<p>For some reason, Rails 4 uses the <code>update()</code> method by default to update an object in the corresponding controller action which does not behave as one could expect (and basically does not update
+the document). This may be due to mongoid&hellip; Anyway, let&rsquo;s use <code>update_attributes()</code> instead.</p>
+
+<p>In the recently created controller, change the <em>update</em> action to look like this one</p>
+
+<p>``` ruby app/controllers/posts_controller.rb</p>
+
+<h1>PATCH/PUT /posts/1</h1>
+
+<h1>PATCH/PUT /posts/1.json</h1>
+
+<p>def update
+  respond_to do |format|</p>
+
+<pre><code>if @post.update_attributes(post_params)
+  format.html { redirect_to @post, notice: 'Post was successfully updated.' }
+  format.json { head :no_content }
+else
+  format.html { render action: 'edit' }
+  format.json { render json: @post.errors, status: :unprocessable_entity }
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>We actually do not need all the json stuff because we are not writing some sort of API but the <code>scaffold</code> command generates it for us.</p>
+
+<p>Now if you navigate to <a href="http://localhost:3000/posts">http://localhost:3000/posts</a> you should be able to play with the posts. : )<br/>
+Go ahead, create/update/destroy a few posts to see if everything is working as expected.</p>
+
+<h2>Embedding documents</h2>
+
+<blockquote><p>A collection can be compared to a table.<br/>
+A document can be compared to a row.</p></blockquote>
+
+<p>Here I&rsquo;ve decided to show you how to embed documents in each other because this is one of the features that you will probably wind up using the most.<br/>
+In MongoDB you can associate two documents with &ldquo;foreign keys&rdquo; although the concept does not really exists. So you can still use the usual stuff: <code>has_many</code>, <code>belongs_to</code> and so on.<br/>
+<strong>But</strong>, there is no <em>join</em> is MongoDB, loading one document and its associated document will therefore execute two queries.</p>
+
+<p>However you can set another type of relation: you can embed one document into another. Loading the parent document will also load all the children documents at the same time.<br/>
+<strong>But</strong>, it will always instanciate all of the objects retrieved even if you do not need the children, plus, each document has a size limit: 16MB, if you have too many child
+documents, the parent document&rsquo;s size could exceed this limit.</p>
+
+<blockquote><p>Foreign key = 2 queries<br/>
+Embedding = loading many objects all the time + parent document size limited</p>
+
+<p><a href="http://docs.mongodb.org/manual/reference/limits/">MongoDB limits</a></p></blockquote>
+
+<p>We suppose that when we load a post, we also want all of its associated comments and that there will not be thousands of comments.<br/>
+So embedding seems to be a good choice.</p>
+
+<p>Here is a design example of a MongoDB database with users that have posts and posts that have comments.</p>
+
+<p><strong>users collection</strong></p>
+
+<pre><code>[
+  {
+    "_id": "5063114bd386d8fadbd6b004",
+    "name": "John Snow"
+  }
+]
+</code></pre>
+
+<p><strong>posts collection</strong></p>
+
+<pre><code>[
+  {
+    "_id": "6563521bd386d6dadbd6b002",
+    "title": "Why King's Landing should belong to Daenerys",
+    "user_id": "5063114bd386d8fadbd6b004",
+    "comments": [
+      {
+        "_id": "4586521bd638d6dadbd7b003"
+        "body": "I totally agree with you, great post!"
+      },
+      {
+        "_id": "8526521bd654d6dadbd7b001"
+        "body": "I'm so sad since Drogo died..."
+      }
+    ]
+  }
+]
+</code></pre>
+
+<p>This being said, let&rsquo;s get started, shall we?</p>
+
+<pre><code>rails g scaffold comment body:string
+</code></pre>
+
+<p>Now that our Comment model is generated, we can edit it to reflect this</p>
+
+<p>``` ruby app/models/comment.rb
+class Comment
+  include Mongoid::Document
+  include Mongoid::Timestamps</p>
+
+<p>  embedded_in :post, inverse_of: :comments</p>
+
+<p>  field :body, type: String
+end
+```</p>
+
+<p>This just tells MongoDB that comments are to be embedded in the corresponding post.<br/>
+The <code>inverse_of</code> option is required in order to tell Mongoid what the comment should be embedded through.</p>
+
+<p>We can edit the Post model to reflect that association and add the <code>embeds_many :comments</code> (line 5)</p>
+
+<p>``` ruby app/models/post.rb
+class Post
+  include Mongoid::Document
+  include Mongoid::Timestamps</p>
+
+<p>  embeds_many :comments</p>
+
+<p>  field :title, type: String
+  field :body, type: String
+  field :starred, type: Boolean</p>
+
+<p>  index({ starred: 1 })
+end
+```</p>
+
+<p>Now we need to edit the <strong>routes</strong> file to make posts and comments nested resources.</p>
+
+<p><code>ruby config/routes.rb
+resources :posts do
+  resources :comments
+end
+</code></p>
+
+<p>This creates urls like <em>/posts/:post_id/comments</em>.</p>
+
+<p>Now we have to change our <strong>comments_controller.rb</strong> and all our comments&rsquo;s views to reflect these nested resources: any comment we will be using now depends on a post.<br/>
+Note: this part is not related to MongoDB or Mongoid. We would have gone through the same steps anyway with nested resources.</p>
+
+<blockquote><p><a href="http://guides.rubyonrails.org/routing.html#nested-resources">Nested resources</a></p></blockquote>
+
+<p>``` ruby app/controllers/comments_controller.rb
+class CommentsController &lt; ApplicationController
+  before_action :load_post
+  before_action :set_comment, only: [:show, :edit, :update, :destroy]</p>
+
+<p>  # GET /comments
+  # GET /comments.json
+  def index</p>
+
+<pre><code>@comments = @post.comments
+</code></pre>
+
+<p>  end</p>
+
+<p>  # GET /comments/1
+  # GET /comments/1.json
+  def show
+  end</p>
+
+<p>  # GET /comments/new
+  def new</p>
+
+<pre><code>@comment = @post.comments.build
+</code></pre>
+
+<p>  end</p>
+
+<p>  # GET /comments/1/edit
+  def edit
+  end</p>
+
+<p>  # POST /comments
+  # POST /comments.json
+  def create</p>
+
+<pre><code>@comment = @post.comments.build(comment_params)
+
+respond_to do |format|
+  if @comment.save
+    format.html { redirect_to [@post, @comment], notice: 'Comment was successfully created.' }
+    format.json { render action: 'show', status: :created, location: @comment }
+  else
+    format.html { render action: 'new' }
+    format.json { render json: @comment.errors, status: :unprocessable_entity }
+  end
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  # PATCH/PUT /comments/1
+  # PATCH/PUT /comments/1.json
+  def update</p>
+
+<pre><code>respond_to do |format|
+  if @comment.update_attributes(comment_params)
+    format.html { redirect_to [@post, @comment], notice: 'Comment was successfully updated.' }
+    format.json { head :no_content }
+  else
+    format.html { render action: 'edit' }
+    format.json { render json: @comment.errors, status: :unprocessable_entity }
+  end
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  # DELETE /comments/1
+  # DELETE /comments/1.json
+  def destroy</p>
+
+<pre><code>@comment.destroy
+respond_to do |format|
+  format.html { redirect_to post_comments_url(@post) }
+  format.json { head :no_content }
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  private</p>
+
+<pre><code># Use callbacks to share common setup or constraints between actions.
+def set_comment
+  @comment = @post.comments.find(params[:id])
+end
+
+# Never trust parameters from the scary internet, only allow the white list through.
+def comment_params
+  params.require(:comment).permit(:body)
+end
+
+def load_post
+  @post = Post.find(params[:post_id])
+end
+</code></pre>
+
+<p>end
+```</p>
+
+<p>What changed? Well, now we use the post passed in params to load, create, redirect comments.<br/>
+See the <strong>load_post</strong> method, this is the root of everything else. We load a post using the :post_id that is sent and then we use this post everywhere.</p>
+
+<blockquote><p>Quick tip: issue a <code>rake routes</code> to see the routes you can use in the application</p></blockquote>
+
+<p>Now we need to change these routes in all the view files.
+Here I&rsquo;ll show you only the lines that have changed.</p>
+
+<p>``` erb app/views/comments/index.html.erb
+<td>&lt;%= link_to &lsquo;Show&rsquo;, post_comment_path(@post, comment) %></td>
+<td>&lt;%= link_to &lsquo;Edit&rsquo;, edit_post_comment_path(@post, comment) %></td>
+<td>&lt;%= link_to &lsquo;Destroy&rsquo;, [@post, comment], method: :delete, data: { confirm: &lsquo;Are you sure?&rsquo; } %></td></p>
+
+<p>&hellip;</p>
+
+<p>&lt;%= link_to &lsquo;New Comment&rsquo;, new_post_comment_path(@post) %>
+```</p>
+
+<p>``` erb app/views/comments/_form.html.erb
+&lt;%= form_for([@post, @comment]) do |f| %></p>
+
+<p>&hellip;
+```</p>
+
+<p>``` erb app/views/comments/new.html.erb
+&hellip;</p>
+
+<p>&lt;%= link_to &lsquo;Back&rsquo;, post_comments_path(@post) %>
+```</p>
+
+<p>``` erb app/views/comments/show.html.erb
+&hellip;</p>
+
+<p>&lt;%= link_to &lsquo;Edit&rsquo;, edit_post_comment_path(@post, @comment) %> |
+&lt;%= link_to &lsquo;Back&rsquo;, post_comments_path(@post) %>
+```</p>
+
+<p>``` erb app/views/comments/edit.html.erb
+&hellip;</p>
+
+<p>&lt;%= link_to &lsquo;Show&rsquo;, post_comment_path(@post, @comment) %> |
+&lt;%= link_to &lsquo;Back&rsquo;, post_comments_path(@post) %>
+```</p>
+
+<p>Now return in your running application and create a new post.<br/>
+Click on the <em>show</em> link to view the post you just created and just append <em>comments</em> to the url, like so: <a href="http://localhost:3000/posts/:post_id/comments.">http://localhost:3000/posts/:post_id/comments.</a></p>
+
+<p>That&rsquo;s it! You should now be able to create comments and manage them with all the basic usual actions.</p>
+
+<p>I hope this little introduction to Rails 4 with Mongoid helped you.</p>
+
+<p>See you around!</p>
+
+<h3>Resources</h3>
+
+<ul>
+<li><a href="http://net.tutsplus.com/tutorials/why-you-should-use-rvm/">Why you should use RVM</a></li>
+<li><a href="http://net.tutsplus.com/tutorials/ruby/digging-into-rails-4/">Digging into Rails 4</a></li>
+<li><a href="http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/">Install MongoDB on Ubuntu</a></li>
+<li><a href="http://docs.mongodb.org/manual/reference/limits/">MongoDB limits</a></li>
+<li><a href="http://mongoid.org/en/mongoid/docs/installation.html">Mongoid installation</a></li>
+<li><a href="http://mongoid.org/en/mongoid/docs/documents.html#fields">Mongoid document field types</a></li>
+<li><a href="http://mongoid.org/en/mongoid/docs/indexing.html">Indexing with Mongoid</a></li>
+<li>If you don&rsquo;t know what are the new &ldquo;concerns&rdquo; folders in Rails 4: <a href="http://37signals.com/svn/posts/3372-put-chubby-models-on-a-diet-with-concerns">Put chubby models on a diet with concerns</a></li>
+<li><a href="http://guides.rubyonrails.org/routing.html#nested-resources">Nested resources</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Differences between has_one and belongs_to in Ruby on Rails - require 'mind'</title>
+  <meta name="author" content="requireMind">
+
+  
+  <meta name="description" content="When getting started with Ruby on Rails, associations between models can become quite confusing especially when there&rsquo;s a thin line between two &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://requiremind.com/differences-between-has-one-and-belongs-to-in-ruby-on-rails">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41030310-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">require 'mind'</a></h1>
+  
+    <h2>Learn. Live. Love. Dev.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:requiremind.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title article-title">Differences Between Has_one and Belongs_to in Ruby on Rails</h1><div class="by-author">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+</div><div class="clear"></div>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-29T16:42:00+02:00" pubdate data-updated="true">Jun 29<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>When getting started with Ruby on Rails, associations between models can become quite confusing especially when there&rsquo;s a thin line between two of them.</p>
+
+<!-- more -->
+
+
+<p>At first we&rsquo;re tempted to use the one that makes more sense when thinking about it&hellip; For instance we can say that a <em>page</em> belongs to a <em>book</em>, but we could say that a
+<em>page</em> has one <em>book</em> too. The two of them establish a one-to-one association between both models.</p>
+
+<p>But the question we need to ask ourselves here is: <strong>in which model do I want the foreign key to be?</strong> In fact, this is the slight difference between <code>has_one</code> and
+<code>belongs_to</code> in Ruby on Rails.</p>
+
+<p><strong><code>belongs_to</code> will place the foreign key in the declaring model whereas <code>has_one</code> will place it in the other model.</strong></p>
+
+<p>Let&rsquo;s see some examples, first using <code>belongs_to</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Page</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:book</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will use a <strong>book_id</strong> field in the <em>pages</em> table (note: of course you need to add that field with a migration).
+It also adds 4 methods in the Page class: <code>book</code>, <code>book=</code>, <code>build_book</code>, <code>create_book</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">page</span> <span class="o">=</span> <span class="no">Page</span><span class="o">.</span><span class="n">create!</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Page id: 1, book_id: nil&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">create!</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Book id: 1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">book</span> <span class="o">=</span> <span class="n">book</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Book id: 1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">page</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Page id: 1, book_id: 1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">other_book</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">create_book!</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Book id: 2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">page</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Page id: 1, book_id: 2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">book</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Book id: 2&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To make this a one-to-many association just declare the other side of it.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:pages</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Page</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:book</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now a book has many pages (and each page still belongs to a book) and you can use the usual methods on the book:
+<code>pages</code>, <code>pages&lt;&lt;</code>, <code>pages.find</code>, <code>pages.build</code>, <code>pages.create</code> and many more.</p>
+
+<p>If we use a <code>has_one</code> association, here what happens:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Page</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_one</span> <span class="ss">:book</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here are some examples:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">page</span> <span class="o">=</span> <span class="no">Page</span><span class="o">.</span><span class="n">create!</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Page id: 1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">create!</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Book id: 1, page_id: nil&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">book</span> <span class="o">=</span> <span class="n">book</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Book id: 1, page_id: 1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">other_book</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">create_book!</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;Book id: 2, page_id: 1&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You will probably want to set the other side of the association at some point.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:page</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Page</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_one</span> <span class="ss">:book</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But that way a book can only have one page&hellip;</p>
+
+<p>To sum things up: use <code>belongs_to</code> when you want the foreign key in the declaring model, use <code>has_one</code> if you want it on the other model.</p>
+
+<p>But anyway, you will rarely see a <code>belongs_to</code> or a <code>has_one</code> used alone. Most of the time it will be <code>has_many</code> with <code>belongs_to</code> for a one-to-many
+association and <code>has_one</code> with <code>belongs_to</code> for a one-to-one association.</p>
+</div>
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-29T16:42:00+02:00" pubdate data-updated="true">Jun 29<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/ruby-on-rails/'>ruby on rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0" title="Previous Post: Riding Rails 4 along with Mongoid and Ruby 2.0">&laquo; Riding Rails 4 along with Mongoid and Ruby 2.0</a> /
+      
+        &nbsp;&nbsp; <a class="basic-alignment" href="/" title="Home">Home</a>
+      
+        / <a class="basic-alignment right" href="/improve-your-workflow-with-git-flow" title="Next Post: Improve your workflow with Git Flow">Improve your workflow with Git Flow &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section id="comments-section">
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/currying-spice-up-your-javascript-functions">Currying, spice up your javascript functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/git-bisect-your-bug-hunting-best-friend">Git bisect your bug hunting best friend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">Deploying a Rails App on Your Own Server - The Ultimate Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/discover-emmet-and-improve-your-coding-speed">Discover Emmet and improve your coding speed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - requireMind -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/differences-between-has-one-and-belongs-to-in-ruby-on-rails';
+        var disqus_url = 'http://requiremind.com/differences-between-has-one-and-belongs-to-in-ruby-on-rails';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

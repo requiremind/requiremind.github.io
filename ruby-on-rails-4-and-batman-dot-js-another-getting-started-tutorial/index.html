@@ -1,0 +1,1530 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial - require 'mind'</title>
+  <meta name="author" content="requireMind">
+
+  
+  <meta name="description" content="I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41030310-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">require 'mind'</a></h1>
+  
+    <h2>Learn. Live. Love. Dev.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:requiremind.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title article-title">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial</h1><div class="by-author">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+</div><div class="clear"></div>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-06T22:08:00+02:00" pubdate data-updated="true">Oct 6<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes the choice pretty hard
+when you don’t know the subtleties of each. As a Rails developer, I chose Batman.js because of its “Rails orientation” and because I know that <a href="http://www.shopify.ca/">Shopify</a> folks here in Canada
+are working hard to make things easy for us Rails developers (yes, they are developing Batman.js).</p>
+
+<!-- more -->
+
+
+<p>Throughout this tutorial I’m going to show you how I quickly built a simple post/comments application with Ruby on Rails 4 and Batman.js.</p>
+
+<p>At the time I’m writing these lines, our friends of Gotham City are updating the <a href="http://batmanjs.org/docs/index.html">documentation</a>, so be sure to check it out: a lot of helpful, valuable resources.</p>
+
+<p>You can find the application github repo here: <a href="https://github.com/Raindal/batman_js_blog">https://github.com/Raindal/batman_js_blog</a>.</p>
+
+<p>I’m eager to better myself with the framework so any comment will be highly appreciated.</p>
+
+<p>Let’s dive in!</p>
+
+<h2>On the server side</h2>
+
+<p>Here I’m assuming that you already installed Rails 4. We’re first going to create a new application called <strong>batman_js_blog</strong>.
+Let’s skip the documentation part with the following line.</p>
+
+<pre><code>rails new batman_js_blog --no-ri --no-rdoc
+</code></pre>
+
+<p>And just to be clear, <code>cd</code> into the application.</p>
+
+<pre><code>cd batman_js_blog
+</code></pre>
+
+<blockquote><p>Tired of using <code>cd</code> everytime? Check out <a href="http://requiremind.com/why-i-love-my-development-environment">my previous post</a> and start using ZSH now!</p></blockquote>
+
+<h3>The models</h3>
+
+<p>The models are pretty simple, the posts will have a <strong>title</strong> and a <strong>content</strong>. The comments will have a <strong>content</strong> only and a reference to a post (<strong>post_id</strong>).</p>
+
+<pre><code>rails g model post title:string content:text
+rails g model comment content:text post:references
+</code></pre>
+
+<p>Let’s get the associations right: a post <em>has many</em> comments, therefore, a comment <em>belongs to</em> a post. Let’s create some validations for future usage
+(see <em>Errors Handling</em> at the end).</p>
+
+<figure class='code'><figcaption><span>app/models/post.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:comments</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:title</span><span class="p">,</span>   <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using <code>references</code> when generating the Comment model should already get this part right with the <code>belongs_to</code>:</p>
+
+<figure class='code'><figcaption><span>app/models/comment.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:post</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run the migrations to create both tables, as usual.</p>
+
+<pre><code>rake db:migrate
+</code></pre>
+
+<p>We’re going to create some seeds to populate the database with fake data to work with. Let’s create 20 posts with 5 comments each.</p>
+
+<figure class='code'><figcaption><span>db/seeds.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">20</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">title</span><span class="p">:</span> <span class="s2">&quot;Post </span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ss">content</span><span class="p">:</span> <span class="s2">&quot;Some awesome content&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="mi">5</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="o">|</span><span class="n">j</span><span class="o">|</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">content</span><span class="p">:</span> <span class="s2">&quot;Comment n°</span><span class="si">#{</span><span class="n">j</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run the seeds.</p>
+
+<pre><code>rake db:seed
+</code></pre>
+
+<p>Here we are using nested routes (nested resources) to reflect the associations we created earlier.<br/>
+This will enable routes like /posts/:post_id/comments/:id.</p>
+
+<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:posts</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">resources</span> <span class="ss">:comments</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>The controllers</h3>
+
+<p>First you can create a <strong>posts_controller.rb</strong> file in your controllers folder.</p>
+
+<p>As we only need to serve <strong>json</strong>, we’re going to use the handy <code>respond_to</code> method at the top of our controller. Then, in every action we only have to use <code>respond_with</code>,
+that will basically call <code>to_json</code> on our resources.</p>
+
+<p>When displaying a specific post, we want to display its comments as well, so we need to return them with the post, this is why we use <code>include: :comments</code> in the show action.</p>
+
+<p>We do not need the <code>new</code> and <code>edit</code> actions, because Batman.js will take care of showing the form for us (it can because those actions do not require an interaction
+with the database).</p>
+
+<p>The rest of the controller is pretty much straightforward if you know your way around with Rails (which I assume).</p>
+
+<figure class='code'><figcaption><span>app/controllers/posts_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="ss">:json</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>    <span class="n">respond_with</span> <span class="no">Post</span><span class="o">.</span><span class="n">all</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>    <span class="n">respond_with</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">),</span> <span class="kp">include</span><span class="p">:</span> <span class="ss">:comments</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>    <span class="n">respond_with</span> <span class="no">Post</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">respond_with</span> <span class="n">post</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">destroy</span>
+</span><span class='line'>    <span class="n">respond_with</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">destroy</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">post_params</span>
+</span><span class='line'>      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:post</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The comments controller is rather simple too. We’re not going to list all the comments, neither are we going to show one comment on its own,
+we’re not allowing the edition of a comment either. That means we don’t need the index, show, and update actions.</p>
+
+<p>The only thing we want to do is display related comments on every post&rsquo;s show view and a small form for adding a comment (plus a link for destroying each post).<br/>
+As I stated before, the comments are returned with every post thanks to <code>include: :comments</code> so we don&rsquo;t have to take care of this. The only thing left to do is enable
+comments creation and destruction.</p>
+
+<p>You can create a <strong>comments_controller.rb</strong> file:</p>
+
+<figure class='code'><figcaption><span>app/controllers/comments_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CommentsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="ss">:json</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:post_id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">comment</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">comment_params</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">comment</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">respond_with</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">destroy</span>
+</span><span class='line'>    <span class="n">comment</span> <span class="o">=</span> <span class="no">Comment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">respond_with</span><span class="p">(</span><span class="n">comment</span><span class="o">.</span><span class="n">post</span><span class="p">,</span> <span class="n">comment</span><span class="o">.</span><span class="n">destroy</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">comment_params</span>
+</span><span class='line'>      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:comment</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can now run a server with <code>rails s</code> and navigate to <a href="http://localhost:3000/posts.json">http://localhost:3000/posts.json</a> to check that you do have a json posts list displayed.
+You can check that each post is returned with its associated comments by navigating to <a href="http://localhost:3000/posts/1.json">http://localhost:3000/posts/1.json</a>.</p>
+
+<h2>On the client side</h2>
+
+<p>Now we can really crack into the subject. First of all, let’s add the gem to our gemfile and run <code>bundle</code> to install it.</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="s1">&#39;https://rubygems.org&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Bundle edge Rails instead: gem &#39;rails&#39;, github: &#39;rails/rails&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;rails&#39;</span><span class="p">,</span> <span class="s1">&#39;4.0.0&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;batman-rails&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>bundle
+</code></pre>
+
+<p>We can now generate the skeleton of our Batman.js app, it’s going to reside in <strong>app/assets/batman</strong>.</p>
+
+<pre><code>rails g batman:app
+</code></pre>
+
+<p>This created the following folders and files:</p>
+
+<pre><code>create  app/controllers/batman_controller.rb
+create  app/views/layouts/batman.html.erb
+insert  config/routes.rb
+create  app/assets/batman/batman_js_blog.js.coffee
+create  app/assets/batman/models
+create  app/assets/batman/models/.gitkeep
+create  app/assets/batman/views
+create  app/assets/batman/views/.gitkeep
+create  app/assets/batman/controllers
+create  app/assets/batman/controllers/.gitkeep
+create  app/assets/batman/html
+create  app/assets/batman/html/.gitkeep
+create  app/assets/batman/lib
+create  app/assets/batman/lib/.gitkeep
+create  app/assets/batman/html/main
+create  app/assets/batman/controllers/application_controller.js.coffee
+create  app/assets/batman/controllers/main_controller.js.coffee
+create  app/assets/batman/html/main/index.html
+create  app/assets/batman/views/main/main_index_view.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+</code></pre>
+
+<p>You can navigate to <a href="http://localhost:3000">http://localhost:3000</a> to see Batman.js home page.</p>
+
+<h3>Sneak peek</h3>
+
+<p>If you open the <strong>index view</strong>, you&rsquo;re probably going to see something like this somewhere in the file:</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/main/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div&gt;&lt;label&gt;</span>First Name:<span class="nt">&lt;/label&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">data-bind=</span><span class="s">&quot;firstName&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;div&gt;&lt;label&gt;</span>Last Name:<span class="nt">&lt;/label&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">data-bind=</span><span class="s">&quot;lastName&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">data-showif=</span><span class="s">&quot;hasName&quot;</span><span class="nt">&gt;</span>Hello, my name is <span class="nt">&lt;span</span> <span class="na">data-bind=</span><span class="s">&quot;fullName&quot;</span><span class="nt">&gt;&lt;/span&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;div&gt;&lt;button</span> <span class="na">data-event-click=</span><span class="s">&quot;resetName&quot;</span><span class="nt">&gt;</span>Reset name<span class="nt">&lt;/button&gt;&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ok, now you can finally catch a glimpse of Batman.js&hellip; And I&rsquo;m going to go through each element here.<br/>
+Every <code>data</code> property you see here is Batman related and as we speak about a JS framework, each of these properties will apply live all the time.</p>
+
+<p><code>data-bind</code>: binds the element&rsquo;s inner html to the given accessor&rsquo;s value. For instance the first input will display the value returned by <code>firstName</code>.<br/>
+<code>data-showif</code>: shows the element depending on the value of <code>hasName</code> which is a boolean.<br/>
+<code>data-event-click</code>: triggers the given method upon click.</p>
+
+<p>Now take a look at the controller.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/main_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">MainController</span> <span class="k">extends</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">ApplicationController</span>
+</span><span class='line'>  <span class="nv">routingKey: </span><span class="s">&#39;main&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">index: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span> <span class="s">&#39;firstName&#39;</span><span class="p">,</span> <span class="s">&#39;Bruce&#39;</span>
+</span><span class='line'>    <span class="nx">@set</span> <span class="s">&#39;lastName&#39;</span><span class="p">,</span> <span class="s">&#39;Wayne&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@accessor</span> <span class="s">&#39;fullName&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@get</span><span class="p">(</span><span class="s">&#39;firstName&#39;</span><span class="p">)</span><span class="si">}</span><span class="s"> </span><span class="si">#{</span><span class="nx">@get</span><span class="p">(</span><span class="s">&#39;lastName&#39;</span><span class="p">)</span><span class="si">}</span><span class="s">&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can actually see that the initial values are set in the <code>index</code> action using <code>@set('var', 'value')</code>.<br/>
+You can also see that the <code>fullName</code> accessor that is used in a <code>data-bind</code> is defined here and returns the values of the <code>firstName</code> and <code>lastName</code> variables combined
+with <code>@get('var')</code>.</p>
+
+<p>Now let&rsquo;s see <code>hasName</code> and <code>resetName</code>. These two reside in the following file.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/views/main/main_index_view.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">MainIndexView</span> <span class="k">extends</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">View</span>
+</span><span class='line'>  <span class="nv">resetName: </span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">@controller</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s">&#39;firstName&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">@controller</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s">&#39;lastName&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@accessor</span> <span class="s">&#39;hasName&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">@controller</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;fullName&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This code is specific to the index view. <code>hasName</code> checks that <code>fullName</code> contains at least one character and <code>resetName</code> resets tha values of <code>firstName</code> and <code>lastName</code>.</p>
+
+<h3>The models</h3>
+
+<p>We can go and create folders and files for the post resource.</p>
+
+<pre><code>rails g batman:scaffold post
+</code></pre>
+
+<p>The last command is a bit overkill for what we want to do but pretty handy for starting the project.</p>
+
+<p>Take a look at the main batman file and change the <code>@root</code> to <code>posts#index</code>.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/batman_js_blog.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">Batman.config.pathToHTML = </span><span class="s">&#39;/assets/html&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span> <span class="k">extends</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">App</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># This was automatically generated by the scaffold command</span>
+</span><span class='line'>  <span class="nx">@resources</span> <span class="s">&#39;posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Change &#39;main#index&#39; to this, this is the landing page of the application</span>
+</span><span class='line'>  <span class="c1"># We want to first display a list of all the posts</span>
+</span><span class='line'>  <span class="nx">@root</span> <span class="s">&#39;posts#index&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nx">global</span> <span class="o">?</span> <span class="nb">window</span><span class="p">).</span><span class="nv">BatmanJsBlog = </span><span class="nx">BatmanJsBlog</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The Post model should look like so:</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/models/post.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span> <span class="k">extends</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">Model</span>
+</span><span class='line'>  <span class="vi">@resourceName: </span><span class="s">&#39;posts&#39;</span>
+</span><span class='line'>  <span class="vi">@storageKey: </span><span class="s">&#39;posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># We are using Batman.js with Ruby on Rails...</span>
+</span><span class='line'>  <span class="nx">@persist</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">RailsStorage</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Use @encode to tell batman.js which properties Rails will send back with its JSON.</span>
+</span><span class='line'>  <span class="nx">@encode</span> <span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="s">&#39;content&#39;</span>
+</span><span class='line'>  <span class="nx">@encodeTimestamps</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&rsquo;s generate the Comment model.</p>
+
+<pre><code>rails g batman:model comment
+</code></pre>
+
+<figure class='code'><figcaption><span>app/assets/batman/models/comment.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Comment</span> <span class="k">extends</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">Model</span>
+</span><span class='line'>  <span class="vi">@resourceName: </span><span class="s">&#39;comments&#39;</span>
+</span><span class='line'>  <span class="vi">@storageKey: </span><span class="s">&#39;comments&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@persist</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">RailsStorage</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Looks familiar...</span>
+</span><span class='line'>  <span class="nx">@belongsTo</span> <span class="s">&#39;post&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Pretty much straightforward but we have to specify it</span>
+</span><span class='line'>  <span class="nx">@urlNestsUnder</span> <span class="s">&#39;post&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@encode</span> <span class="s">&#39;content&#39;</span><span class="p">,</span> <span class="s">&#39;post_id&#39;</span>
+</span><span class='line'>  <span class="nx">@encodeTimestamps</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can now add the association on the Post model side.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/models/post.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span> <span class="k">extends</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">Model</span>
+</span><span class='line'>  <span class="vi">@resourceName: </span><span class="s">&#39;posts&#39;</span>
+</span><span class='line'>  <span class="vi">@storageKey: </span><span class="s">&#39;posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@persist</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">RailsStorage</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Here is the other part of the relation</span>
+</span><span class='line'>  <span class="nx">@hasMany</span> <span class="s">&#39;comments&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@encode</span> <span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="s">&#39;content&#39;</span>
+</span><span class='line'>  <span class="nx">@encodeTimestamps</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can go back to the main file and set the <strong>nested routes</strong> for posts and comments, which also looks like the syntax you find in a traditional Rails application.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/batman_js_blog.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span> <span class="k">extends</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">App</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@resources</span> <span class="s">&#39;posts&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">@resources</span> <span class="s">&#39;comments&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>The controller</h3>
+
+<p>Let&rsquo;s go edit the <strong>posts controller</strong> and create an <code>index</code> action to list all our posts.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">PostsController</span> <span class="k">extends</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">ApplicationController</span>
+</span><span class='line'>  <span class="nv">routingKey: </span><span class="s">&#39;posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">index: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;posts&#39;</span><span class="p">,</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;all&#39;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we are setting a <code>posts</code> variable when going through the <code>index</code> action that contains all our posts.<br/>
+<code>BatmanJsBlog.Post.get('all')</code> is a query to our Rails API we created earlier.</p>
+
+<blockquote><p>At any time, just open your browser dev tools to watch requests sent by Batman.js.</p></blockquote>
+
+<p>Now we can modify our <strong>index</strong> view.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/index.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;span</span> <span class="na">data-bind=</span><span class="s">&quot;&#39;post&#39; | pluralize posts.length&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">data-foreach-post=</span><span class="s">&quot;posts&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;a</span> <span class="na">data-bind=</span><span class="s">&quot;post.title&quot;</span> <span class="na">data-route=</span><span class="s">&quot;post&quot;</span><span class="nt">&gt;&lt;/a&gt;</span> |
+</span><span class='line'>    <span class="nt">&lt;a</span> <span class="na">data-event-click=</span><span class="s">&quot;destroy&quot;</span><span class="nt">&gt;</span>Destroy<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first line sets a binding to <code>pluralize</code> the word &ldquo;post&rdquo; depending on the number of posts being retrieved: <code>posts.length</code>.<br/>
+Now look at this line <code>&lt;li data-foreach-post="posts"&gt;</code>. Here <code>data-foreach</code> will iterate through <code>posts</code> that have been set earlier in the controller and yield a <code>li</code>
+tag for each of these posts. In every <code>li</code> block, a variable is used to hold the post object: <code>post</code> as in <code>data-foreach-post</code>.<br/>
+<code>&lt;a data-bind="post.title" data-route="post"&gt;&lt;/a&gt;</code>: this is a link, again, the html value is set with <code>data-bind</code> and will be the post&rsquo;s title attribute.<br/>
+<code>data-route</code> is used to set the <code>href</code> value of the link. Here <code>data-route="post"</code> means we are linking to the <code>show</code> action corresponding to the current <code>post</code>.<br/>
+We also display a &ldquo;destroy&rdquo; link. In Batman.js, the <code>destroy</code> action is not routable so we have to use an event instead. The event name will be <code>destroy</code> and it will
+be triggered on <code>click</code> on the link, therefore we have <code>data-event-click="destroy"</code>.</p>
+
+<p>If you navigate to <a href="http://localhost:3000">http://localhost:3000</a> you should see the posts list.</p>
+
+<p>Let&rsquo;s add our <strong>show</strong> action to the posts controller.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">show: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>  <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">find</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">@errorHandler</span> <span class="nf">(post) =&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="nx">post</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Again <code>BatmanJsBlog.Post.find params.id</code> uses the given id in the request parameters to query our API. The result is stored in a <code>post</code> variable and set as a controller
+attribute as usual with <code>@set</code>.</p>
+
+<p>Now we can write the <strong>show</strong> view.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/show.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;h1</span> <span class="na">data-bind=</span><span class="s">&quot;post.title&quot;</span><span class="nt">&gt;&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p</span> <span class="na">data-bind=</span><span class="s">&quot;post.content&quot;</span><span class="nt">&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;a</span> <span class="na">data-route=</span><span class="s">&quot;routes.posts[post].edit&quot;</span><span class="nt">&gt;</span>Edit<span class="nt">&lt;/a&gt;</span> |
+</span><span class='line'><span class="nt">&lt;a</span> <span class="na">data-event-click=</span><span class="s">&quot;destroy&quot;</span><span class="nt">&gt;</span>Destroy<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">data-foreach-comment=</span><span class="s">&quot;post.comments&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;p</span> <span class="na">data-bind=</span><span class="s">&quot;comment.content&quot;</span><span class="nt">&gt;&lt;/p&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Everything should look familiar now. We are using multiple data bindings to display our post&rsquo;s attributes. <code>routes.posts[post].edit</code> is used to route to the <strong>edit</strong> action
+of a particular post.<br/>
+Here we can also display the comments as they are returned in the JSON too: remember, earlier in this tutorial we included them in the API on the posts&#8217; <strong>show</strong> action with
+<code>include: :comments</code>.</p>
+
+<p>Go back to your application and click on one post: you should see the post&rsquo;s show view.</p>
+
+<p>Now that we have seen the <code>destroy</code> event twice, we can handle it in the controller.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">destroy: </span><span class="nf">(node, event, context) -&gt;</span>
+</span><span class='line'>  <span class="nv">post = </span><span class="k">if</span> <span class="nx">context</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">)</span> <span class="k">then</span> <span class="nx">context</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nx">@post</span>
+</span><span class='line'>  <span class="nx">post</span><span class="p">.</span><span class="nx">destroy</span> <span class="nf">(err) =&gt;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>      <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nx">@redirect</span> <span class="s">&#39;/posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first line instantiates our post.<br/>
+As this is an event and not a route we have 3 arguments: <code>node, event, context</code>.<br/>
+<code>node</code> represents the html node.<br/>
+<code>event</code> represents the event that happenned.<br/>
+<code>context</code> can help you access objects defined within a certain scope: here our node.</p>
+
+<p>We linked to the <strong>destroy</strong> event at 2 different places: in the show where there is only one post defined (<code>@post</code>) and in the index where we use a loop to display multiple posts.
+Depending which event was triggered, we have to fetch our post differently.<br/>
+If <code>context.get('post')</code> exists then it means we are on the index view and we clicked &ldquo;destroy&rdquo; for one of our posts. This post is therefore available using context like this.<br/>
+If it doesn&rsquo;t exist, then we are on the show view and <code>@post</code> is defined because it was defined in the <strong>show</strong> action with <code>@set('post', post)</code>.</p>
+
+<p>Then, if everything goes well, we redirect to the <strong>index</strong> view in both cases.</p>
+
+<p>Go ahead and try out these new &ldquo;destroy&rdquo; links: on the index and on the show views.</p>
+
+<p>Now we should add some links on our layout to better the navigation.</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/batman.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'><span class="nt">&lt;head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;title&gt;</span>Batman Js Blog<span class="nt">&lt;/title&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= stylesheet_link_tag    &quot;application&quot;, :media =&gt; &quot;all&quot; %&gt;
+</span><span class='line'>  <span class="err">&lt;</span>%= javascript_include_tag &quot;batman_js_blog&quot; %&gt;
+</span><span class='line'>  <span class="err">&lt;</span>%= csrf_meta_tags %&gt;
+</span><span class='line'><span class="nt">&lt;/head&gt;</span>
+</span><span class='line'><span class="nt">&lt;body&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;a</span> <span class="na">data-route=</span><span class="s">&quot;routes.posts&quot;</span><span class="nt">&gt;</span>Posts<span class="nt">&lt;/a&gt;</span> |
+</span><span class='line'><span class="nt">&lt;a</span> <span class="na">data-route=</span><span class="s">&quot;routes.posts.new&quot;</span><span class="nt">&gt;</span>New Post<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">data-yield=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">run</span><span class="p">();</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We are adding 2 links under the <code>body</code>.<br/>
+The first one routes to the posts list: the <strong>index</strong> action of our <strong>posts controller</strong>.<br/>
+The second one routes to the <strong>new</strong> action of our <strong>posts controller</strong> that we are now going to write.</p>
+
+<p>The <strong>new</strong> action is pretty much straightforward too.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">new</span><span class="o">:</span> <span class="nf">(params) -&gt;</span>
+</span><span class='line'>  <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We just create a new post, not saved yet.</p>
+
+<p>Let&rsquo;s create a <strong>form</strong> on the new view now.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/new.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;form</span> <span class="na">data-formfor-post=</span><span class="s">&quot;post&quot;</span> <span class="na">data-event-submit=</span><span class="s">&quot;create&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;label&gt;</span>Title:<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;input</span> <span class="na">data-bind=</span><span class="s">&quot;post.title&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;label&gt;</span>Content:<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;textarea</span> <span class="na">data-bind=</span><span class="s">&quot;post.content&quot;</span><span class="nt">&gt;&lt;/textarea&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">&quot;commit&quot;</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Submit&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;/form&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As with <code>data-foreach</code>, <code>data-formfor</code> uses an existing variable and sets another one to be used within the context, both named &ldquo;post&rdquo;.<br/>
+The form will just trigger an event, here the event is <strong>create</strong>, which corresponds to our <strong>create</strong> action (event) not yet defined.<br/>
+We don&rsquo;t need any argument for this action.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">create: </span><span class="nf">-&gt;</span>
+</span><span class='line'>  <span class="nx">@post</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(err, post) =&gt;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>      <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nx">@redirect</span> <span class="nx">post</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>@post</code> represents the post we created earlier in the <strong>new</strong> action.<br/>
+We can save the post and redirect to the corresponding <strong>show</strong> action.</p>
+
+<p>Now, go back to your browser and try creating a new post.</p>
+
+<p>The <strong>edit</strong> action now is going to look quite like the <strong>show</strong> action because it only fetches a post with its id.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">show: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>  <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">find</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">@errorHandler</span> <span class="nf">(post) =&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="nx">post</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">edit: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>  <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">find</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">@errorHandler</span> <span class="nf">(post) =&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="nx">post</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&rsquo;s refactor and write a <code>fetchPost</code> method.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">PostsController</span> <span class="k">extends</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">ApplicationController</span>
+</span><span class='line'>  <span class="nv">routingKey: </span><span class="s">&#39;posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@beforeAction</span> <span class="s">&#39;fetchPost&#39;</span><span class="p">,</span> <span class="nv">only: </span><span class="p">[</span><span class="s">&#39;show&#39;</span><span class="p">,</span> <span class="s">&#39;edit&#39;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">show: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">edit: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">fetchPost: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>    <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">find</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">@errorHandler</span> <span class="nf">(post) =&gt;</span>
+</span><span class='line'>      <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="nx">post</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, the <code>@beforeAction</code> works exactly like Rails&#8217; one does. It executes <code>fetchPost</code> before the <strong>show</strong> and <strong>edit</strong> actions.</p>
+
+<p>Again the <strong>edit</strong> view looks like the <strong>new</strong> view.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/edit.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;form</span> <span class="na">data-formfor-post=</span><span class="s">&quot;post&quot;</span> <span class="na">data-event-submit=</span><span class="s">&quot;update&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;label&gt;</span>Title:<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;input</span> <span class="na">data-bind=</span><span class="s">&quot;post.title&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;label&gt;</span>Content:<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;textarea</span> <span class="na">data-bind=</span><span class="s">&quot;post.content&quot;</span><span class="nt">&gt;&lt;/textarea&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">&quot;commit&quot;</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Submit&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;/form&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The only difference is the event triggered: here it is <code>update</code>.</p>
+
+<p>Let&rsquo;s refactor both our <strong>edit</strong> and <strong>new</strong> views using a partial.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/edit.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;form</span> <span class="na">data-formfor-post=</span><span class="s">&quot;post&quot;</span> <span class="na">data-event-submit=</span><span class="s">&quot;update&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;div</span> <span class="na">data-partial=</span><span class="s">&quot;posts/_form&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;/form&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/new.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;form</span> <span class="na">data-formfor-post=</span><span class="s">&quot;post&quot;</span> <span class="na">data-event-submit=</span><span class="s">&quot;create&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;div</span> <span class="na">data-partial=</span><span class="s">&quot;posts/_form&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="nt">&lt;/form&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I think you get it here without explanations&hellip; Just create the <strong>_form</strong> partial.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/_form.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;label&gt;</span>Title:<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;input</span> <span class="na">data-bind=</span><span class="s">&quot;post.title&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;div&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;label&gt;</span>Content:<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;textarea</span> <span class="na">data-bind=</span><span class="s">&quot;post.content&quot;</span><span class="nt">&gt;&lt;/textarea&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">&quot;commit&quot;</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Submit&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, the <strong>update</strong> action looks exactly like the <strong>create</strong> action.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">update: </span><span class="nf">-&gt;</span>
+</span><span class='line'>  <span class="nx">@post</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(err, post) =&gt;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>      <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nx">@redirect</span> <span class="nx">post</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should be able to edit your posts thanks to the previously created link in the show view now.</p>
+
+<h3>The comments</h3>
+
+<p>Let&rsquo;s add a link to destroy our comments on the posts&#8217; show view.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/show.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>...
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">data-foreach-comment=</span><span class="s">&quot;post.comments&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;p</span> <span class="na">data-bind=</span><span class="s">&quot;comment.content&quot;</span><span class="nt">&gt;&lt;/p&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;a</span> <span class="na">data-event-click=</span><span class="s">&quot;destroyComment&quot;</span><span class="nt">&gt;</span>Destroy<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The event triggered by the link will be <code>destroyComment</code> as we are still in the posts controller and the <code>destroy</code> action (event) is already used to destroy a post. It would
+probably be messy to use the same event.</p>
+
+<p>Let&rsquo;s write this new event.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">destroyComment: </span><span class="nf">(node, event, context) -&gt;</span>
+</span><span class='line'>  <span class="nv">comment = </span><span class="nx">context</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;comment&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">comment</span><span class="p">.</span><span class="nx">destroy</span> <span class="nf">(err) =&gt;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>      <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;comments&#39;</span><span class="p">).</span><span class="nx">remove</span> <span class="nx">comment</span>
+</span><span class='line'>      <span class="nx">@redirect</span> <span class="s">&#39;/posts/&#39;</span> <span class="o">+</span> <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we get the <code>comment</code> using the context.<br/>
+If everything goes well, we also remove the comment from the post&rsquo;s comments list so that the comment disappears (on the html page).<br/>
+And then we redirect on the post&rsquo;s <strong>show</strong> view i.e. where we were when clicking the destroy link.</p>
+
+<p>Go ahead and try it.</p>
+
+<p>Now let&rsquo;s add the possibility to create a new comment on every post show view.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/show.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>...
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;form</span> <span class="na">data-formfor-comment=</span><span class="s">&quot;comment&quot;</span> <span class="na">data-event-submit=</span><span class="s">&quot;createComment&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;label&gt;</span>Content:<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;textarea</span> <span class="na">data-bind=</span><span class="s">&quot;comment.content&quot;</span><span class="nt">&gt;&lt;/textarea&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">&quot;commit&quot;</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Submit&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;/form&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then just get the controller right.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">show: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>  <span class="c1"># Initializing a new comment with the post_id given in params to display</span>
+</span><span class='line'>  <span class="c1"># a corresponding form</span>
+</span><span class='line'>  <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;comment&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Comment</span><span class="p">(</span><span class="nv">post_id: </span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">createComment: </span><span class="nf">-&gt;</span>
+</span><span class='line'>  <span class="nx">@comment</span><span class="p">.</span><span class="nx">save</span> <span class="o">=&gt;</span>
+</span><span class='line'>    <span class="c1"># If everything goes well, we add the new comment to the current post&#39;s comments list so that it appears on the (html) page</span>
+</span><span class='line'>    <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;comments&#39;</span><span class="p">).</span><span class="nx">add</span> <span class="nx">@comment</span>
+</span><span class='line'>    <span class="nx">@redirect</span> <span class="s">&#39;/posts/&#39;</span> <span class="o">+</span> <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should now be able to create new comments. ; )</p>
+
+<h3>Errors handling</h3>
+
+<p>We can now add some information when validations fail for posts.</p>
+
+<p>You can add this at the top of the <strong>new</strong> and <strong>edit</strong> views.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">data-partial=</span><span class="s">&quot;posts/_errors&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And create the corresponding partial.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/html/posts/_errors.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">data-showif=</span><span class="s">&quot;post.errors.length&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;p&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;span</span> <span class="na">data-bind=</span><span class="s">&quot;&#39;error&#39; | pluralize post.errors.length&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+</span><span class='line'>    prevented this post from being created:
+</span><span class='line'>  <span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;li</span> <span class="na">data-bind=</span><span class="s">&quot;error.message&quot;</span> <span class="na">data-foreach-error=</span><span class="s">&quot;post.errors&quot;</span><span class="nt">&gt;&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first line means the <code>div</code> is displayed only if there are errors included within the post.<br/>
+Take a look at the <code>li</code> tag, and see how we took advantage of <code>data-bind</code> combined with <code>data-foreach</code> here.</p>
+
+<p>If validations fail, Rails sends back the object with errors included in the JSON. But we could also take advantages of Batman.js capabilities and add some validations on
+the client side.</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/models/post.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">@validate</span> <span class="s">&quot;title&quot;</span><span class="p">,</span>   <span class="nv">presence: </span><span class="kc">true</span>
+</span><span class='line'><span class="nx">@validate</span> <span class="s">&quot;content&quot;</span><span class="p">,</span> <span class="nv">presence: </span><span class="kc">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now Batman.js knows how to validate our post objects and does not need to send a request to Rails and wait for a reply before showing the errors: it can display them right away.</p>
+
+<p>You can try creating an empty post and see what happens. : )</p>
+
+<p>As a recap for this last part, your <strong>posts_controller</strong> should look like this:</p>
+
+<figure class='code'><figcaption><span>app/assets/batman/controllers/posts_controller.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">PostsController</span> <span class="k">extends</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">ApplicationController</span>
+</span><span class='line'>  <span class="nv">routingKey: </span><span class="s">&#39;posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">@beforeAction</span> <span class="s">&#39;fetchPost&#39;</span><span class="p">,</span> <span class="nv">only: </span><span class="p">[</span><span class="s">&#39;show&#39;</span><span class="p">,</span> <span class="s">&#39;edit&#39;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">index: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;posts&#39;</span><span class="p">,</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;all&#39;</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">show: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;comment&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Comment</span><span class="p">(</span><span class="nv">post_id: </span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">edit: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">new</span><span class="o">:</span> <span class="nf">(params) -&gt;</span>
+</span><span class='line'>    <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">create: </span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">@post</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(err, post) =&gt;</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="nx">@redirect</span> <span class="nx">post</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">update: </span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">@post</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(err, post) =&gt;</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="nx">@redirect</span> <span class="nx">post</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">destroy: </span><span class="nf">(node, event, context) -&gt;</span>
+</span><span class='line'>    <span class="nv">post = </span><span class="k">if</span> <span class="nx">context</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">)</span> <span class="k">then</span> <span class="nx">context</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nx">@post</span>
+</span><span class='line'>    <span class="nx">post</span><span class="p">.</span><span class="nx">destroy</span> <span class="nf">(err) =&gt;</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="nx">@redirect</span> <span class="s">&#39;/posts&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">createComment: </span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">@comment</span><span class="p">.</span><span class="nx">save</span> <span class="o">=&gt;</span>
+</span><span class='line'>      <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;comments&#39;</span><span class="p">).</span><span class="nx">add</span> <span class="nx">@comment</span>
+</span><span class='line'>      <span class="nx">@redirect</span> <span class="s">&#39;/posts/&#39;</span> <span class="o">+</span> <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">destroyComment: </span><span class="nf">(node, event, context) -&gt;</span>
+</span><span class='line'>    <span class="nv">comment = </span><span class="nx">context</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;comment&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">comment</span><span class="p">.</span><span class="nx">destroy</span> <span class="nf">(err) =&gt;</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="nx">err</span> <span class="k">unless</span> <span class="nx">err</span> <span class="k">instanceof</span> <span class="nx">Batman</span><span class="p">.</span><span class="nx">ErrorsSet</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;comments&#39;</span><span class="p">).</span><span class="nx">remove</span> <span class="nx">comment</span>
+</span><span class='line'>        <span class="nx">@redirect</span> <span class="s">&#39;/posts/&#39;</span> <span class="o">+</span> <span class="nx">@post</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">fetchPost: </span><span class="nf">(params) -&gt;</span>
+</span><span class='line'>    <span class="nx">BatmanJsBlog</span><span class="p">.</span><span class="nx">Post</span><span class="p">.</span><span class="nx">find</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">@errorHandler</span> <span class="nf">(post) =&gt;</span>
+</span><span class='line'>      <span class="nx">@set</span><span class="p">(</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="nx">post</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Hope it all helps, talk to you later! ; )</p>
+</div>
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-06T22:08:00+02:00" pubdate data-updated="true">Oct 6<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/batmanjs/'>batmanjs</a>, <a class='category' href='/categories/ruby-on-rails/'>ruby on rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/why-i-love-my-development-environment" title="Previous Post: Why I love my development environment">&laquo; Why I love my development environment</a> /
+      
+        &nbsp;&nbsp; <a class="basic-alignment" href="/" title="Home">Home</a>
+      
+        / <a class="basic-alignment right" href="/discover-emmet-and-improve-your-coding-speed" title="Next Post: Discover Emmet and improve your coding speed">Discover Emmet and improve your coding speed &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section id="comments-section">
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/currying-spice-up-your-javascript-functions">Currying, spice up your javascript functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/git-bisect-your-bug-hunting-best-friend">Git bisect your bug hunting best friend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">Deploying a Rails App on Your Own Server - The Ultimate Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/discover-emmet-and-improve-your-coding-speed">Discover Emmet and improve your coding speed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - requireMind -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial';
+        var disqus_url = 'http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

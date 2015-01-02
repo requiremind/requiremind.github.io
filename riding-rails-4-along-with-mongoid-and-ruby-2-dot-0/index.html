@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Riding Rails 4 along with Mongoid and Ruby 2.0 - require 'mind'</title>
+  <meta name="author" content="requireMind">
+
+  
+  <meta name="description" content="You&rsquo;re not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine: 6LOCK,
+I tested &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://requiremind.com/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41030310-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">require 'mind'</a></h1>
+  
+    <h2>Learn. Live. Love. Dev.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:requiremind.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title article-title">Riding Rails 4 Along With Mongoid and Ruby 2.0</h1><div class="by-author">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+</div><div class="clear"></div>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-26T01:38:00+02:00" pubdate data-updated="true">May 26<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>You&rsquo;re not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine: <a href="https://6lock.com">6LOCK</a>,
+I tested out MongoDB, together with Mongoid (the ORM that comes in replacement of ActiveRecord for querying the MongoDB database) and other pretty cool stuff. As I had a great time using it
+I wanted to give it a try using the all new and shiny Rails 4 and Ruby 2.</p>
+
+<!-- more -->
+
+
+<p>If you have a basic understanding of how the framework works, you have already been following some sort of &ldquo;Getting Started with Ruby on Rails&rdquo; tutorial (plenty of them out there)
+and now you want to try MongoDB and see how it feels, this tutorial is made for you.</p>
+
+<p>Note: I am not going to list the new features of Rails 4, if you want to know more, check out this great post:
+<a href="http://net.tutsplus.com/tutorials/ruby/digging-into-rails-4/">digging-into-rails-4</a></p>
+
+<p>All the resources and documentation stuff are at the end of the post, be sure to check them out, you&rsquo;ll probably learn very interesting stuff and subtleties.</p>
+
+<p>I ran into some compatibility issues when writing this tutorial (nothing to be worried about) but gems versions may now have evolved.<br/>
+FYI: Ubuntu 12.10, rails 4.0.0.rc1, mongoid (github master, something between 3.1.4 and ?) and bson_ext 1.8.6</p>
+
+<p>EDIT: as stated by Shunwen in the comments below, bson_ext seems to no longer be required as of mongoid version 3. Check it out here: <a href="http://mongoid.org/en/mongoid/docs/upgrading.html">http://mongoid.org/en/mongoid/docs/upgrading.html</a>.</p>
+
+<p>Application github repo: <a href="https://github.com/Raindal/rails4_mongoid">https://github.com/Raindal/rails4_mongoid</a></p>
+
+<p>Finally, I am not going to give you any advice on why you should or should not use MongoDB, lots of topics are listing pros and cons compared to traditional relational databases such as
+MySQL. To give you some leads you could dig into, MongoDB brings to the table things like dynamic fields, embedding, map/reduce, indexing and so on.</p>
+
+<p>But enough talking, let&rsquo;s dive in!</p>
+
+<h3>Install MongoDB</h3>
+
+<blockquote><p><a href="http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/">Install MongoDB on Ubuntu</a></p></blockquote>
+
+<p>First you&rsquo;ll need to import the 10gen public GPG key (MongoDB is mainly maintained by 10gen), which is used to ensure package consistency and authenticity</p>
+
+<pre><code>sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+</code></pre>
+
+<p>Create a /etc/apt/sources.list.d/10gen.list file using the following command</p>
+
+<pre><code>echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/10gen.list
+</code></pre>
+
+<p>Now you can update your repository</p>
+
+<pre><code>sudo apt-get update
+</code></pre>
+
+<p>And then install the package</p>
+
+<pre><code>sudo apt-get install mongodb-10gen
+</code></pre>
+
+<p>To check that it works, just issue a <code>mongo</code> in your shell and you should see something like</p>
+
+<pre><code>MongoDB shell version: x.x.x
+connecting to: test
+&gt;
+</code></pre>
+
+<h3>Set up RVM</h3>
+
+<blockquote><p><a href="http://net.tutsplus.com/tutorials/why-you-should-use-rvm/">Why you should use RVM</a></p></blockquote>
+
+<p>Now we are going to set up RVM to use Ruby 2.0.0. We only have to install the Ruby version we want and use it.</p>
+
+<pre><code>rvm install 2.0.0
+rvm use 2.0.0
+</code></pre>
+
+<p>And finally we are going to create a gemset for our application, it will contain all the gems we need</p>
+
+<pre><code>rvm gemset create rails4_mongoid
+</code></pre>
+
+<h3>Set up the application</h3>
+
+<p>First we need to install the Rails 4 gem.</p>
+
+<pre><code>gem install rails --version 4.0.0.rc1 --no-ri --no-rdoc
+</code></pre>
+
+<p>Now we can create the application and cd inside</p>
+
+<pre><code>rails new rails4_mongoid
+cd rails4_mongoid/
+</code></pre>
+
+<p>For convinience, we are creating a .rvmrc file at the root of our application. The file will tell RVM to use the right version of Ruby with the right gemset when we cd inside the directory.<br/>
+Just use your favorite text editor</p>
+
+<pre><code>nano .rvmrc
+</code></pre>
+
+<p>And paste this inside</p>
+
+<figure class='code'><figcaption><span>.rvmrc</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rvm</span> <span class="n">use</span> <span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="vi">@rails4_mongoid</span> <span class="o">--</span><span class="n">create</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This basically tells RVM to use Ruby 2.0.0 with the gemset rails4_mongoid and that it should create the gemset if it doesn&rsquo;t already exist.</p>
+
+<p>To make sure everything works as expected, you can go back and then cd again in the directory.</p>
+
+<pre><code>cd ..
+cd rails4_mongoid
+</code></pre>
+
+<p>You should see something like this</p>
+
+<pre><code>Using /home/neil/.rvm/gems/ruby-2.0.0-p0 with gemset rails4_mongoid
+</code></pre>
+
+<p>Now, we have to edit the Gemfile to install the gems we want.<br/>
+First, remove sqlite: delete these lines</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Use sqlite3 as the database for Active Record</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;sqlite3&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can add mongoid and bson_ext</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;mongoid&#39;</span><span class="p">,</span> <span class="ss">github</span><span class="p">:</span> <span class="s1">&#39;mongoid/mongoid&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;bson_ext&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 1.8.6&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At the time I&rsquo;m writing these lines, <a href="http://rubygems.org/gems/mongoid/versions/3.1.4">mongoid 3.1.4 relies on ActiveModel 3.2</a> but we are using ActiveModel 4.0.0-rc1, so we need to use directly
+the github repo that supports it.<br/>
+bson_ext is a C extension which basically makes things faster with MongoDB.</p>
+
+<p>Now, just run a</p>
+
+<pre><code>bundle update
+</code></pre>
+
+<p>If you run into errors of some kind (mine was related to bson_ext), try to update your gem version with</p>
+
+<pre><code>rvm rubygems latest --verify-downloads 1
+</code></pre>
+
+<p>And <code>bundle update</code> again.</p>
+
+<h3>Configure Mongoid</h3>
+
+<p>Still in the root of the application, run the following command</p>
+
+<pre><code>rails g mongoid:config
+</code></pre>
+
+<p>This will generate a <strong>mongoid.yml</strong> file under <strong>config/</strong>.<br/>
+We can edit the file to suit our needs.</p>
+
+<p>Find the line that says <code># consistency: :eventual</code> and change it for</p>
+
+<figure class='code'><figcaption><span>config/mongoid.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">consistency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">:strong</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>:eventual</code> will send reads to secondaries, <code>:strong</code> sends everything to master.</p>
+
+<p>As we are not using ActiveRecord, we need to get rid of it.<br/>
+First in <strong>config/application.rb</strong> comment out the line</p>
+
+<figure class='code'><figcaption><span>config/application.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># require &#39;rails/all&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And add these lines right underneath the first one</p>
+
+<figure class='code'><figcaption><span>config/application.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;action_controller/railtie&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;action_mailer/railtie&quot;</span>
+</span><span class='line'><span class="c1"># require &quot;active_resource/railtie&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;sprockets/railtie&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The 3rd line is commented out because normally you would need it but Rails 4 has extracted the ActiveResource gem and now you need to specify its name in the Gemfile if you want to use it. But here we won&rsquo;t
+use it.</p>
+
+<p>There are some more ActiveRecord settings we have to get rid of out there.<br/>
+In <strong>config/environments/development.rb</strong>, comment out this line</p>
+
+<figure class='code'><figcaption><span>config/environments/development.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config.active_record.migration_error = :page_load</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To check that everything is working like a charm, run a <code>rails s</code> and then go check that the application is running on <a href="http://localhost:3000">http://localhost:3000</a>.</p>
+
+<p>Now you should see the usual <strong>Welcome aboard</strong> message.</p>
+
+<h3>Now we&rsquo;re talking!</h3>
+
+<p>Let&rsquo;s write some code, finally! But first we will have to generate our first model. For that we are going to use the builtin <em>scaffold</em> command in order to generate our model, controller,
+views and everything else at the same time.</p>
+
+<blockquote><p>In a real project, unless you&rsquo;re sure you&rsquo;re going to use all the generated files, I personnaly don&rsquo;t recommend using the scaffold command. You could quickly end up with a messy application.
+I would rather recommend using each command one by one: <code>rails g model xxx</code>, <code>rails g controller xxx</code> etc.</p></blockquote>
+
+<p>For this example I&rsquo;ll be using the usual Post > Comment stuff which is actually a perfect example for demonstrating the embedding capabilities of MongoDB.</p>
+
+<p>Let&rsquo;s generate our Post first, it will have 3 fields: a <strong>title</strong>, a <strong>body</strong> and it can be <strong>starred</strong>.</p>
+
+<pre><code>rails g scaffold post title:string body:string starred:boolean
+</code></pre>
+
+<blockquote><p><a href="http://mongoid.org/en/mongoid/docs/documents.html#fields">Mongoid document field types</a></p></blockquote>
+
+<p>This generated all the files we wanted.<br/>
+Let&rsquo;s first edit the model to add the <strong>created_at</strong> and <strong>updated_at</strong> fields that are not present by default.<br/>
+We can also add an index on the <strong>starred</strong> field because we will often be querying on it with a <code>where</code> clause for example (not in this application actually).</p>
+
+<p>Your Post model should look like so</p>
+
+<figure class='code'><figcaption><span>app/models/post.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Post</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Mongoid</span><span class="p">:</span><span class="ss">:Document</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Mongoid</span><span class="p">:</span><span class="ss">:Timestamps</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">field</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="nb">String</span>
+</span><span class='line'>  <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="nb">String</span>
+</span><span class='line'>  <span class="n">field</span> <span class="ss">:starred</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="no">Boolean</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">index</span><span class="p">({</span> <span class="ss">starred</span><span class="p">:</span> <span class="mi">1</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we have a command to enforce indexes on the database</p>
+
+<pre><code>rake db:mongoid:create_indexes
+</code></pre>
+
+<p>This will set an index on the <em>starred</em> field of the <em>post</em> collection.</p>
+
+<blockquote><p>Quick tip: use <code>rake -T</code> to see a list a available tasks</p>
+
+<p>Wait&hellip; we didn&rsquo;t create the database, did we? No we didn&rsquo;t, the database is automatically created.</p></blockquote>
+
+<p>For some reason, Rails 4 uses the <code>update()</code> method by default to update an object in the corresponding controller action which does not behave as one could expect (and basically does not update
+the document). This may be due to mongoid&hellip; Anyway, let&rsquo;s use <code>update_attributes()</code> instead.</p>
+
+<p>In the recently created controller, change the <em>update</em> action to look like this one</p>
+
+<figure class='code'><figcaption><span>app/controllers/posts_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># PATCH/PUT /posts/1</span>
+</span><span class='line'><span class="c1"># PATCH/PUT /posts/1.json</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@post</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@post</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Post was successfully updated.&#39;</span> <span class="p">}</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">head</span> <span class="ss">:no_content</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">action</span><span class="p">:</span> <span class="s1">&#39;edit&#39;</span> <span class="p">}</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="vi">@post</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:unprocessable_entity</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We actually do not need all the json stuff because we are not writing some sort of API but the <code>scaffold</code> command generates it for us.</p>
+
+<p>Now if you navigate to <a href="http://localhost:3000/posts">http://localhost:3000/posts</a> you should be able to play with the posts. : )<br/>
+Go ahead, create/update/destroy a few posts to see if everything is working as expected.</p>
+
+<h2>Embedding documents</h2>
+
+<blockquote><p>A collection can be compared to a table.<br/>
+A document can be compared to a row.</p></blockquote>
+
+<p>Here I&rsquo;ve decided to show you how to embed documents in each other because this is one of the features that you will probably wind up using the most.<br/>
+In MongoDB you can associate two documents with &ldquo;foreign keys&rdquo; although the concept does not really exists. So you can still use the usual stuff: <code>has_many</code>, <code>belongs_to</code> and so on.<br/>
+<strong>But</strong>, there is no <em>join</em> is MongoDB, loading one document and its associated document will therefore execute two queries.</p>
+
+<p>However you can set another type of relation: you can embed one document into another. Loading the parent document will also load all the children documents at the same time.<br/>
+<strong>But</strong>, it will always instanciate all of the objects retrieved even if you do not need the children, plus, each document has a size limit: 16MB, if you have too many child
+documents, the parent document&rsquo;s size could exceed this limit.</p>
+
+<blockquote><p>Foreign key = 2 queries<br/>
+Embedding = loading many objects all the time + parent document size limited</p>
+
+<p><a href="http://docs.mongodb.org/manual/reference/limits/">MongoDB limits</a></p></blockquote>
+
+<p>We suppose that when we load a post, we also want all of its associated comments and that there will not be thousands of comments.<br/>
+So embedding seems to be a good choice.</p>
+
+<p>Here is a design example of a MongoDB database with users that have posts and posts that have comments.</p>
+
+<p><strong>users collection</strong></p>
+
+<pre><code>[
+  {
+    "_id": "5063114bd386d8fadbd6b004",
+    "name": "John Snow"
+  }
+]
+</code></pre>
+
+<p><strong>posts collection</strong></p>
+
+<pre><code>[
+  {
+    "_id": "6563521bd386d6dadbd6b002",
+    "title": "Why King's Landing should belong to Daenerys",
+    "user_id": "5063114bd386d8fadbd6b004",
+    "comments": [
+      {
+        "_id": "4586521bd638d6dadbd7b003"
+        "body": "I totally agree with you, great post!"
+      },
+      {
+        "_id": "8526521bd654d6dadbd7b001"
+        "body": "I'm so sad since Drogo died..."
+      }
+    ]
+  }
+]
+</code></pre>
+
+<p>This being said, let&rsquo;s get started, shall we?</p>
+
+<pre><code>rails g scaffold comment body:string
+</code></pre>
+
+<p>Now that our Comment model is generated, we can edit it to reflect this</p>
+
+<figure class='code'><figcaption><span>app/models/comment.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Comment</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Mongoid</span><span class="p">:</span><span class="ss">:Document</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Mongoid</span><span class="p">:</span><span class="ss">:Timestamps</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">embedded_in</span> <span class="ss">:post</span><span class="p">,</span> <span class="n">inverse_of</span><span class="p">:</span> <span class="ss">:comments</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="nb">String</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This just tells MongoDB that comments are to be embedded in the corresponding post.<br/>
+The <code>inverse_of</code> option is required in order to tell Mongoid what the comment should be embedded through.</p>
+
+<p>We can edit the Post model to reflect that association and add the <code>embeds_many :comments</code> (line 5)</p>
+
+<figure class='code'><figcaption><span>app/models/post.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Post</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Mongoid</span><span class="p">:</span><span class="ss">:Document</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Mongoid</span><span class="p">:</span><span class="ss">:Timestamps</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">embeds_many</span> <span class="ss">:comments</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">field</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="nb">String</span>
+</span><span class='line'>  <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="nb">String</span>
+</span><span class='line'>  <span class="n">field</span> <span class="ss">:starred</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="no">Boolean</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">index</span><span class="p">({</span> <span class="ss">starred</span><span class="p">:</span> <span class="mi">1</span> <span class="p">})</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we need to edit the <strong>routes</strong> file to make posts and comments nested resources.</p>
+
+<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:posts</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">resources</span> <span class="ss">:comments</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This creates urls like <em>/posts/:post_id/comments</em>.</p>
+
+<p>Now we have to change our <strong>comments_controller.rb</strong> and all our comments&rsquo;s views to reflect these nested resources: any comment we will be using now depends on a post.<br/>
+Note: this part is not related to MongoDB or Mongoid. We would have gone through the same steps anyway with nested resources.</p>
+
+<blockquote><p><a href="http://guides.rubyonrails.org/routing.html#nested-resources">Nested resources</a></p></blockquote>
+
+<figure class='code'><figcaption><span>app/controllers/comments_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CommentsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="n">before_action</span> <span class="ss">:load_post</span>
+</span><span class='line'>  <span class="n">before_action</span> <span class="ss">:set_comment</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:show</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># GET /comments</span>
+</span><span class='line'>  <span class="c1"># GET /comments.json</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>    <span class="vi">@comments</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">comments</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># GET /comments/1</span>
+</span><span class='line'>  <span class="c1"># GET /comments/1.json</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># GET /comments/new</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">new</span>
+</span><span class='line'>    <span class="vi">@comment</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">build</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># GET /comments/1/edit</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">edit</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># POST /comments</span>
+</span><span class='line'>  <span class="c1"># POST /comments.json</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>    <span class="vi">@comment</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">comment_params</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>      <span class="k">if</span> <span class="vi">@comment</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="o">[</span><span class="vi">@post</span><span class="p">,</span> <span class="vi">@comment</span><span class="o">]</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Comment was successfully created.&#39;</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">action</span><span class="p">:</span> <span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:created</span><span class="p">,</span> <span class="ss">location</span><span class="p">:</span> <span class="vi">@comment</span> <span class="p">}</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">action</span><span class="p">:</span> <span class="s1">&#39;new&#39;</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="vi">@comment</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:unprocessable_entity</span> <span class="p">}</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># PATCH/PUT /comments/1</span>
+</span><span class='line'>  <span class="c1"># PATCH/PUT /comments/1.json</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>      <span class="k">if</span> <span class="vi">@comment</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">comment_params</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="o">[</span><span class="vi">@post</span><span class="p">,</span> <span class="vi">@comment</span><span class="o">]</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Comment was successfully updated.&#39;</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">head</span> <span class="ss">:no_content</span> <span class="p">}</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">action</span><span class="p">:</span> <span class="s1">&#39;edit&#39;</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="vi">@comment</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:unprocessable_entity</span> <span class="p">}</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># DELETE /comments/1</span>
+</span><span class='line'>  <span class="c1"># DELETE /comments/1.json</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">destroy</span>
+</span><span class='line'>    <span class="vi">@comment</span><span class="o">.</span><span class="n">destroy</span>
+</span><span class='line'>    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="n">post_comments_url</span><span class="p">(</span><span class="vi">@post</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">head</span> <span class="ss">:no_content</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>    <span class="c1"># Use callbacks to share common setup or constraints between actions.</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">set_comment</span>
+</span><span class='line'>      <span class="vi">@comment</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># Never trust parameters from the scary internet, only allow the white list through.</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">comment_params</span>
+</span><span class='line'>      <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:comment</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:body</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">load_post</span>
+</span><span class='line'>      <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:post_id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What changed? Well, now we use the post passed in params to load, create, redirect comments.<br/>
+See the <strong>load_post</strong> method, this is the root of everything else. We load a post using the :post_id that is sent and then we use this post everywhere.</p>
+
+<blockquote><p>Quick tip: issue a <code>rake routes</code> to see the routes you can use in the application</p></blockquote>
+
+<p>Now we need to change these routes in all the view files.
+Here I&rsquo;ll show you only the lines that have changed.</p>
+
+<figure class='code'><figcaption><span>app/views/comments/index.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Show&#39;</span><span class="p">,</span> <span class="n">post_comment_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Edit&#39;</span><span class="p">,</span> <span class="n">edit_post_comment_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">&lt;td&gt;</span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Destroy&#39;</span><span class="p">,</span> <span class="o">[</span><span class="vi">@post</span><span class="p">,</span> <span class="n">comment</span><span class="o">]</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span><span class="p">,</span> <span class="ss">data</span><span class="p">:</span> <span class="p">{</span> <span class="ss">confirm</span><span class="p">:</span> <span class="s1">&#39;Are you sure?&#39;</span> <span class="p">}</span> <span class="cp">%&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;New Comment&#39;</span><span class="p">,</span> <span class="n">new_post_comment_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/comments/_form.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="o">[</span><span class="vi">@post</span><span class="p">,</span> <span class="vi">@comment</span><span class="o">]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'>
+</span><span class='line'><span class="x">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/comments/new.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="n">post_comments_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/comments/show.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Edit&#39;</span><span class="p">,</span> <span class="n">edit_post_comment_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">,</span> <span class="vi">@comment</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> |</span>
+</span><span class='line'><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="n">post_comments_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/comments/edit.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">...</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Show&#39;</span><span class="p">,</span> <span class="n">post_comment_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">,</span> <span class="vi">@comment</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> |</span>
+</span><span class='line'><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="n">post_comments_path</span><span class="p">(</span><span class="vi">@post</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now return in your running application and create a new post.<br/>
+Click on the <em>show</em> link to view the post you just created and just append <em>comments</em> to the url, like so: <a href="http://localhost:3000/posts/:post_id/comments.">http://localhost:3000/posts/:post_id/comments.</a></p>
+
+<p>That&rsquo;s it! You should now be able to create comments and manage them with all the basic usual actions.</p>
+
+<p>I hope this little introduction to Rails 4 with Mongoid helped you.</p>
+
+<p>See you around!</p>
+
+<h3>Resources</h3>
+
+<ul>
+<li><a href="http://net.tutsplus.com/tutorials/why-you-should-use-rvm/">Why you should use RVM</a></li>
+<li><a href="http://net.tutsplus.com/tutorials/ruby/digging-into-rails-4/">Digging into Rails 4</a></li>
+<li><a href="http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/">Install MongoDB on Ubuntu</a></li>
+<li><a href="http://docs.mongodb.org/manual/reference/limits/">MongoDB limits</a></li>
+<li><a href="http://mongoid.org/en/mongoid/docs/installation.html">Mongoid installation</a></li>
+<li><a href="http://mongoid.org/en/mongoid/docs/documents.html#fields">Mongoid document field types</a></li>
+<li><a href="http://mongoid.org/en/mongoid/docs/indexing.html">Indexing with Mongoid</a></li>
+<li>If you don&rsquo;t know what are the new &ldquo;concerns&rdquo; folders in Rails 4: <a href="http://37signals.com/svn/posts/3372-put-chubby-models-on-a-diet-with-concerns">Put chubby models on a diet with concerns</a></li>
+<li><a href="http://guides.rubyonrails.org/routing.html#nested-resources">Nested resources</a></li>
+</ul>
+
+</div>
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-26T01:38:00+02:00" pubdate data-updated="true">May 26<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/mongoid/'>mongoid</a>, <a class='category' href='/categories/ruby-on-rails/'>ruby on rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/linux-command-line-tips-become-a-master" title="Previous Post: Linux command line Tips: Become a master">&laquo; Linux command line Tips: Become a master</a> /
+      
+        &nbsp;&nbsp; <a class="basic-alignment" href="/" title="Home">Home</a>
+      
+        / <a class="basic-alignment right" href="/differences-between-has-one-and-belongs-to-in-ruby-on-rails" title="Next Post: Differences between has_one and belongs_to in Ruby on Rails">Differences between has_one and belongs_to in Ruby on Rails &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section id="comments-section">
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/currying-spice-up-your-javascript-functions">Currying, spice up your javascript functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/git-bisect-your-bug-hunting-best-friend">Git bisect your bug hunting best friend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">Deploying a Rails App on Your Own Server - The Ultimate Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/discover-emmet-and-improve-your-coding-speed">Discover Emmet and improve your coding speed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - requireMind -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0';
+        var disqus_url = 'http://requiremind.com/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Why I love my development environment - require 'mind'</title>
+  <meta name="author" content="requireMind">
+
+  
+  <meta name="description" content="Today I&rsquo;ve decided to talk about the tools I use on a day-to-day basis. Why? Because I love them. That&rsquo;s it, now you know that I&rsquo;m &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://requiremind.com/why-i-love-my-development-environment">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41030310-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">require 'mind'</a></h1>
+  
+    <h2>Learn. Live. Love. Dev.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:requiremind.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title article-title">Why I Love My Development Environment</h1><div class="by-author">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+</div><div class="clear"></div>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T20:08:00+02:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Today I&rsquo;ve decided to talk about the tools I use on a day-to-day basis. Why? Because I love them. That&rsquo;s it, now you know that I&rsquo;m not going to be objective. This being
+said, if you don&rsquo;t know or havn&rsquo;t tried them yet, then maybe now is a good time to do so and make your own opinion about it.</p>
+
+<!-- more -->
+
+
+<p>Note: I&rsquo;m using Ubuntu with gnome but most of the stuff I talk about is working on OS X too.</p>
+
+<p>But enough talking&hellip; : p</p>
+
+<h3>Z</h3>
+
+<p>z&hellip; yes this is its name. z is probably one of the most useful things I&rsquo;ve discovered the past year. z is actually a script that remembers where you&rsquo;ve <code>cd</code> for the past
+x days/weeks/months (I don&rsquo;t know the threshold) and saves you a tremendous amount of time.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /home/neil/dev/prism_secret_project</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here I&rsquo;m using the <code>cd</code> command as usual (well at least if you&rsquo;re not using zsh, but we&rsquo;ll get to that later) to enter my <em>prism_secret_project/</em> directory. Now that I&rsquo;ve done
+this once, z is aware of that directory. I can just type</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>z pris</span></code></pre></td></tr></table></div></figure>
+
+
+<p>for instance, hit <code>tab</code> and z will autocomplete my command:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>z /home/neil/dev/prism_secret_project</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At this point you just have to hit <code>Enter</code> to navigate to that directory.</p>
+
+<p>You probably get it by now, z is some sort of fuzzy matching tool for navigating on your os.</p>
+
+<p>Here you will find the script and the installation instructions: <a href="https://github.com/rupa/z">https://github.com/rupa/z</a>.</p>
+
+<h3>zsh with oh-my-zsh</h3>
+
+<p>zsh stands for Z Shell and replaces the default shell (bash).
+Let&rsquo;s see what we can do with it.</p>
+
+<p>First you do not need to use <code>cd</code> anymore. Typing a directory name as a command and hitting <code>tab</code> or <code>Enter</code> is now enough to navigate.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/home/neil/dev/prism_secret_project</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Just hit <code>Enter</code> and you&rsquo;ll be there.
+You don&rsquo;t have to hit <code>tab</code> to autocomplete each directory, you can just type:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/h/n/d/pr
+</span><span class='line'># =&gt; hit tab here
+</span><span class='line'>/home/neil/dev/prism_secret_project</span></code></pre></td></tr></table></div></figure>
+
+
+<p>zsh will offer suggestions when you hit <code>tab</code> and when multiple directories/commands match what you&rsquo;ve typed. What comes in handy here is that you can actually navigate through
+these suggestions with the arrow keys.</p>
+
+<p>When you make a typo, zsh will try and find the closest command. For instance if you type something like <code>lls</code> instead of <code>ls</code>&hellip;:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>lls
+</span><span class='line'>zsh: correct 'lls' to 'ls' [nyae]?</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here you have four choices: no, yes, abort, edit. No will continue and execute the previously entered command. Yes will use the suggestion. Abort will just abort
+everything (pretty much straightforward huh) and edit will allow you to edit your command if you wanted to type something similar.</p>
+
+<p>With <em>oh-my-zsh</em> you&rsquo;ll be able to get a cool terminal theme and syntax highlighting.
+You&rsquo;ll also be able to see all the time the git branch you&rsquo;re currently using on your prompt:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-&gt; requiremind.github.io git:(source)</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>oh-my-zsh</em> brings with him a great number of plugins and really handy aliases.
+For instance when I&rsquo;m using git I always use these commands instead of the old ones:</p>
+
+<ul>
+<li><code>gst</code> for <code>git status</code></li>
+<li><code>gp</code> for <code>git push</code></li>
+<li><code>gl</code> for <code>git pull</code></li>
+<li><code>gco</code> for <code>git checkout</code></li>
+</ul>
+
+
+<p>Some say that zsh can make coffee but I havn&rsquo;t tried yet&hellip;</p>
+
+<p>You should not have any problem finding installation instructions for zsh, here is the page you&rsquo;ll be looking for if you think about using <em>oh-my-zsh</em>:
+<a href="https://github.com/robbyrussell/oh-my-zsh">https://github.com/robbyrussell/oh-my-zsh</a>.</p>
+
+<h3>Sublime Text</h3>
+
+<p>I won&rsquo;t go into details here, there are already plenty of blog posts that talk about Sublime Text and the whys and hows as to why it works wonders. So I&rsquo;m just gonna
+give you the main &ldquo;shortcuts&rdquo; I use that made me first like the editor and then love it.</p>
+
+<ul>
+<li>you can actually <code>ctrl + click</code> on your document to place multiple cursors and edit multiple things the same way and at the same time</li>
+<li>select some text and then hit <code>ctrl + d</code> multiple times: this will highlight all the occurencies of that text in the document allowing a quick edit again</li>
+<li>use <code>ctrl + c</code> to copy the current line directly, <code>ctrl + v</code> to paste it above the line you&rsquo;re at, use <code>ctrl + x</code> to cut the line and <code>ctrl + l</code> to select it</li>
+<li>use <code>ctrl + shift + up/down</code> to move the line</li>
+<li>use <code>ctrl + p</code> to fuzzy open documents</li>
+<li>use <code>ctrl + shift + p</code> then type <em>ssjs</em> and hit <code>Enter</code> to set the current highlighting to javascript for instance (<em>Set Syntax: JavaScript</em>)</li>
+</ul>
+
+
+<p>And some more advantages:</p>
+
+<ul>
+<li>you can set a layout with one to four columns and one to four rows</li>
+<li>when you click on a file, you get to see a preview of that file without having to open it</li>
+</ul>
+
+
+<p>That&rsquo;s it for today! : )</p>
+
+<p>Don&rsquo;t hesitate to share your tips below!</p>
+</div>
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T20:08:00+02:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/linux/'>linux</a>, <a class='category' href='/categories/tips/'>tips</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/improve-your-workflow-with-git-flow" title="Previous Post: Improve your workflow with Git Flow">&laquo; Improve your workflow with Git Flow</a> /
+      
+        &nbsp;&nbsp; <a class="basic-alignment" href="/" title="Home">Home</a>
+      
+        / <a class="basic-alignment right" href="/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial" title="Next Post: Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section id="comments-section">
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/currying-spice-up-your-javascript-functions">Currying, spice up your javascript functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/git-bisect-your-bug-hunting-best-friend">Git bisect your bug hunting best friend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">Deploying a Rails App on Your Own Server - The Ultimate Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/discover-emmet-and-improve-your-coding-speed">Discover Emmet and improve your coding speed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - requireMind -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/why-i-love-my-development-environment';
+        var disqus_url = 'http://requiremind.com/why-i-love-my-development-environment';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

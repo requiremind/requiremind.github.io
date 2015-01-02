@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: code | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/code/atom.xml" rel="self"/>
+  <link href="http://requiremind.com/"/>
+  <updated>2015-01-03T00:51:25+01:00</updated>
+  <id>http://requiremind.com/</id>
+  <author>
+    <name><![CDATA[requireMind]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Discover Emmet and improve your coding speed]]></title>
+    <link href="http://requiremind.com/discover-emmet-and-improve-your-coding-speed"/>
+    <updated>2013-12-06T23:23:00+01:00</updated>
+    <id>http://requiremind.com/discover-emmet-and-improve-your-coding-speed</id>
+    <content type="html"><![CDATA[<p>If you&rsquo;re here, I assume you&rsquo;re a passionate web developer. If not, you&rsquo;ll become one after reading this article.
+Indeed, <a href="http://emmet.io">Emmet</a> is an essential toolkit for you! It will improve your coding speed instantly and easily!</p>
+
+<p>You seem interested, then keep reading to discover more.</p>
+
+<!-- more -->
+
+
+<p><img class="center" src="/images/emmet/fast-train-lights.jpg" title="&lsquo;fast train&rsquo; &lsquo;fast train&rsquo;" ></p>
+
+<h3>Emmet</h3>
+
+<p>Ok, to begin I want to say that if you already heard about Zen Coding, then you&rsquo;ll find that Emmet is pretty similar.
+In fact, Zen Coding has evolved into Emmet adding a bunch of new cool features that you&rsquo;ll discover soon.</p>
+
+<p>In a nutshell, Emmet is a toolkit for web developpers that improves your HTML and CSS workflow.
+You&rsquo;ll use CSS-like expressions to generate your HTML and a smart syntax to generate your CSS.</p>
+
+<p>Enough talking, as always the best is to see some examples!</p>
+
+<h3>HTML</h3>
+
+<p>Warning! This is an important step!<br/>
+Once you&rsquo;ll read and learn what is following, you&rsquo;ll</p>
+
+<ul>
+<li>First, fall in love with these new coding habits.</li>
+<li>Second, you&rsquo;ll never, ever type a full tag anymore in your html.</li>
+<li>Third you&rsquo;ll save an amazing amount of time.</li>
+</ul>
+
+
+<p>So if you are ok with this, keep reading.</p>
+
+<p>Let&rsquo;s start with the easiest example:</p>
+
+<p>``` html</p>
+
+<div></div>
+
+
+<p>```</p>
+
+<p>can now be summarized as:</p>
+
+<pre><code>div[tab]
+</code></pre>
+
+<p><em>(when I use [tab] it means, press the tab key <code>⇥</code>)</em><br/>
+[tab] is the default key for executing Emmet in your code editor. It will dynamically parse the expression and generate the final html.<br/>
+Here, it simply generates a <code>div</code> element.</p>
+
+<blockquote><p>Ok, that&rsquo;s cool but is it all?</p></blockquote>
+
+<p>Of course not! Let&rsquo;s see some magic happening!</p>
+
+<p>``` html</p>
+
+<ul>
+  <li>
+    <p id="1">Element 1</p>
+  </li>
+  <li>
+    <p id="2">Element 2</p>
+  </li>
+  <li>
+    <p id="3">Element 3</p>
+  </li>
+</ul>
+
+
+<p>```
+can be simplified by using:</p>
+
+<pre><code>ul&gt;li*3&gt;p#${Element $} [tab]
+</code></pre>
+
+<p>Ok let&rsquo;s review this one, step by step.</p>
+
+<p><code>ul</code>is our parent element.<br/>
+Then we use the <code>&gt;</code> symbol which represents a child in html. <code>ul</code> contains <code>li</code>.<br/>
+The <code>*</code> is a multiplication operator that allows us to define how many times we want to output the element. Here 3 times.<br/>
+In each of these elements we got a <code>p</code> element with an id (represented by the <code>#</code>, for a class we should have used a <code>.</code>).<br/>
+The <code>$</code> is a specific symbol. It&rsquo;s an integer that will increment by one for each item.<br/>
+The curly braces <code>{}</code> represent the text. Here Element plus the current item number.</p>
+
+<p>Ok I feel that you want one more example. Here you are:</p>
+
+<p>``` html
+&lt;!doctype html>
+<html lang="en">
+<head></p>
+
+<pre><code>&lt;meta charset="UTF-8" /&gt;
+&lt;title&gt;Document&lt;/title&gt;
+</code></pre>
+
+<p></head>
+<body></p>
+
+<p></body>
+</html>
+```
+is now as simple as:</p>
+
+<pre><code>html:5 [tab]
+</code></pre>
+
+<p>I hope that now you understand the concept and mainly you see the opportunities.</p>
+
+<p>As this article&rsquo;s goal is just to make you discover this tool, we won&rsquo;t go deeper with the html examples.<br/>
+You can refer to the <a href="http://docs.emmet.io">official documenation</a> whenever you need it.</p>
+
+<h3>CSS</h3>
+
+<p>Emmet also allows you to write CSS faster than ever before. I really use it a lot and it&rsquo;s easy to learn.<br/>
+It defines a lot of shorcuts for the CSS properties.</p>
+
+<p>I can&rsquo;t show them all, but here is a list of common examples (remember to press the <code>tab</code> key to execute Emmet):</p>
+
+<pre><code>w23        =&gt; width: 23px;
+w77p       =&gt; width: 77%;
+pos:a      =&gt; position: absolute;
+fr         =&gt; float: right;
+db         =&gt; display: block;
+tdu        =&gt; text-decoration: underline;
+f5#f       =&gt; font: 5px #fff
+bd+        =&gt; border:1px solid #000;
+</code></pre>
+
+<p>And it also takes care of the vendor prefixes:</p>
+
+<pre><code>bdrs25 =&gt; -webkit-border-radius: 25px;
+          -moz-border-radius: 25px;
+          border-radius: 25px;
+</code></pre>
+
+<p>It&rsquo;s so intuitive that you&rsquo;ll learn them easily by practising and discovering them by yourself.<br/>
+But as always, here is the <a href="http://docs.emmet.io/css-abbreviations">documentation</a>.</p>
+
+<h3>Fuzzy search</h3>
+
+<p>Emmet is really smart and implements a cool feature called <a href="http://docs.emmet.io/css-abbreviations/fuzzy-search">fuzzy search</a>.
+This one is being used when we write an unknown abbreviation. Emmet will try to find the closest snippet definition and apply it.</p>
+
+<p>For instance,</p>
+
+<pre><code>fl:r  =&gt; float: right;
+</code></pre>
+
+<p>But we can break the convention and use <code>flr</code> instead. Emmet will use the fuzzy search to match <code>fl:r</code> and apply it.</p>
+
+<h3>Code editors</h3>
+
+<p>The power of Emmet also resides on the fact that it&rsquo;s available on a large amount of code editors as you can see on their official <a href="http://emmet.io/download">download page</a>.</p>
+
+<p><img class="center" src="/images/emmet/editors.png" width="350" height="350" title="&lsquo;code editors&rsquo; &lsquo;code editors&rsquo;" ></p>
+
+<h3>Conclusion</h3>
+
+<p>So, this was the introduction to Emmet. I hope you will use it a lot and see the improvement in your coding speed.
+If you know other tools or anything like this one, feel free to leave a comment, I&rsquo;m definitely interested!</p>
+
+<p>Here is my last present. If you&rsquo;re the kind of long cheat-sheet lovers then <a href="http://docs.emmet.io/cheat-sheet">here is your hapiness</a>. You won&rsquo;t be disappointed ;)</p>
+]]></content>
+  </entry>
+  
+</feed>

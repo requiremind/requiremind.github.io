@@ -1,0 +1,1327 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Deploying a Rails App on Your Own Server - The Ultimate Guide - require 'mind'</title>
+  <meta name="author" content="requireMind">
+
+  
+  <meta name="description" content="Recently I&rsquo;ve been giving life to a project of my own (6lock.com) and I had to go through some steps to get the Rails app up and
+running with &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://requiremind.com/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41030310-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">require 'mind'</a></h1>
+  
+    <h2>Learn. Live. Love. Dev.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:requiremind.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title article-title">Deploying a Rails App on Your Own Server - the Ultimate Guide</h1><div class="by-author">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+</div><div class="clear"></div>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-05T23:28:00+01:00" pubdate data-updated="true">Feb 5<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Recently I&rsquo;ve been giving life to a project of my own (<a href="https://6lock.com">6lock.com</a>) and I had to go through some steps to get the Rails app up and
+running with the best possible conditions.</p>
+
+<p>In this tutorial, I&rsquo;ll try to show you how to deploy your Rails app on a <em>secured</em> Ubuntu Server 12.04 using <em>Capistrano</em>, <em>Unicorn</em>, <em>Nginx</em>. Part of my
+setup includes <em>MongoDB</em> and <em>Sidekiq</em> so I figured I would also explain how I configured those two.</p>
+
+<!-- more -->
+
+
+<p>Here I&rsquo;ll be assuming that you already have a basic understanding of Rails, git and rvm, and that you have a working application (running on your machine)
+that also has a Github or Bitbucket repo (or any other code hosting service).</p>
+
+<p>Here are the tutorials I used myself. Please note that this guide will be highly based on those other tutorials, my primary goal was to have all the needed
+information in one unique place.</p>
+
+<ul>
+<li><a href="https://www.digitalocean.com/community/articles/initial-server-setup-with-ubuntu-12-04">Initial Server Setup with Ubuntu 12.04</a></li>
+<li><a href="http://www.thefanclub.co.za/how-to/how-secure-ubuntu-1204-lts-server-part-1-basics">How to Secure Ubuntu 12.04 Server</a></li>
+<li><a href="https://www.digitalocean.com/community/articles/how-to-add-swap-on-ubuntu-12-04">How to Add Swap on Ubuntu 12.04</a></li>
+<li><a href="https://coderwall.com/p/yz8cha">Deploying Rails app using Nginx, Unicorn and Capistrano</a></li>
+<li><a href="http://www.westphahl.net/blog/2012/01/03/setting-up-https-with-nginx-and-startssl/">Setting up HTTPS with Nginx and StartSSL</a></li>
+</ul>
+
+
+<p>First of all you need to have a private server on which you have a ssh access. If you do not have one yet, I suggest taking a VPS at
+<a href="https://www.digitalocean.com/">Digital Ocean</a>, they have SSDs in every server and you can have one in just under one minute, starting from 5$/month.</p>
+
+<p><em>A lot of the following commands need <code>sudo</code> to work.</em></p>
+
+<p>You can start by updating packages with <code>apt-get update</code>.</p>
+
+<p>Annnnnnddd that&rsquo;s a go!</p>
+
+<h2>Setting up some basic security rules</h2>
+
+<h3>Users management</h3>
+
+<p>First, change the <strong>root password</strong>:</p>
+
+<pre><code>passwd
+</code></pre>
+
+<p>Then you can add a new user so that after we can allow this new user to log in via <strong>ssh</strong> and <strong>disallow root login</strong>.</p>
+
+<pre><code>adduser johnsnow
+</code></pre>
+
+<p>We now have to give some permissions to this new user. Edit the corresponding file with:</p>
+
+<pre><code>visudo
+</code></pre>
+
+<p>And add this line:</p>
+
+<pre><code>johnsnow ALL=(ALL:ALL) ALL
+</code></pre>
+
+<h3>SSH hardening</h3>
+
+<p>Edit the related configuration file. I always use <code>nano</code> but you can use <code>vi</code> or any other editor of your choice.</p>
+
+<pre><code>nano /etc/ssh/sshd_config
+</code></pre>
+
+<p>Add or change these lines:</p>
+
+<pre><code>Port xxxxx
+Protocol 2
+PermitRootLogin no
+UseDNS no
+AllowUsers johnsnow
+DebianBanner no
+</code></pre>
+
+<p><code>Port</code>: you can choose any unused port from 1025 up to 65536, this is the port you&rsquo;ll use to log in via ssh, instead of the standard port 22.
+This makes it harder for someone to try to log in on your server.</p>
+
+<p><code>Protocol 2</code>: tells ssh to use SSHv2 instead of SSHv1, see <a href="http://www.snailbook.com/faq/ssh-1-vs-2.auto.html">SSHv1 vs SSHv2</a> for a list of the differences.</p>
+
+<p><code>PermitRootLogin no</code>: disables the login via ssh using <strong>root</strong>.</p>
+
+<p><code>UseDNS no</code>: this option is probably the least important one, check it out here
+<a href="http://unix.stackexchange.com/questions/56941/what-is-the-point-of-sshd-usedns-option">What is the Point of sshd UseDNS Option</a>.</p>
+
+<p><code>AllowUsers johnsnow</code>: makes <strong>johnsnow</strong> the only user allowed to log in via ssh.</p>
+
+<p><code>DebianBanner no</code>: prevents ssh from broadcasting the distribution information, more information here
+<a href="https://scottlinux.com/2011/06/14/disable-debian-banner-suffix-on-ssh-server/">Disable Debian Banner Suffix on ssh Server</a>.</p>
+
+<p>Then you just have to <code>reload</code> ssh:</p>
+
+<pre><code>reload ssh
+</code></pre>
+
+<p>That&rsquo;s it, you&rsquo;re done, you can no longer log in using <strong>root</strong>. Now, you can do it using your user like so:</p>
+
+<pre><code>ssh johnsnow@your_server_ip_address -p xxxxx
+</code></pre>
+
+<p><code>xxxxx</code> being the port you chose earlier in the configuration.</p>
+
+<h3>Firewall setup</h3>
+
+<p>Next we are going to set up a firewall that&rsquo;s called UFW as in <strong>Uncomplicated Firewall</strong>.</p>
+
+<pre><code>apt-get install ufw
+</code></pre>
+
+<p>And we are going to allow the port we use for <strong>ssh</strong>, <strong>http</strong> and <strong>https</strong> protocols.</p>
+
+<pre><code>ufw allow xxxxx
+ufw allow http
+ufw allow https
+</code></pre>
+
+<p><code>xxxxx</code> still being our ssh port.</p>
+
+<p>Now we just have to enable the firewall with:</p>
+
+<pre><code>ufw allow enable
+</code></pre>
+
+<p>Now open a second shell and try logging in again via ssh to be sure you didn&rsquo;t break anything with the firewall rules.</p>
+
+<p>You can check everything with:</p>
+
+<pre><code>ufw status verbose
+</code></pre>
+
+<h3>Shared memory</h3>
+
+<p>To quote the tutorial I followed: <em>&ldquo;shared memory can be used in an attack against a running service&rdquo;</em>. To secure it, just edit the <strong>fstab</strong> file.</p>
+
+<pre><code>nano /etc/fstab
+</code></pre>
+
+<p>And add this line:</p>
+
+<pre><code>tmpfs     /dev/shm     tmpfs     defaults,noexec,nosuid     0     0
+</code></pre>
+
+<p>This works on Ubuntu 12.04, for later versions, replace <code>/dev/shm</code> by <code>/run/shm</code>. Just save and reboot.</p>
+
+<h3>Network security</h3>
+
+<p>Edit the <strong>sysctl</strong> file:</p>
+
+<pre><code>nano /etc/sysctl.conf
+</code></pre>
+
+<p>And add or change the following lines:</p>
+
+<pre><code># IP Spoofing protection
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+
+# Ignore ICMP broadcast requests
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# Disable source packet routing
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv6.conf.all.accept_source_route = 0 
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv6.conf.default.accept_source_route = 0
+
+# Ignore send redirects
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+
+# Block SYN attacks
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_max_syn_backlog = 2048
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_syn_retries = 5
+
+# Log Martians
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+
+# Ignore ICMP redirects
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0 
+net.ipv6.conf.default.accept_redirects = 0
+
+# Ignore Directed pings
+net.ipv4.icmp_echo_ignore_all = 1
+</code></pre>
+
+<p>To reload the configuration, just issue:</p>
+
+<pre><code>sysctl -p
+</code></pre>
+
+<h3>IP Spoofing</h3>
+
+<p>To prevent this, edit the <strong>host</strong> file:</p>
+
+<pre><code>nano /etc/host.conf
+</code></pre>
+
+<p>And add these lines:</p>
+
+<pre><code>order bind,hosts
+nospoof on
+</code></pre>
+
+<h3>DenyHosts</h3>
+
+<p>To quote the tutorial I followed once again: <em>&ldquo;denyHosts is a python program that automatically blocks SSH attacks by adding entries to /etc/hosts.deny.
+DenyHosts will also inform Linux administrators about offending hosts, attacked users and suspicious logins&rdquo;</em>.</p>
+
+<p>Install the program:</p>
+
+<pre><code>apt-get install denyhosts
+</code></pre>
+
+<p>If you have to edit email settings or other options, you can edit the following file:</p>
+
+<pre><code>nano /etc/denyhosts.conf
+</code></pre>
+
+<h3>Fail2Ban</h3>
+
+<p>Fail2Ban listens for failed attemps of connections, exploits etc.. and blocks corresponding IP addresses by updating the firewall rules dynamically.<br/>
+To install it, just use the usual:</p>
+
+<pre><code>apt-get install fail2ban
+</code></pre>
+
+<p>Edit the configuration file and change the ssh port to the one you are using in the &ldquo;ssh&rdquo; section of the file.</p>
+
+<pre><code>nano /etc/fail2ban/jail.conf
+</code></pre>
+
+<p>Change <code>port = ssh</code> to <code>port = xxxxx</code>.</p>
+
+<p>And finally, restart Fail2Ban with:</p>
+
+<pre><code>service fail2ban restart
+</code></pre>
+
+<h3>Rootkits</h3>
+
+<p>To finish with security we are going to install programs that check the server for rootkits. A rootkit is a software that has been built to hide processes or
+programs and grant them privileged access.</p>
+
+<p>Install two programs:</p>
+
+<pre><code>apt-get install rkhunter chkrootkit
+</code></pre>
+
+<p>Update and run the first one:</p>
+
+<pre><code>rkhunter --update
+rkhunter --propupd
+rkhunter --check
+</code></pre>
+
+<p>Just run the second one:</p>
+
+<pre><code>chkrootkit
+</code></pre>
+
+<h3>AppArmor</h3>
+
+<p>I&rsquo;ll let Wikipedia describe what it does: <a href="http://en.wikipedia.org/wiki/AppArmor">http://en.wikipedia.org/wiki/AppArmor</a>.</p>
+
+<pre><code>apt-get install apparmor apparmor-profiles
+</code></pre>
+
+<h2>SWAP</h2>
+
+<p>If you have a limited RAM, say 512M, you might want to add some swap just in case.<br/>
+First check that you do not have swap already in use:</p>
+
+<pre><code>swapon -s
+</code></pre>
+
+<p>If this results in an empty list, then you&rsquo;re good.<br/>
+You can now create the swapfile and setup a swap area with it:</p>
+
+<pre><code>dd if=/dev/zero of=/swapfile bs=1024 count=512k
+mkswap /swapfile
+</code></pre>
+
+<p>Now you can enable the file:</p>
+
+<pre><code>swapon /swapfile
+</code></pre>
+
+<p>Run the first command to see what changed:</p>
+
+<pre><code>swapon -s
+</code></pre>
+
+<p>You should see a new line in the list.<br/>
+Now we have to edit <strong>/etc/fstab</strong> file so that these changes still work after a reboot:</p>
+
+<pre><code>nano /etc/fstab
+</code></pre>
+
+<p>And add this line:</p>
+
+<pre><code>/swapfile       none    swap    sw      0       0
+</code></pre>
+
+<p>Now we have to choose when the system should use this swap space instead of using RAM. For this we have to choose a value between 0 and 100 that&rsquo;s going to be the
+left percentage of RAM before using swap. For instance, if we have 512M RAM and we set the value to 10, it means the system will start using swap when we have
+less than 10% of RAM available, or if you prefere less than 50M available. Here we set the value to <strong>0</strong>, this means the system will swap only in case of emergency
+at the last moment. I personnaly had to set it to <strong>20</strong> for the assets precompilation to work, otherwise I was running into an error (the only indication was
+&ldquo;<em>killed</em>&rdquo;).</p>
+
+<pre><code>echo 0 | sudo tee /proc/sys/vm/swappiness
+echo vm.swappiness = 0 | sudo tee -a /etc/sysctl.conf
+</code></pre>
+
+<p>Just set permissions on the file and you&rsquo;re done:</p>
+
+<pre><code>sudo chown root:root /swapfile 
+sudo chmod 0600 /swapfile
+</code></pre>
+
+<h2>Nginx and Unicorn</h2>
+
+<h3>RVM, MongoDB, Redis and other stuff</h3>
+
+<p>Before actually installing and configuring Nginx and Unicorn, we&rsquo;re going to install <strong>rvm</strong>, <strong>git</strong>, and <strong>nodejs</strong>.<br/>
+First, let&rsquo;s install <strong>curl</strong>:</p>
+
+<pre><code>apt-get install curl
+</code></pre>
+
+<p>And <strong>rvm</strong>:</p>
+
+<pre><code>curl -L get.rvm.io | bash -s stable
+</code></pre>
+
+<p>Then make it available in your current shell:</p>
+
+<pre><code>source ~/.rvm/scripts/rvm
+</code></pre>
+
+<p>And install the requirements:</p>
+
+<pre><code>rvm requirements
+</code></pre>
+
+<p>Install the ruby version your are using in your application, for instance 2.0.0, and make it the default for the system:</p>
+
+<pre><code>rvm install 2.0.0
+rvm use 2.0.0 --default
+</code></pre>
+
+<p>Update <strong>rubygems</strong> just in case:</p>
+
+<pre><code>rvm rubygems current
+</code></pre>
+
+<p>Install git:</p>
+
+<pre><code>apt-get install git-core
+</code></pre>
+
+<p>I usually install <strong>NodeJS</strong> for assets precompilation:</p>
+
+<pre><code>apt-get install nodejs
+</code></pre>
+
+<p>Let&rsquo;s install <strong>MongoDB</strong>:</p>
+
+<pre><code>apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+apt-get update
+apt-get install mongodb-10gen
+</code></pre>
+
+<p>We have to create the default <strong>/data/db</strong> directory and set the owner and permissions accordingly:</p>
+
+<pre><code>mkdir -p /data/db
+chmod 0755 /data/db
+chown mongodb /data/db
+</code></pre>
+
+<p>Let&rsquo;s install <strong>Redis</strong> now (for sidekiq):</p>
+
+<pre><code>apt-get install redis-server
+</code></pre>
+
+<p>And we&rsquo;re going to need <strong>bundler</strong> too:</p>
+
+<pre><code>gem install bundler
+</code></pre>
+
+<p>Finally, at some point, chances are that you&rsquo;re going to install some gem requiring <strong>Nokogiri</strong> which requires additional packages, so let&rsquo;s install those
+packages beforehand:</p>
+
+<pre><code>apt-get install libxslt-dev libxml2-dev
+</code></pre>
+
+<h3>Nginx</h3>
+
+<p>It&rsquo;s now time to install <strong>Nginx</strong> and run it:</p>
+
+<pre><code>apt-get install nginx
+service nginx start
+</code></pre>
+
+<p>Now if you navigate to your_server_ip_address in a browser, you should see the default Nginx page.</p>
+
+<p>Let&rsquo;s configure it. Add this in <strong>/etc/nginx/nginx.conf</strong>, in the <strong>http { &hellip; }</strong> block:</p>
+
+<pre><code>upstream unicorn {
+  server unix:/tmp/unicorn.your_project.sock fail_timeout=0;
+}
+
+server {
+  listen 80 default_server deferred;
+  # server_name example.com;
+  root /home/johnsnow/apps/your_project/current/public;
+
+  location ^~ /assets/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  try_files $uri/index.html $uri @unicorn;
+  location @unicorn {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://unicorn;
+  }
+
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 20M;
+  keepalive_timeout 10;
+}
+</code></pre>
+
+<p>Let&rsquo;s break it down:</p>
+
+<p>The <code>upstream</code> block will be used to proxy requests to a Unicorn unix socket (a socket used by Unicorn to listen and process requests). Right now there is no
+socket yet but we&rsquo;ll be configuring this later on. Then we use this in the <code>server</code> block with the line <code>proxy_pass http://unicorn</code>.</p>
+
+<p>The <code>root</code> line is used to point to the <strong>public</strong> directory of the Rails app. This path structure is the one set up by <strong>Capistrano</strong> when deploying the
+application.</p>
+
+<p>The <code>client_max_body_size</code> directive is used to set the maximum body size of client requests. Check it out here:
+<a href="http://wiki.nginx.org/HttpCoreModule#client_max_body_size">http://wiki.nginx.org/HttpCoreModule#client_max_body_size</a>.</p>
+
+<p>You can look the internet up for the rest of these options, you&rsquo;ll find way more information than what I could write here.</p>
+
+<h3>Unicorn</h3>
+
+<p>Add the <strong>unicorn</strong> gem to your project: in the Gemfile, add</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># I am currently using version 4.8.0</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;unicorn&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 4.8.0&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&rsquo;re going to create the configuration file for <strong>Unicorn</strong>: in your application, create a file <strong>config/unicorn.rb</strong>:</p>
+
+<figure class='code'><figcaption><span>config/unicorn.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;/home/johnsnow/apps/your_project/current&quot;</span>
+</span><span class='line'><span class="n">working_directory</span> <span class="n">root</span>
+</span><span class='line'><span class="n">pid</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">root</span><span class="si">}</span><span class="s2">/tmp/pids/unicorn.pid&quot;</span>
+</span><span class='line'><span class="n">stderr_path</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">root</span><span class="si">}</span><span class="s2">/log/unicorn.log&quot;</span>
+</span><span class='line'><span class="n">stdout_path</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">root</span><span class="si">}</span><span class="s2">/log/unicorn.log&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">listen</span> <span class="s2">&quot;/tmp/unicorn.your_project.sock&quot;</span>
+</span><span class='line'><span class="n">worker_processes</span> <span class="mi">2</span>
+</span><span class='line'><span class="n">timeout</span> <span class="mi">30</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Force the bundler gemfile environment variable to</span>
+</span><span class='line'><span class="c1"># reference the capistrano &quot;current&quot; symlink</span>
+</span><span class='line'><span class="n">before_exec</span> <span class="k">do</span> <span class="o">|</span><span class="n">_</span><span class="o">|</span>
+</span><span class='line'>  <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;BUNDLE_GEMFILE&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;Gemfile&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And an initialization script for <strong>Unicorn</strong> as well in <strong>config/unicorn_init.sh</strong>, this file will be symlinked later in <strong>/etc/init.d/</strong>:</p>
+
+<figure class='code'><figcaption><span>config/unicorn_init.sh</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="c">### BEGIN INIT INFO</span>
+</span><span class='line'><span class="c"># Provides:          unicorn</span>
+</span><span class='line'><span class="c"># Required-Start:    $remote_fs $syslog</span>
+</span><span class='line'><span class="c"># Required-Stop:     $remote_fs $syslog</span>
+</span><span class='line'><span class="c"># Default-Start:     2 3 4 5</span>
+</span><span class='line'><span class="c"># Default-Stop:      0 1 6</span>
+</span><span class='line'><span class="c"># Short-Description: Manage unicorn server</span>
+</span><span class='line'><span class="c"># Description:       Start, stop, restart unicorn server for a specific application.</span>
+</span><span class='line'><span class="c">### END INIT INFO</span>
+</span><span class='line'><span class="nb">set</span> -e
+</span><span class='line'>
+</span><span class='line'><span class="c"># Feel free to change any of the following variables for your app:</span>
+</span><span class='line'><span class="nv">TIMEOUT</span><span class="o">=</span><span class="k">${</span><span class="nv">TIMEOUT</span><span class="p">-60</span><span class="k">}</span>
+</span><span class='line'><span class="nv">APP_ROOT</span><span class="o">=</span>/home/johnsnow/apps/your_project/current
+</span><span class='line'><span class="nv">PID</span><span class="o">=</span><span class="nv">$APP_ROOT</span>/tmp/pids/unicorn.pid
+</span><span class='line'><span class="nv">CMD</span><span class="o">=</span><span class="s2">&quot;cd $APP_ROOT; bundle exec unicorn -D -c $APP_ROOT/config/unicorn.rb -E production&quot;</span>
+</span><span class='line'><span class="nv">AS_USER</span><span class="o">=</span>johnsnow
+</span><span class='line'><span class="nb">set</span> -u
+</span><span class='line'>
+</span><span class='line'><span class="nv">OLD_PIN</span><span class="o">=</span><span class="s2">&quot;$PID.oldbin&quot;</span>
+</span><span class='line'>
+</span><span class='line'>sig <span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nb">test</span> -s <span class="s2">&quot;$PID&quot;</span> <span class="o">&amp;&amp;</span> <span class="nb">kill</span> -<span class="nv">$1</span> <span class="sb">`</span>cat <span class="nv">$PID</span><span class="sb">`</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>oldsig <span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nb">test</span> -s <span class="nv">$OLD_PIN</span> <span class="o">&amp;&amp;</span> <span class="nb">kill</span> -<span class="nv">$1</span> <span class="sb">`</span>cat <span class="nv">$OLD_PIN</span><span class="sb">`</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>run <span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$(id -un)&quot;</span> <span class="o">=</span> <span class="s2">&quot;$AS_USER&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">    </span><span class="nb">eval</span> <span class="nv">$1</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'><span class="k">    </span>su -c <span class="s2">&quot;$1&quot;</span> - <span class="nv">$AS_USER</span>
+</span><span class='line'>  <span class="k">fi</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">case</span> <span class="s2">&quot;$1&quot;</span> in
+</span><span class='line'>start<span class="o">)</span>
+</span><span class='line'>  sig 0 <span class="o">&amp;&amp;</span> <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Already running&quot;</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
+</span><span class='line'>  run <span class="s2">&quot;$CMD&quot;</span>
+</span><span class='line'>  ;;
+</span><span class='line'>stop<span class="o">)</span>
+</span><span class='line'>  sig QUIT <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
+</span><span class='line'>  <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Not running&quot;</span>
+</span><span class='line'>  ;;
+</span><span class='line'>force-stop<span class="o">)</span>
+</span><span class='line'>  sig TERM <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
+</span><span class='line'>  <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Not running&quot;</span>
+</span><span class='line'>  ;;
+</span><span class='line'>restart|reload<span class="o">)</span>
+</span><span class='line'>  sig HUP <span class="o">&amp;&amp;</span> <span class="nb">echo </span>reloaded OK <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
+</span><span class='line'>  <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Couldn&#39;t reload, starting &#39;$CMD&#39; instead&quot;</span>
+</span><span class='line'>  run <span class="s2">&quot;$CMD&quot;</span>
+</span><span class='line'>  ;;
+</span><span class='line'>upgrade<span class="o">)</span>
+</span><span class='line'>  <span class="k">if </span>sig USR2 <span class="o">&amp;&amp;</span> sleep 2 <span class="o">&amp;&amp;</span> sig 0 <span class="o">&amp;&amp;</span> oldsig QUIT
+</span><span class='line'>  <span class="k">then</span>
+</span><span class='line'><span class="k">    </span><span class="nv">n</span><span class="o">=</span><span class="nv">$TIMEOUT</span>
+</span><span class='line'>    <span class="k">while </span><span class="nb">test</span> -s <span class="nv">$OLD_PIN</span> <span class="o">&amp;&amp;</span> <span class="nb">test</span> <span class="nv">$n</span> -ge 0
+</span><span class='line'>    <span class="k">do</span>
+</span><span class='line'><span class="k">      </span><span class="nb">printf</span> <span class="s1">&#39;.&#39;</span> <span class="o">&amp;&amp;</span> sleep 1 <span class="o">&amp;&amp;</span> <span class="nv">n</span><span class="o">=</span><span class="k">$((</span> <span class="nv">$n</span> <span class="o">-</span> <span class="m">1</span> <span class="k">))</span>
+</span><span class='line'>    <span class="k">done</span>
+</span><span class='line'><span class="k">    </span><span class="nb">echo</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">    </span><span class="k">if </span><span class="nb">test</span> <span class="nv">$n</span> -lt 0 <span class="o">&amp;&amp;</span> <span class="nb">test</span> -s <span class="nv">$OLD_PIN</span>
+</span><span class='line'>    <span class="k">then</span>
+</span><span class='line'><span class="k">      </span><span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;$OLD_PIN still exists after $TIMEOUT seconds&quot;</span>
+</span><span class='line'>      <span class="nb">exit </span>1
+</span><span class='line'>    <span class="k">fi</span>
+</span><span class='line'><span class="k">    </span><span class="nb">exit </span>0
+</span><span class='line'>  <span class="k">fi</span>
+</span><span class='line'><span class="k">  </span><span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Couldn&#39;t upgrade, starting &#39;$CMD&#39; instead&quot;</span>
+</span><span class='line'>  run <span class="s2">&quot;$CMD&quot;</span>
+</span><span class='line'>  ;;
+</span><span class='line'>reopen-logs<span class="o">)</span>
+</span><span class='line'>  sig USR1
+</span><span class='line'>  ;;
+</span><span class='line'>*<span class="o">)</span>
+</span><span class='line'>  <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Usage: $0 &lt;start|stop|restart|upgrade|force-stop|reopen-logs&gt;&quot;</span>
+</span><span class='line'>  <span class="nb">exit </span>1
+</span><span class='line'>  ;;
+</span><span class='line'><span class="k">esac</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The file is pretty much straightforward so I suggest you read it and see what it does. Basically, it is used to manage the unicorn process.</p>
+
+<h3>Capistrano</h3>
+
+<p>Add the required gems to your Gemfile:</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;capistrano&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 2.15.4&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;rvm-capistrano&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 1.5.1&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we create two files for Capistrano: <strong>Capfile</strong> and <strong>config/deploy.rb</strong> with the following command ran from the root directory of your app:</p>
+
+<pre><code>capify .
+</code></pre>
+
+<p>As a side note, before we go further, I&rsquo;m supposing that you already have the mongoid gem or whatever ORM you&rsquo;re using and the sidekiq gem if you are using
+sidekiq as well.</p>
+
+<p>Let&rsquo;s write some instructions in the <strong>config/deploy.rb</strong> file:</p>
+
+<figure class='code'><figcaption><span>config/deploy.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;bundler/capistrano&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;rvm/capistrano&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq/capistrano&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">server</span> <span class="s2">&quot;your_server_ip_address&quot;</span><span class="p">,</span> <span class="ss">:web</span><span class="p">,</span> <span class="ss">:app</span><span class="p">,</span> <span class="ss">:db</span><span class="p">,</span> <span class="ss">primary</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">set</span> <span class="ss">:application</span><span class="p">,</span> <span class="s2">&quot;your_project&quot;</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:user</span><span class="p">,</span> <span class="s2">&quot;johnsnow&quot;</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:port</span><span class="p">,</span> <span class="n">xxxxx</span> <span class="c1">#your ssh port</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:deploy_to</span><span class="p">,</span> <span class="s2">&quot;/home/</span><span class="si">#{</span><span class="n">user</span><span class="si">}</span><span class="s2">/apps/</span><span class="si">#{</span><span class="n">application</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:deploy_via</span><span class="p">,</span> <span class="ss">:remote_cache</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:use_sudo</span><span class="p">,</span> <span class="kp">false</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">set</span> <span class="ss">:scm</span><span class="p">,</span> <span class="s2">&quot;git&quot;</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:repository</span><span class="p">,</span> <span class="s2">&quot;your_project.git&quot;</span> <span class="c1">#your application repo (for instance git@github.com:user/application.git)</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:branch</span><span class="p">,</span> <span class="s2">&quot;master&quot;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">default_run_options</span><span class="o">[</span><span class="ss">:pty</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'><span class="n">ssh_options</span><span class="o">[</span><span class="ss">:forward_agent</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">after</span> <span class="s2">&quot;deploy&quot;</span><span class="p">,</span> <span class="s2">&quot;deploy:cleanup&quot;</span> <span class="c1"># keep only the last 5 releases</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">namespace</span> <span class="ss">:deploy</span> <span class="k">do</span>
+</span><span class='line'>  <span class="sx">%w[start stop restart]</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">command</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">desc</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">command</span><span class="si">}</span><span class="s2"> unicorn server&quot;</span>
+</span><span class='line'>    <span class="n">task</span> <span class="n">command</span><span class="p">,</span> <span class="ss">roles</span><span class="p">:</span> <span class="ss">:app</span><span class="p">,</span> <span class="ss">except</span><span class="p">:</span> <span class="p">{</span> <span class="n">no_release</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">run</span> <span class="s2">&quot;/etc/init.d/unicorn_</span><span class="si">#{</span><span class="n">application</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">command</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:setup_config</span><span class="p">,</span> <span class="ss">roles</span><span class="p">:</span> <span class="ss">:app</span> <span class="k">do</span>
+</span><span class='line'>    <span class="c1"># symlink the unicorn init file in /etc/init.d/</span>
+</span><span class='line'>    <span class="n">sudo</span> <span class="s2">&quot;ln -nfs </span><span class="si">#{</span><span class="n">current_path</span><span class="si">}</span><span class="s2">/config/unicorn_init.sh /etc/init.d/unicorn_</span><span class="si">#{</span><span class="n">application</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="c1"># create a shared directory to keep files that are not in git and that are used for the application</span>
+</span><span class='line'>    <span class="n">run</span> <span class="s2">&quot;mkdir -p </span><span class="si">#{</span><span class="n">shared_path</span><span class="si">}</span><span class="s2">/config&quot;</span>
+</span><span class='line'>    <span class="c1"># if you&#39;re using mongoid, create a mongoid.template.yml file and fill it with your production configuration</span>
+</span><span class='line'>    <span class="c1"># and add your mongoid.yml file to .gitignore</span>
+</span><span class='line'>    <span class="n">put</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;config/mongoid.template.yml&quot;</span><span class="p">),</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">shared_path</span><span class="si">}</span><span class="s2">/config/mongoid.yml&quot;</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;Now edit the config files in </span><span class="si">#{</span><span class="n">shared_path</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">after</span> <span class="s2">&quot;deploy:setup&quot;</span><span class="p">,</span> <span class="s2">&quot;deploy:setup_config&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:symlink_config</span><span class="p">,</span> <span class="ss">roles</span><span class="p">:</span> <span class="ss">:app</span> <span class="k">do</span>
+</span><span class='line'>    <span class="c1"># symlink the shared mongoid config file in the current release</span>
+</span><span class='line'>    <span class="n">run</span> <span class="s2">&quot;ln -nfs </span><span class="si">#{</span><span class="n">shared_path</span><span class="si">}</span><span class="s2">/config/mongoid.yml </span><span class="si">#{</span><span class="n">release_path</span><span class="si">}</span><span class="s2">/config/mongoid.yml&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">after</span> <span class="s2">&quot;deploy:finalize_update&quot;</span><span class="p">,</span> <span class="s2">&quot;deploy:symlink_config&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">desc</span> <span class="s2">&quot;Create MongoDB indexes&quot;</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:mongoid_indexes</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">run</span> <span class="s2">&quot;cd </span><span class="si">#{</span><span class="n">current_path</span><span class="si">}</span><span class="s2"> &amp;&amp; RAILS_ENV=production bundle exec rake db:mongoid:create_indexes&quot;</span><span class="p">,</span> <span class="ss">once</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">after</span> <span class="s2">&quot;deploy:update&quot;</span><span class="p">,</span> <span class="s2">&quot;deploy:mongoid_indexes&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">desc</span> <span class="s2">&quot;Make sure local git is in sync with remote.&quot;</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:check_revision</span><span class="p">,</span> <span class="ss">roles</span><span class="p">:</span> <span class="ss">:web</span> <span class="k">do</span>
+</span><span class='line'>    <span class="k">unless</span> <span class="sb">`git rev-parse HEAD`</span> <span class="o">==</span> <span class="sb">`git rev-parse origin/master`</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;WARNING: HEAD is not the same as origin/master&quot;</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Run `git push` to sync changes.&quot;</span>
+</span><span class='line'>      <span class="nb">exit</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">before</span> <span class="s2">&quot;deploy&quot;</span><span class="p">,</span> <span class="s2">&quot;deploy:check_revision&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&rsquo;ve added some comments but feel free to read the rest of the file, it is straightforward as well.</p>
+
+<p>Your <strong>Capfile</strong> should look like this:</p>
+
+<figure class='code'><figcaption><span>Capfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">load</span> <span class="s1">&#39;deploy&#39;</span>
+</span><span class='line'><span class="nb">load</span> <span class="s1">&#39;deploy/assets&#39;</span>
+</span><span class='line'><span class="nb">load</span> <span class="s1">&#39;config/deploy&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add your ssh key to the authorized keys on your server:</p>
+
+<pre><code># replace the port, the user and your ip address accordingly
+cat ~/.ssh/id_rsa.pub | ssh -p xxxxx johnsnow@your_server_ip_address 'mkdir -p ~/.ssh; cat &gt;&gt; ~/.ssh/authorized_keys'
+</code></pre>
+
+<p>Make sure you pushed all your changes to your repository (on Github or Bitbucket for instance).</p>
+
+<p>Now we have to tell capistrano to create the initial directory structure on the server as described in the recipe we just created:</p>
+
+<pre><code>cap deploy:setup
+</code></pre>
+
+<p>You can now go to your server and edit the <strong>mongoid.yml</strong> file in <strong>/home/johnsnow/apps/your_project/shared/config/mongoid.yml</strong>.</p>
+
+<p>Then you&rsquo;ll have to run:</p>
+
+<pre><code>cap deploy:cold
+</code></pre>
+
+<p>From the documentation, this will deploy the code, run any pending migrations (not used here because it&rsquo;s MongoDB), and then instead of invoking
+<code>deploy:restart</code>, it will invoke <code>deploy:start</code> to fire up the application servers. Check it out here
+<a href="http://capitate.rubyforge.org/recipes/deploy.html">http://capitate.rubyforge.org/recipes/deploy.html</a>.</p>
+
+<p>Delete the default Nginx server block:</p>
+
+<pre><code>rm /etc/nginx/sites-enabled/default
+</code></pre>
+
+<p>You can restart the <strong>nginx</strong> service to make sure the changes are taken into account:</p>
+
+<pre><code>service nginx restart
+</code></pre>
+
+<p>Make sure <strong>Unicorn</strong> is restarted when rebooting the server:</p>
+
+<pre><code>update-rc.d -f unicorn_your_project defaults
+</code></pre>
+
+<p>Push your changes (locally) one last time and deploy:</p>
+
+<pre><code>git push
+cap deploy
+</code></pre>
+
+<p>That&rsquo;s it, your app should be up and running when typing your server&rsquo;s ip address in your browser!</p>
+
+<h2>Sidekiq</h2>
+
+<p>We already required sidekiq in the capistrano recipe so everything should be fine but what if we restart the server? Let&rsquo;s create a script to make sure all the
+processes properly restart when rebooting. This script is made to work with <strong>Upstart</strong>.</p>
+
+<p>Create a file <strong>/etc/init/sidekiq.conf</strong>:</p>
+
+<figure class='code'><figcaption><span>/etc/init/sidekiq.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># /etc/init/sidekiq.conf - Sidekiq config</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># This example config should work with Ubuntu 12.04+.  It</span>
+</span><span class='line'><span class="c"># allows you to manage multiple Sidekiq instances with</span>
+</span><span class='line'><span class="c"># Upstart, Ubuntu&#39;s native service management tool.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Save this config as /etc/init/sidekiq.conf then manage sidekiq with:</span>
+</span><span class='line'><span class="c">#   sudo start sidekiq index=0</span>
+</span><span class='line'><span class="c">#   sudo stop sidekiq index=0</span>
+</span><span class='line'><span class="c">#   sudo status sidekiq index=0</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># or use the service command:</span>
+</span><span class='line'><span class="c">#   sudo service sidekiq {start,stop,restart,status}</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'>
+</span><span class='line'>description <span class="s2">&quot;Sidekiq Background Worker&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># no &quot;start on&quot;, we don&#39;t want to automatically start</span>
+</span><span class='line'>stop on <span class="o">(</span>stopping workers or runlevel <span class="o">[</span>06<span class="o">])</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># change to match your deployment user</span>
+</span><span class='line'>setuid johnsnow
+</span><span class='line'>setgid johnsnow
+</span><span class='line'>
+</span><span class='line'>respawn
+</span><span class='line'>respawn limit 3 30
+</span><span class='line'>
+</span><span class='line'><span class="c"># TERM and USR1 are sent by sidekiqctl when stopping sidekiq.  Without declaring these as normal exit codes, it just respawns.</span>
+</span><span class='line'>normal <span class="nb">exit </span>0 TERM USR1
+</span><span class='line'>
+</span><span class='line'><span class="c"># instance $index</span>
+</span><span class='line'>
+</span><span class='line'>script
+</span><span class='line'><span class="c"># this script runs in /bin/sh by default</span>
+</span><span class='line'><span class="c"># respawn as bash so we can source in rbenv</span>
+</span><span class='line'><span class="nb">exec</span> /bin/bash <span class="s">&lt;&lt;EOT</span>
+</span><span class='line'><span class="s">  # use syslog for logging</span>
+</span><span class='line'><span class="s">  # exec &amp;&gt; /dev/kmsg</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">  # pull in system rbenv</span>
+</span><span class='line'><span class="s">  # export HOME=/home/deploy</span>
+</span><span class='line'><span class="s">  # source /etc/profile.d/rbenv.sh</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">  cd /home/johnsnow/apps/your_project/current</span>
+</span><span class='line'><span class="s">  nohup bundle exec sidekiq -e production -C config/sidekiq.yml -i 0 -P tmp/pids/sidekiq.pid &gt;&gt; log/sidekiq.log 2&gt;&amp;1 &amp;</span>
+</span><span class='line'><span class="s">EOT</span>
+</span><span class='line'>end script
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here are the options for the line starting with <code>nohup</code>:<br/>
+<code>-e</code>: the environment<br/>
+<code>-C</code>: a config file eventhough we do not have one<br/>
+<code>-i</code>: sidekiq process index, from 0 to whatever you want, you&rsquo;ll have to loop and increment the value if you want to create multiple processes<br/>
+<code>-P</code>: the file holding sidekiq&rsquo;s process id</p>
+
+<p><code>nohup</code> is used to run sidekiq in the background and therefore keeping it alive event after logging off.</p>
+
+<p>I took the line from this file, check it out:
+<a href="https://github.com/mperham/sidekiq/blob/master/lib/sidekiq/capistrano2.rb">https://github.com/mperham/sidekiq/blob/master/lib/sidekiq/capistrano2.rb</a>.</p>
+
+<h2>Setup daily MongoDB backups</h2>
+
+<p>You&rsquo;ll often want to setup backups so here we go: just create a directory to store these backups.</p>
+
+<pre><code>mkdir /home/johnsnow/dumps
+</code></pre>
+
+<p>Then create a script to actually make a dump:</p>
+
+<figure class='code'><figcaption><span>/home/johnsnow/mongodump</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'><span class="nv">DUMPPATH</span><span class="o">=</span>/home/johnsnow/dumps <span class="c"># dumps directory we just created</span>
+</span><span class='line'><span class="nv">MONGODBNAME</span><span class="o">=</span>your_project_production <span class="c"># your MongoDB database name</span>
+</span><span class='line'><span class="nv">DAY</span><span class="o">=</span><span class="sb">`</span>/bin/date +%Y%m%d<span class="sb">`</span> <span class="c"># today&#39;s datetime</span>
+</span><span class='line'>
+</span><span class='line'>mongodump --db <span class="nv">$MONGODBNAME</span> --out <span class="nv">$DUMPPATH</span>/mongo_<span class="nv">$DAY</span> <span class="c"># run the command we those variables set</span>
+</span><span class='line'><span class="nb">cd</span> <span class="nv">$DUMPPATH</span>/mongo_<span class="nv">$DAY</span> <span class="c"># navigate to the folder where the dump was saved</span>
+</span><span class='line'>tar -cvzf <span class="s2">&quot;$DUMPPATH/mongo_$DAY.tar&quot;</span> <span class="nv">$MONGODBNAME</span> <span class="c"># create an archive out of that dump</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">cd</span> <span class="nv">$DUMPPATH</span>
+</span><span class='line'>rm -rf <span class="nv">$DUMPPATH</span>/mongo_<span class="nv">$DAY</span> <span class="c"># remove the dump because we only keep the archive version</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next make it executable:</p>
+
+<pre><code>chmod +x mongodump
+</code></pre>
+
+<p>And create a cronjob:</p>
+
+<pre><code>sudo crontab -e
+
+# add the next line in the file
+@daily /home/raindal/mongodump
+</code></pre>
+
+<p><code>@daily</code> means the script will be executed everyday at midnight.</p>
+
+<p>That&rsquo;s it for backups!</p>
+
+<h2>The end</h2>
+
+<p>I hope it helps! If I forgot something, be sure to leave a comment below and I&rsquo;ll try to answer as quickly as I can.</p>
+
+<p>Just in case you run in the same problems I did, I had to run another <code>update-rc.d -f unicorn_your_project defaults</code> at the end in order to have unicorn restarting
+on server reboot. The second error was hapenning when I was deploying the application with <code>cap deploy</code> and the only indication was &ldquo;<em>killed</em>&rdquo; just in the
+middle of the assets precompilation. To fix this I just had to set up some swap space because I was lacking memory.</p>
+</div>
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://requiremind.com/about/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-05T23:28:00+01:00" pubdate data-updated="true">Feb 5<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/mongodb/'>mongodb</a>, <a class='category' href='/categories/nginx/'>nginx</a>, <a class='category' href='/categories/redis/'>redis</a>, <a class='category' href='/categories/ruby-on-rails/'>ruby on rails</a>, <a class='category' href='/categories/security/'>security</a>, <a class='category' href='/categories/sidekiq/'>sidekiq</a>, <a class='category' href='/categories/ssl/'>ssl</a>, <a class='category' href='/categories/ubuntu-server/'>ubuntu server</a>, <a class='category' href='/categories/unicorn/'>unicorn</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/discover-emmet-and-improve-your-coding-speed" title="Previous Post: Discover Emmet and improve your coding speed">&laquo; Discover Emmet and improve your coding speed</a> /
+      
+        &nbsp;&nbsp; <a class="basic-alignment" href="/" title="Home">Home</a>
+      
+        / <a class="basic-alignment right" href="/git-bisect-your-bug-hunting-best-friend" title="Next Post: Git bisect your bug hunting best friend">Git bisect your bug hunting best friend &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section id="comments-section">
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/currying-spice-up-your-javascript-functions">Currying, spice up your javascript functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/git-bisect-your-bug-hunting-best-friend">Git bisect your bug hunting best friend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">Deploying a Rails App on Your Own Server - The Ultimate Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/discover-emmet-and-improve-your-coding-speed">Discover Emmet and improve your coding speed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial">Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - requireMind -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/deploying-a-rails-app-on-your-own-server-the-ultimate-guide';
+        var disqus_url = 'http://requiremind.com/deploying-a-rails-app-on-your-own-server-the-ultimate-guide';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

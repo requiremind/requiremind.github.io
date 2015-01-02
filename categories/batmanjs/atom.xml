@@ -1,0 +1,995 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: batmanjs | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/batmanjs/atom.xml" rel="self"/>
+  <link href="http://requiremind.com/"/>
+  <updated>2015-01-03T00:51:25+01:00</updated>
+  <id>http://requiremind.com/</id>
+  <author>
+    <name><![CDATA[requireMind]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby on Rails 4 and Batman.js - Another Getting Started Tutorial]]></title>
+    <link href="http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial"/>
+    <updated>2013-10-06T22:08:00+02:00</updated>
+    <id>http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial</id>
+    <content type="html"><![CDATA[<p>I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes the choice pretty hard
+when you don’t know the subtleties of each. As a Rails developer, I chose Batman.js because of its “Rails orientation” and because I know that <a href="http://www.shopify.ca/">Shopify</a> folks here in Canada
+are working hard to make things easy for us Rails developers (yes, they are developing Batman.js).</p>
+
+<!-- more -->
+
+
+<p>Throughout this tutorial I’m going to show you how I quickly built a simple post/comments application with Ruby on Rails 4 and Batman.js.</p>
+
+<p>At the time I’m writing these lines, our friends of Gotham City are updating the <a href="http://batmanjs.org/docs/index.html">documentation</a>, so be sure to check it out: a lot of helpful, valuable resources.</p>
+
+<p>You can find the application github repo here: <a href="https://github.com/Raindal/batman_js_blog">https://github.com/Raindal/batman_js_blog</a>.</p>
+
+<p>I’m eager to better myself with the framework so any comment will be highly appreciated.</p>
+
+<p>Let’s dive in!</p>
+
+<h2>On the server side</h2>
+
+<p>Here I’m assuming that you already installed Rails 4. We’re first going to create a new application called <strong>batman_js_blog</strong>.
+Let’s skip the documentation part with the following line.</p>
+
+<pre><code>rails new batman_js_blog --no-ri --no-rdoc
+</code></pre>
+
+<p>And just to be clear, <code>cd</code> into the application.</p>
+
+<pre><code>cd batman_js_blog
+</code></pre>
+
+<blockquote><p>Tired of using <code>cd</code> everytime? Check out <a href="http://requiremind.com/why-i-love-my-development-environment">my previous post</a> and start using ZSH now!</p></blockquote>
+
+<h3>The models</h3>
+
+<p>The models are pretty simple, the posts will have a <strong>title</strong> and a <strong>content</strong>. The comments will have a <strong>content</strong> only and a reference to a post (<strong>post_id</strong>).</p>
+
+<pre><code>rails g model post title:string content:text
+rails g model comment content:text post:references
+</code></pre>
+
+<p>Let’s get the associations right: a post <em>has many</em> comments, therefore, a comment <em>belongs to</em> a post. Let’s create some validations for future usage
+(see <em>Errors Handling</em> at the end).</p>
+
+<p>``` ruby app/models/post.rb
+class Post &lt; ActiveRecord::Base
+  has_many :comments</p>
+
+<p>  validates :title,   presence: true
+  validates :content, presence: true
+end
+```</p>
+
+<p>Using <code>references</code> when generating the Comment model should already get this part right with the <code>belongs_to</code>:</p>
+
+<p><code>ruby app/models/comment.rb
+class Comment &lt; ActiveRecord::Base
+  belongs_to :post
+end
+</code></p>
+
+<p>Run the migrations to create both tables, as usual.</p>
+
+<pre><code>rake db:migrate
+</code></pre>
+
+<p>We’re going to create some seeds to populate the database with fake data to work with. Let’s create 20 posts with 5 comments each.</p>
+
+<p><code>ruby db/seeds.rb
+20.times do |i|
+  post = Post.create(title: "Post #{i}", content: "Some awesome content")
+  5.times { |j| post.comments.create(content: "Comment n°#{j}") }
+end
+</code></p>
+
+<p>Run the seeds.</p>
+
+<pre><code>rake db:seed
+</code></pre>
+
+<p>Here we are using nested routes (nested resources) to reflect the associations we created earlier.<br/>
+This will enable routes like /posts/:post_id/comments/:id.</p>
+
+<p><code>ruby config/routes.rb
+resources :posts do
+  resources :comments
+end
+</code></p>
+
+<h3>The controllers</h3>
+
+<p>First you can create a <strong>posts_controller.rb</strong> file in your controllers folder.</p>
+
+<p>As we only need to serve <strong>json</strong>, we’re going to use the handy <code>respond_to</code> method at the top of our controller. Then, in every action we only have to use <code>respond_with</code>,
+that will basically call <code>to_json</code> on our resources.</p>
+
+<p>When displaying a specific post, we want to display its comments as well, so we need to return them with the post, this is why we use <code>include: :comments</code> in the show action.</p>
+
+<p>We do not need the <code>new</code> and <code>edit</code> actions, because Batman.js will take care of showing the form for us (it can because those actions do not require an interaction
+with the database).</p>
+
+<p>The rest of the controller is pretty much straightforward if you know your way around with Rails (which I assume).</p>
+
+<p>``` ruby app/controllers/posts_controller.rb
+class PostsController &lt; ApplicationController
+  respond_to :json</p>
+
+<p>  def index</p>
+
+<pre><code>respond_with Post.all
+</code></pre>
+
+<p>  end</p>
+
+<p>  def show</p>
+
+<pre><code>respond_with Post.find(params[:id]), include: :comments
+</code></pre>
+
+<p>  end</p>
+
+<p>  def create</p>
+
+<pre><code>respond_with Post.create(post_params)
+</code></pre>
+
+<p>  end</p>
+
+<p>  def update</p>
+
+<pre><code>post = Post.find(params[:id])
+post.update_attributes(post_params)
+respond_with post
+</code></pre>
+
+<p>  end</p>
+
+<p>  def destroy</p>
+
+<pre><code>respond_with Post.find(params[:id]).destroy
+</code></pre>
+
+<p>  end</p>
+
+<p>  private</p>
+
+<pre><code>def post_params
+  params.require(:post).permit(:title, :content)
+end
+</code></pre>
+
+<p>end
+```</p>
+
+<p>The comments controller is rather simple too. We’re not going to list all the comments, neither are we going to show one comment on its own,
+we’re not allowing the edition of a comment either. That means we don’t need the index, show, and update actions.</p>
+
+<p>The only thing we want to do is display related comments on every post&rsquo;s show view and a small form for adding a comment (plus a link for destroying each post).<br/>
+As I stated before, the comments are returned with every post thanks to <code>include: :comments</code> so we don&rsquo;t have to take care of this. The only thing left to do is enable
+comments creation and destruction.</p>
+
+<p>You can create a <strong>comments_controller.rb</strong> file:</p>
+
+<p>``` ruby app/controllers/comments_controller.rb
+class CommentsController &lt; ApplicationController
+  respond_to :json</p>
+
+<p>  def create</p>
+
+<pre><code>post = Post.find(params[:post_id])
+comment = post.comments.build(comment_params)
+comment.save
+respond_with(post, comment)
+</code></pre>
+
+<p>  end</p>
+
+<p>  def destroy</p>
+
+<pre><code>comment = Comment.find(params[:id])
+respond_with(comment.post, comment.destroy)
+</code></pre>
+
+<p>  end</p>
+
+<p>  private</p>
+
+<pre><code>def comment_params
+  params.require(:comment).permit(:content)
+end
+</code></pre>
+
+<p>end
+```</p>
+
+<p>You can now run a server with <code>rails s</code> and navigate to <a href="http://localhost:3000/posts.json">http://localhost:3000/posts.json</a> to check that you do have a json posts list displayed.
+You can check that each post is returned with its associated comments by navigating to <a href="http://localhost:3000/posts/1.json">http://localhost:3000/posts/1.json</a>.</p>
+
+<h2>On the client side</h2>
+
+<p>Now we can really crack into the subject. First of all, let’s add the gem to our gemfile and run <code>bundle</code> to install it.</p>
+
+<p>``` ruby Gemfile
+source &lsquo;<a href="https://rubygems.org">https://rubygems.org</a>&rsquo;</p>
+
+<h1>Bundle edge Rails instead: gem &lsquo;rails&rsquo;, github: &lsquo;rails/rails&rsquo;</h1>
+
+<p>gem &lsquo;rails&rsquo;, &lsquo;4.0.0&rsquo;</p>
+
+<p>gem &lsquo;batman-rails&rsquo;</p>
+
+<p>&hellip;
+```</p>
+
+<pre><code>bundle
+</code></pre>
+
+<p>We can now generate the skeleton of our Batman.js app, it’s going to reside in <strong>app/assets/batman</strong>.</p>
+
+<pre><code>rails g batman:app
+</code></pre>
+
+<p>This created the following folders and files:</p>
+
+<pre><code>create  app/controllers/batman_controller.rb
+create  app/views/layouts/batman.html.erb
+insert  config/routes.rb
+create  app/assets/batman/batman_js_blog.js.coffee
+create  app/assets/batman/models
+create  app/assets/batman/models/.gitkeep
+create  app/assets/batman/views
+create  app/assets/batman/views/.gitkeep
+create  app/assets/batman/controllers
+create  app/assets/batman/controllers/.gitkeep
+create  app/assets/batman/html
+create  app/assets/batman/html/.gitkeep
+create  app/assets/batman/lib
+create  app/assets/batman/lib/.gitkeep
+create  app/assets/batman/html/main
+create  app/assets/batman/controllers/application_controller.js.coffee
+create  app/assets/batman/controllers/main_controller.js.coffee
+create  app/assets/batman/html/main/index.html
+create  app/assets/batman/views/main/main_index_view.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+prepend  app/assets/batman/batman_js_blog.js.coffee
+</code></pre>
+
+<p>You can navigate to <a href="http://localhost:3000">http://localhost:3000</a> to see Batman.js home page.</p>
+
+<h3>Sneak peek</h3>
+
+<p>If you open the <strong>index view</strong>, you&rsquo;re probably going to see something like this somewhere in the file:</p>
+
+<p>``` html app/assets/batman/html/main/index.html</p>
+
+<div><label>First Name:</label><input type="text" data-bind="firstName"></div>
+
+
+<div><label>Last Name:</label><input type="text" data-bind="lastName"></div>
+
+
+<div data-showif="hasName">Hello, my name is <span data-bind="fullName"></span></div>
+
+
+<div><button data-event-click="resetName">Reset name</button></div>
+
+
+<p>```</p>
+
+<p>Ok, now you can finally catch a glimpse of Batman.js&hellip; And I&rsquo;m going to go through each element here.<br/>
+Every <code>data</code> property you see here is Batman related and as we speak about a JS framework, each of these properties will apply live all the time.</p>
+
+<p><code>data-bind</code>: binds the element&rsquo;s inner html to the given accessor&rsquo;s value. For instance the first input will display the value returned by <code>firstName</code>.<br/>
+<code>data-showif</code>: shows the element depending on the value of <code>hasName</code> which is a boolean.<br/>
+<code>data-event-click</code>: triggers the given method upon click.</p>
+
+<p>Now take a look at the controller.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/main_controller.js.coffee
+class BatmanJsBlog.MainController extends BatmanJsBlog.ApplicationController
+  routingKey: &lsquo;main&rsquo;</p>
+
+<p>  index: (params) &ndash;></p>
+
+<pre><code>@set 'firstName', 'Bruce'
+@set 'lastName', 'Wayne'
+</code></pre>
+
+<p>  @accessor &lsquo;fullName&rsquo;, &ndash;></p>
+
+<pre><code>"#{@get('firstName')} #{@get('lastName')}"
+</code></pre>
+
+<p>```</p>
+
+<p>You can actually see that the initial values are set in the <code>index</code> action using <code>@set('var', 'value')</code>.<br/>
+You can also see that the <code>fullName</code> accessor that is used in a <code>data-bind</code> is defined here and returns the values of the <code>firstName</code> and <code>lastName</code> variables combined
+with <code>@get('var')</code>.</p>
+
+<p>Now let&rsquo;s see <code>hasName</code> and <code>resetName</code>. These two reside in the following file.</p>
+
+<p>``` coffeescript app/assets/batman/views/main/main_index_view.js.coffee
+class BatmanJsBlog.MainIndexView extends Batman.View
+  resetName: &ndash;></p>
+
+<pre><code>@controller.set('firstName', '')
+@controller.set('lastName', '')
+</code></pre>
+
+<p>  @accessor &lsquo;hasName&rsquo;, &ndash;></p>
+
+<pre><code>@controller.get('fullName').length &gt; 1
+</code></pre>
+
+<p>```</p>
+
+<p>This code is specific to the index view. <code>hasName</code> checks that <code>fullName</code> contains at least one character and <code>resetName</code> resets tha values of <code>firstName</code> and <code>lastName</code>.</p>
+
+<h3>The models</h3>
+
+<p>We can go and create folders and files for the post resource.</p>
+
+<pre><code>rails g batman:scaffold post
+</code></pre>
+
+<p>The last command is a bit overkill for what we want to do but pretty handy for starting the project.</p>
+
+<p>Take a look at the main batman file and change the <code>@root</code> to <code>posts#index</code>.</p>
+
+<p>``` coffeescript app/assets/batman/batman_js_blog.js.coffee
+Batman.config.pathToHTML = &lsquo;/assets/html&rsquo;</p>
+
+<p>class BatmanJsBlog extends Batman.App</p>
+
+<p>  # This was automatically generated by the scaffold command
+  @resources &lsquo;posts&rsquo;</p>
+
+<p>  # Change &lsquo;main#index&rsquo; to this, this is the landing page of the application
+  # We want to first display a list of all the posts
+  @root &lsquo;posts#index&rsquo;</p>
+
+<p>(global ? window).BatmanJsBlog = BatmanJsBlog
+```</p>
+
+<p>The Post model should look like so:</p>
+
+<p>``` coffeescript app/assets/batman/models/post.js.coffee
+class BatmanJsBlog.Post extends Batman.Model
+  @resourceName: &lsquo;posts&rsquo;
+  @storageKey: &lsquo;posts&rsquo;</p>
+
+<p>  # We are using Batman.js with Ruby on Rails&hellip;
+  @persist Batman.RailsStorage</p>
+
+<p>  # Use @encode to tell batman.js which properties Rails will send back with its JSON.
+  @encode &lsquo;title&rsquo;, &lsquo;content&rsquo;
+  @encodeTimestamps()
+```</p>
+
+<p>Let&rsquo;s generate the Comment model.</p>
+
+<pre><code>rails g batman:model comment
+</code></pre>
+
+<p>``` coffeescript app/assets/batman/models/comment.js.coffee
+class BatmanJsBlog.Comment extends Batman.Model
+  @resourceName: &lsquo;comments&rsquo;
+  @storageKey: &lsquo;comments&rsquo;</p>
+
+<p>  @persist Batman.RailsStorage</p>
+
+<p>  # Looks familiar&hellip;
+  @belongsTo &lsquo;post&rsquo;</p>
+
+<p>  # Pretty much straightforward but we have to specify it
+  @urlNestsUnder &lsquo;post&rsquo;</p>
+
+<p>  @encode &lsquo;content&rsquo;, &lsquo;post_id&rsquo;
+  @encodeTimestamps()
+```</p>
+
+<p>We can now add the association on the Post model side.</p>
+
+<p>``` coffeescript app/assets/batman/models/post.js.coffee
+class BatmanJsBlog.Post extends Batman.Model
+  @resourceName: &lsquo;posts&rsquo;
+  @storageKey: &lsquo;posts&rsquo;</p>
+
+<p>  @persist Batman.RailsStorage</p>
+
+<p>  # Here is the other part of the relation
+  @hasMany &lsquo;comments&rsquo;</p>
+
+<p>  @encode &lsquo;title&rsquo;, &lsquo;content&rsquo;
+  @encodeTimestamps()
+```</p>
+
+<p>We can go back to the main file and set the <strong>nested routes</strong> for posts and comments, which also looks like the syntax you find in a traditional Rails application.</p>
+
+<p>``` coffeescript app/assets/batman/batman_js_blog.js.coffee
+&hellip;</p>
+
+<p>class BatmanJsBlog extends Batman.App</p>
+
+<p>  @resources &lsquo;posts&rsquo;, &ndash;></p>
+
+<pre><code>@resources 'comments'
+</code></pre>
+
+<p>&hellip;
+```</p>
+
+<h3>The controller</h3>
+
+<p>Let&rsquo;s go edit the <strong>posts controller</strong> and create an <code>index</code> action to list all our posts.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+class BatmanJsBlog.PostsController extends BatmanJsBlog.ApplicationController
+  routingKey: &lsquo;posts&rsquo;</p>
+
+<p>  index: (params) &ndash;></p>
+
+<pre><code>@set('posts', BatmanJsBlog.Post.get('all'))
+</code></pre>
+
+<p>```</p>
+
+<p>Here we are setting a <code>posts</code> variable when going through the <code>index</code> action that contains all our posts.<br/>
+<code>BatmanJsBlog.Post.get('all')</code> is a query to our Rails API we created earlier.</p>
+
+<blockquote><p>At any time, just open your browser dev tools to watch requests sent by Batman.js.</p></blockquote>
+
+<p>Now we can modify our <strong>index</strong> view.</p>
+
+<p>``` html app/assets/batman/html/posts/index.html
+<span data-bind="'post' | pluralize posts.length"></span></p>
+
+<ul>
+  <li data-foreach-post="posts">
+    <a data-bind="post.title" data-route="post"></a> |
+    <a data-event-click="destroy">Destroy</a>
+  </li>
+</ul>
+
+
+<p><code>``
+The first line sets a binding to</code>pluralize<code>the word "post" depending on the number of posts being retrieved:</code>posts.length<code>.  
+Now look at this line</code><li data-foreach-post="posts"><code>. Here</code>data-foreach<code>will iterate through</code>posts<code>that have been set earlier in the controller and yield a</code>li<code>
+tag for each of these posts. In every</code>li<code>block, a variable is used to hold the post object:</code>post<code>as in</code>data-foreach-post<code>.  
+</code><a data-bind="post.title" data-route="post"></a><code>: this is a link, again, the html value is set with</code>data-bind<code>and will be the post's title attribute.  
+</code>data-route<code>is used to set the</code>href<code>value of the link. Here</code>data-route=&ldquo;post&rdquo;<code>means we are linking to the</code>show<code>action corresponding to the current</code>post<code>.  
+We also display a "destroy" link. In Batman.js, the</code>destroy<code>action is not routable so we have to use an event instead. The event name will be</code>destroy<code>and it will
+be triggered on</code>click<code>on the link, therefore we have</code>data-event-click=&ldquo;destroy&rdquo;`.</p>
+
+<p>If you navigate to <a href="http://localhost:3000">http://localhost:3000</a> you should see the posts list.</p>
+
+<p>Let&rsquo;s add our <strong>show</strong> action to the posts controller.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+&hellip;</p>
+
+<p>show: (params) &ndash;>
+  BatmanJsBlog.Post.find params.id, @errorHandler (post) =></p>
+
+<pre><code>@set('post', post)
+</code></pre>
+
+<p>&hellip;
+```</p>
+
+<p>Again <code>BatmanJsBlog.Post.find params.id</code> uses the given id in the request parameters to query our API. The result is stored in a <code>post</code> variable and set as a controller
+attribute as usual with <code>@set</code>.</p>
+
+<p>Now we can write the <strong>show</strong> view.</p>
+
+<p>``` html app/assets/batman/html/posts/show.html</p>
+
+<h1 data-bind="post.title"></h1>
+
+
+
+
+<p data-bind="post.content"></p>
+
+
+<p><a data-route="routes.posts[post].edit">Edit</a> |
+<a data-event-click="destroy">Destroy</a></p>
+
+<ul>
+  <li data-foreach-comment="post.comments">
+    <p data-bind="comment.content"></p>
+  </li>
+</ul>
+
+
+<p>```</p>
+
+<p>Everything should look familiar now. We are using multiple data bindings to display our post&rsquo;s attributes. <code>routes.posts[post].edit</code> is used to route to the <strong>edit</strong> action
+of a particular post.<br/>
+Here we can also display the comments as they are returned in the JSON too: remember, earlier in this tutorial we included them in the API on the posts' <strong>show</strong> action with
+<code>include: :comments</code>.</p>
+
+<p>Go back to your application and click on one post: you should see the post&rsquo;s show view.</p>
+
+<p>Now that we have seen the <code>destroy</code> event twice, we can handle it in the controller.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+&hellip;</p>
+
+<p>destroy: (node, event, context) &ndash;>
+  post = if context.get(&lsquo;post&rsquo;) then context.get(&lsquo;post&rsquo;) else @post
+  post.destroy (err) =></p>
+
+<pre><code>if err
+  throw err unless err instanceof Batman.ErrorsSet
+else
+  @redirect '/posts'
+</code></pre>
+
+<p>&hellip;
+```</p>
+
+<p>The first line instantiates our post.<br/>
+As this is an event and not a route we have 3 arguments: <code>node, event, context</code>.<br/>
+<code>node</code> represents the html node.<br/>
+<code>event</code> represents the event that happenned.<br/>
+<code>context</code> can help you access objects defined within a certain scope: here our node.</p>
+
+<p>We linked to the <strong>destroy</strong> event at 2 different places: in the show where there is only one post defined (<code>@post</code>) and in the index where we use a loop to display multiple posts.
+Depending which event was triggered, we have to fetch our post differently.<br/>
+If <code>context.get('post')</code> exists then it means we are on the index view and we clicked &ldquo;destroy&rdquo; for one of our posts. This post is therefore available using context like this.<br/>
+If it doesn&rsquo;t exist, then we are on the show view and <code>@post</code> is defined because it was defined in the <strong>show</strong> action with <code>@set('post', post)</code>.</p>
+
+<p>Then, if everything goes well, we redirect to the <strong>index</strong> view in both cases.</p>
+
+<p>Go ahead and try out these new &ldquo;destroy&rdquo; links: on the index and on the show views.</p>
+
+<p>Now we should add some links on our layout to better the navigation.</p>
+
+<p>``` html app/views/layouts/batman.html.erb
+&lt;!DOCTYPE html>
+<html>
+<head>
+  <title>Batman Js Blog</title>
+  &lt;%= stylesheet_link_tag    &ldquo;application&rdquo;, :media => &ldquo;all&rdquo; %>
+  &lt;%= javascript_include_tag &ldquo;batman_js_blog&rdquo; %>
+  &lt;%= csrf_meta_tags %>
+</head>
+<body></p>
+
+<p><a data-route="routes.posts">Posts</a> |
+<a data-route="routes.posts.new">New Post</a></p>
+
+<div data-yield="main"></div>
+
+
+
+
+<script type="text/javascript">
+  BatmanJsBlog.run();
+</script>
+
+
+<p></body>
+</html>
+```</p>
+
+<p>We are adding 2 links under the <code>body</code>.<br/>
+The first one routes to the posts list: the <strong>index</strong> action of our <strong>posts controller</strong>.<br/>
+The second one routes to the <strong>new</strong> action of our <strong>posts controller</strong> that we are now going to write.</p>
+
+<p>The <strong>new</strong> action is pretty much straightforward too.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+&hellip;</p>
+
+<p>new: (params) &ndash;>
+  @set(&lsquo;post&rsquo;, new BatmanJsBlog.Post)</p>
+
+<p>&hellip;
+```</p>
+
+<p>We just create a new post, not saved yet.</p>
+
+<p>Let&rsquo;s create a <strong>form</strong> on the new view now.</p>
+
+<p>``` html app/assets/batman/html/posts/new.html
+<form data-formfor-post="post" data-event-submit="create">
+  <div></p>
+
+<pre><code>&lt;label&gt;Title:&lt;/label&gt;
+&lt;input data-bind="post.title" /&gt;
+</code></pre>
+
+<p>  </div></p>
+
+<p>  <div></p>
+
+<pre><code>&lt;label&gt;Content:&lt;/label&gt;
+&lt;textarea data-bind="post.content"&gt;&lt;/textarea&gt;
+</code></pre>
+
+<p>  </div></p>
+
+<p>  <input name="commit" type="submit" value="Submit">
+</form>
+```</p>
+
+<p>As with <code>data-foreach</code>, <code>data-formfor</code> uses an existing variable and sets another one to be used within the context, both named &ldquo;post&rdquo;.<br/>
+The form will just trigger an event, here the event is <strong>create</strong>, which corresponds to our <strong>create</strong> action (event) not yet defined.<br/>
+We don&rsquo;t need any argument for this action.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+&hellip;</p>
+
+<p>create: &ndash;>
+  @post.save (err, post) =></p>
+
+<pre><code>if err
+  throw err unless err instanceof Batman.ErrorsSet
+else
+  @redirect post
+</code></pre>
+
+<p>&hellip;
+```</p>
+
+<p><code>@post</code> represents the post we created earlier in the <strong>new</strong> action.<br/>
+We can save the post and redirect to the corresponding <strong>show</strong> action.</p>
+
+<p>Now, go back to your browser and try creating a new post.</p>
+
+<p>The <strong>edit</strong> action now is going to look quite like the <strong>show</strong> action because it only fetches a post with its id.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+&hellip;</p>
+
+<p>show: (params) &ndash;>
+  BatmanJsBlog.Post.find params.id, @errorHandler (post) =></p>
+
+<pre><code>@set('post', post)
+</code></pre>
+
+<p>edit: (params) &ndash;>
+  BatmanJsBlog.Post.find params.id, @errorHandler (post) =></p>
+
+<pre><code>@set('post', post)
+</code></pre>
+
+<p>&hellip;
+```</p>
+
+<p>Let&rsquo;s refactor and write a <code>fetchPost</code> method.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+class BatmanJsBlog.PostsController extends BatmanJsBlog.ApplicationController
+  routingKey: &lsquo;posts&rsquo;</p>
+
+<p>  @beforeAction &lsquo;fetchPost&rsquo;, only: [&lsquo;show&rsquo;, &lsquo;edit&rsquo;]</p>
+
+<p>  &hellip;</p>
+
+<p>  show: (params) &ndash;></p>
+
+<p>  edit: (params) &ndash;></p>
+
+<p>  &hellip;</p>
+
+<p>  fetchPost: (params) &ndash;></p>
+
+<pre><code>BatmanJsBlog.Post.find params.id, @errorHandler (post) =&gt;
+  @set('post', post)
+</code></pre>
+
+<p>```</p>
+
+<p>Here, the <code>@beforeAction</code> works exactly like Rails' one does. It executes <code>fetchPost</code> before the <strong>show</strong> and <strong>edit</strong> actions.</p>
+
+<p>Again the <strong>edit</strong> view looks like the <strong>new</strong> view.</p>
+
+<p>``` html app/assets/batman/html/posts/edit.html
+<form data-formfor-post="post" data-event-submit="update">
+  <div></p>
+
+<pre><code>&lt;label&gt;Title:&lt;/label&gt;
+&lt;input data-bind="post.title" /&gt;
+</code></pre>
+
+<p>  </div></p>
+
+<p>  <div></p>
+
+<pre><code>&lt;label&gt;Content:&lt;/label&gt;
+&lt;textarea data-bind="post.content"&gt;&lt;/textarea&gt;
+</code></pre>
+
+<p>  </div></p>
+
+<p>  <input name="commit" type="submit" value="Submit">
+</form>
+```</p>
+
+<p>The only difference is the event triggered: here it is <code>update</code>.</p>
+
+<p>Let&rsquo;s refactor both our <strong>edit</strong> and <strong>new</strong> views using a partial.</p>
+
+<p><code>html app/assets/batman/html/posts/edit.html
+&lt;form data-formfor-post="post" data-event-submit="update"&gt;
+  &lt;div data-partial="posts/_form"&gt;&lt;/div&gt;
+&lt;/form&gt;
+</code></p>
+
+<p><code>html app/assets/batman/html/posts/new.html
+&lt;form data-formfor-post="post" data-event-submit="create"&gt;
+  &lt;div data-partial="posts/_form"&gt;&lt;/div&gt;
+&lt;/form&gt;
+</code></p>
+
+<p>I think you get it here without explanations&hellip; Just create the <strong>_form</strong> partial.</p>
+
+<p>``` html app/assets/batman/html/posts/_form.html</p>
+
+<div>
+  <label>Title:</label>
+  <input data-bind="post.title" />
+</div>
+
+
+
+
+<div>
+  <label>Content:</label>
+  <textarea data-bind="post.content"></textarea>
+</div>
+
+
+<p><input name="commit" type="submit" value="Submit">
+```</p>
+
+<p>Finally, the <strong>update</strong> action looks exactly like the <strong>create</strong> action.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+&hellip;</p>
+
+<p>update: &ndash;>
+  @post.save (err, post) =></p>
+
+<pre><code>if err
+  throw err unless err instanceof Batman.ErrorsSet
+else
+  @redirect post
+</code></pre>
+
+<p>&hellip;
+```</p>
+
+<p>You should be able to edit your posts thanks to the previously created link in the show view now.</p>
+
+<h3>The comments</h3>
+
+<p>Let&rsquo;s add a link to destroy our comments on the posts' show view.</p>
+
+<p>``` html app/assets/batman/html/posts/show.html
+&hellip;</p>
+
+<ul>
+  <li data-foreach-comment="post.comments">
+    <p data-bind="comment.content"></p>
+    <a data-event-click="destroyComment">Destroy</a>
+  </li>
+</ul>
+
+
+<p>```</p>
+
+<p>The event triggered by the link will be <code>destroyComment</code> as we are still in the posts controller and the <code>destroy</code> action (event) is already used to destroy a post. It would
+probably be messy to use the same event.</p>
+
+<p>Let&rsquo;s write this new event.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+destroyComment: (node, event, context) &ndash;>
+  comment = context.get(&lsquo;comment&rsquo;)
+  comment.destroy (err) =></p>
+
+<pre><code>if err
+  throw err unless err instanceof Batman.ErrorsSet
+else
+  @post.get('comments').remove comment
+  @redirect '/posts/' + @post.get('id')
+</code></pre>
+
+<p>```</p>
+
+<p>Here we get the <code>comment</code> using the context.<br/>
+If everything goes well, we also remove the comment from the post&rsquo;s comments list so that the comment disappears (on the html page).<br/>
+And then we redirect on the post&rsquo;s <strong>show</strong> view i.e. where we were when clicking the destroy link.</p>
+
+<p>Go ahead and try it.</p>
+
+<p>Now let&rsquo;s add the possibility to create a new comment on every post show view.</p>
+
+<p>``` html app/assets/batman/html/posts/show.html
+&hellip;</p>
+
+<p><form data-formfor-comment="comment" data-event-submit="createComment">
+  <div></p>
+
+<pre><code>&lt;label&gt;Content:&lt;/label&gt;
+&lt;textarea data-bind="comment.content"&gt;&lt;/textarea&gt;
+</code></pre>
+
+<p>  </div></p>
+
+<p>  <input name="commit" type="submit" value="Submit">
+</form>
+```</p>
+
+<p>Then just get the controller right.</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+&hellip;</p>
+
+<p>show: (params) &ndash;>
+  # Initializing a new comment with the post_id given in params to display
+  # a corresponding form
+  @set(&lsquo;comment&rsquo;, new BatmanJsBlog.Comment(post_id: params.id))</p>
+
+<p>&hellip;</p>
+
+<p>createComment: &ndash;>
+  @comment.save =></p>
+
+<pre><code># If everything goes well, we add the new comment to the current post's comments list so that it appears on the (html) page
+@post.get('comments').add @comment
+@redirect '/posts/' + @post.get('id')
+</code></pre>
+
+<p>&hellip;
+```</p>
+
+<p>You should now be able to create new comments. ; )</p>
+
+<h3>Errors handling</h3>
+
+<p>We can now add some information when validations fail for posts.</p>
+
+<p>You can add this at the top of the <strong>new</strong> and <strong>edit</strong> views.</p>
+
+<p>``` html</p>
+
+<div data-partial="posts/_errors"></div>
+
+
+<p>```</p>
+
+<p>And create the corresponding partial.</p>
+
+<p>``` html app/assets/batman/html/posts/_errors.html</p>
+
+<div data-showif="post.errors.length">
+  <p>
+    <span data-bind="'error' | pluralize post.errors.length"></span>
+    prevented this post from being created:
+  </p>
+  <ul>
+    <li data-bind="error.message" data-foreach-error="post.errors"></li>
+  </ul>
+</div>
+
+
+<p>```</p>
+
+<p>The first line means the <code>div</code> is displayed only if there are errors included within the post.<br/>
+Take a look at the <code>li</code> tag, and see how we took advantage of <code>data-bind</code> combined with <code>data-foreach</code> here.</p>
+
+<p>If validations fail, Rails sends back the object with errors included in the JSON. But we could also take advantages of Batman.js capabilities and add some validations on
+the client side.</p>
+
+<p>``` coffeescript app/assets/batman/models/post.js.coffee
+&hellip;</p>
+
+<p>@validate &ldquo;title&rdquo;,   presence: true
+@validate &ldquo;content&rdquo;, presence: true
+```</p>
+
+<p>Now Batman.js knows how to validate our post objects and does not need to send a request to Rails and wait for a reply before showing the errors: it can display them right away.</p>
+
+<p>You can try creating an empty post and see what happens. : )</p>
+
+<p>As a recap for this last part, your <strong>posts_controller</strong> should look like this:</p>
+
+<p>``` coffeescript app/assets/batman/controllers/posts_controller.js.coffee
+class BatmanJsBlog.PostsController extends BatmanJsBlog.ApplicationController
+  routingKey: &lsquo;posts&rsquo;</p>
+
+<p>  @beforeAction &lsquo;fetchPost&rsquo;, only: [&lsquo;show&rsquo;, &lsquo;edit&rsquo;]</p>
+
+<p>  index: (params) &ndash;></p>
+
+<pre><code>@set('posts', BatmanJsBlog.Post.get('all'))
+</code></pre>
+
+<p>  show: (params) &ndash;></p>
+
+<pre><code>@set('comment', new BatmanJsBlog.Comment(post_id: params.id))
+</code></pre>
+
+<p>  edit: (params) &ndash;></p>
+
+<p>  new: (params) &ndash;></p>
+
+<pre><code>@set('post', new BatmanJsBlog.Post)
+</code></pre>
+
+<p>  create: &ndash;></p>
+
+<pre><code>@post.save (err, post) =&gt;
+  if err
+    throw err unless err instanceof Batman.ErrorsSet
+  else
+    @redirect post
+</code></pre>
+
+<p>  update: &ndash;></p>
+
+<pre><code>@post.save (err, post) =&gt;
+  if err
+    throw err unless err instanceof Batman.ErrorsSet
+  else
+    @redirect post
+</code></pre>
+
+<p>  destroy: (node, event, context) &ndash;></p>
+
+<pre><code>post = if context.get('post') then context.get('post') else @post
+post.destroy (err) =&gt;
+  if err
+    throw err unless err instanceof Batman.ErrorsSet
+  else
+    @redirect '/posts'
+</code></pre>
+
+<p>  createComment: &ndash;></p>
+
+<pre><code>@comment.save =&gt;
+  @post.get('comments').add @comment
+  @redirect '/posts/' + @post.get('id')
+</code></pre>
+
+<p>  destroyComment: (node, event, context) &ndash;></p>
+
+<pre><code>comment = context.get('comment')
+comment.destroy (err) =&gt;
+  if err
+    throw err unless err instanceof Batman.ErrorsSet
+  else
+    @post.get('comments').remove comment
+    @redirect '/posts/' + @post.get('id')
+</code></pre>
+
+<p>  fetchPost: (params) &ndash;></p>
+
+<pre><code>BatmanJsBlog.Post.find params.id, @errorHandler (post) =&gt;
+  @set('post', post)
+</code></pre>
+
+<p>```</p>
+
+<p>Hope it all helps, talk to you later! ; )</p>
+]]></content>
+  </entry>
+  
+</feed>
