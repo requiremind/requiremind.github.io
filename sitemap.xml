@@ -44,7 +44,11 @@
     </url>
     <url>
         <loc>http://requiremind.com/currying-spice-up-your-javascript-functions</loc>
-        <lastmod>2015-01-03T00:44:54+01:00</lastmod>
+        <lastmod>2015-01-03T22:51:24+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://requiremind.com/memoization-speed-up-your-javascript-performance</loc>
+        <lastmod>2015-01-03T22:54:03+01:00</lastmod>
     </url>
     <url>
         <loc>http://requiremind.com/about/</loc>
@@ -52,15 +56,15 @@
     </url>
     <url>
         <loc>http://requiremind.com/</loc>
-        <lastmod>2015-01-03T00:44:54+01:00</lastmod>
+        <lastmod>2015-01-03T22:54:03+01:00</lastmod>
     </url>
     <url>
         <loc>http://requiremind.com/archives/</loc>
-        <lastmod>2015-01-03T00:44:54+01:00</lastmod>
+        <lastmod>2015-01-03T22:54:03+01:00</lastmod>
     </url>
     <url>
         <loc>http://requiremind.com/blog/archives/</loc>
-        <lastmod>2015-01-03T00:44:54+01:00</lastmod>
+        <lastmod>2015-01-03T22:54:03+01:00</lastmod>
     </url>
     <url>
         <loc>http://requiremind.com/404.html</loc>

@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Memoization, speed up your javascript performance - require 'mind'</title>
+  <meta name="author" content="requireMind">
+
+  
+  <meta name="description" content="Now that web apps and websites are getting bigger and bigger, performances have become a really important point to focus on. This article will &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://requiremind.com/memoization-speed-up-your-javascript-performance">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41030310-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">require 'mind'</a></h1>
+  
+    <h2>Learn. Live. Love. Dev.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:requiremind.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title article-title">Memoization, Speed Up Your Javascript Performance</h1><div class="by-author">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://cyrilf.com">cyrilf</a>
+            
+        </span>
+    </span>
+</div><div class="clear"></div>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-03T16:42:00+01:00" pubdate data-updated="true">Jan 3<span>rd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Now that web apps and websites are getting bigger and bigger, performances have become a really important point to focus on. This article will introduce you the concept of <code>memoization</code> that will allow you to improve your functions performances through some cache mechanisms.</p>
+
+<p>Fasten your seatbelt, I&rsquo;m starting the engine!</p>
+
+<!-- more -->
+
+
+<p><img class="center" src="/images/memoize/turing.jpg" title="turing" alt="turing"></p>
+
+<h3>Introduction</h3>
+
+<p>Memoization is a simple mechanism that consist in caching the result of computed values. This allows the next function call, done with the same parameters, to hit the cache rather than re-computing this values.<br/>
+The cache is indexed by the input arguments. If the arguments exist in the cache, then the cached value is returned. Otherwise, the function is executed and the newly computed value is added to the cache.</p>
+
+<p>Let&rsquo;s see a basic example.</p>
+
+<h3>Basic example</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">// Imagine the following line being an extra CPU intensive task</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">radar</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// some properties and functions</span>
+</span><span class='line'>  <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">radar</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;carDetected&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">car</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// The following function can then be called many times</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">speedAlert</span><span class="p">(</span><span class="nx">car</span><span class="p">.</span><span class="nx">speed</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">radar</span><span class="p">.</span><span class="nx">triggerFlash</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic terteniary computation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
+
+<p>This is where <code>memoization</code> enter! Let&rsquo;s refactor the speedAlert method then.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">cache</span>      <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">speed</span> <span class="k">in</span> <span class="nx">cache</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;hit cache&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Not in the cache, so compute the value</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">computation</span> <span class="o">=</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">]</span>    <span class="o">=</span> <span class="nx">computation</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+</span><span class='line'><span class="p">})();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Now let&#39;s call this method manually</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span> <span class="c1">// return true</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">70</span><span class="p">);</span> <span class="c1">// return false</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span> <span class="c1">// hit cache + return true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the last line of the previous example, you can see that the computation hasn&rsquo;t been made. The code has fetch the value from the cache and returned it.
+This is the process of memoization.
+When this method is called, it will look inside his cache to see if it had already compute the value for this <code>speed</code> parameter and return it, or compute the value and push it into the cache.</p>
+
+<p>So now, everytime this method is called with the same argument, it won&rsquo;t compute nothing and this is a large amount of time earned.</p>
+
+<p>I want to point out that here the <code>limitation</code> variable (75) is stored inside the function. This is an important fact to notice. Indeed, if this value was global or outside this function, we wouldn&rsquo;t be able to memoize <code>speedAlert</code> because then, his result would be influenced by some external properties and won&rsquo;t depends only on his inputs.</p>
+
+<p>Here is a quick example of what I just said:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="c1">// same definition as before except the limitation assignation has been moved outside</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">70</span><span class="p">);</span> <span class="c1">// return false</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">70</span><span class="p">);</span> <span class="c1">// hit cache + return false</span>
+</span><span class='line'><span class="nx">limitation</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">70</span><span class="p">);</span> <span class="c1">// hit cache + return false /!\ it should be true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You see, the result is already cached for the input <code>70</code>, so it doesn&rsquo;t care about the limitation change as it will never trigger the computation again.
+It&rsquo;s important to understand that only the functions from which the result is influenced by the input are able to be memoized. This mean functions that always respect this: <code>f(x) === f(x)</code></p>
+
+<h3>Advanced usage</h3>
+
+<p>We saw memoization on a basic example with only a single argument. But this process can also handles multiple arguments. Plus, we were doing the <code>memoization</code> implementation inside the function but we can write a memoize function that will take a function as a parameter. This way, we can apply memoization to any functions.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">memoize</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">resolver</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">memoized</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">resolver</span>  <span class="o">=</span> <span class="nx">resolver</span> <span class="o">||</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">cache</span> <span class="o">=</span> <span class="nx">memoized</span><span class="p">.</span><span class="nx">cache</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">args</span>  <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">key</span>   <span class="o">=</span> <span class="nx">resolver</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">key</span> <span class="k">in</span> <span class="nx">cache</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;hit cache&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">cache</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">result</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// This could have been done with this one-liner too ;)</span>
+</span><span class='line'>    <span class="c1">// return (key in cache) ? cache[key] : (cache[key] = fn.apply(this, arguments));</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">memoized</span><span class="p">.</span><span class="nx">cache</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">memoized</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Time for explanations, the <code>memoize</code> function takes two parameters, a function (the one we want to memoize) and an <em>optional</em> resolver.</p>
+
+<p>Now that our <code>memoize</code> is more &lsquo;abstract&rsquo;, we can have multiple arguments passed to our function. So the <code>key</code> for the <code>cache</code> can&rsquo;t be as simple as the first argument anymore. That&rsquo;s why we&rsquo;re asking for a resolver. His goal is to take the <code>arguments</code> and compute a key for it. In this example, we&rsquo;re using <code>JSON.stringify</code> as a <code>resolver</code>, but this one is not bullet-proof as it won&rsquo;t work with all cases, but I don&rsquo;t want to complicate this example.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="nx">memoize</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">// Imagine the following line being an extra CPU intensive task</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span> <span class="c1">// return false</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span> <span class="c1">// hit cache + return false</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span> <span class="c1">// return true</span>
+</span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span> <span class="c1">// hit cache + return true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So now, our <code>speedAlert</code> method is a normal function declaration and the memoize wrapper handles all the memoization process for us. That is pretty neat.</p>
+
+<p>That&rsquo;s it for this article I hope you..</p>
+
+<blockquote><p>Don&rsquo;t stop here! How could I see that it improve my performance.</p></blockquote>
+
+<p>Ok ok, let&rsquo;s make a quick test with the well known <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonnaci sequence</a>. This function is really adapted to this example as it has a lot of recursive calls and regularly compute the same values.
+We&rsquo;re going to use some nice functions called <code>console.time</code> and <code>console.timeEnd</code> that give us the ability to easily track the time in our console.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">n</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="o">?</span> <span class="nx">n</span> <span class="o">:</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fibMemoize</span> <span class="o">=</span> <span class="nx">memoize</span><span class="p">(</span><span class="nx">fibonacci</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">iterations</span> <span class="o">=</span> <span class="mi">35</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">time</span><span class="p">(</span><span class="s1">&#39;non-memoized&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">fibMemoize</span><span class="p">(</span><span class="nx">iterations</span><span class="p">));</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">timeEnd</span><span class="p">(</span><span class="s1">&#39;non-memoized&#39;</span><span class="p">);</span> <span class="c1">// log 195.896ms</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Now this call is memoized, so it&#39;s just going to hit the cache</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">time</span><span class="p">(</span><span class="s1">&#39;memoized&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">fibMemoize</span><span class="p">(</span><span class="nx">iterations</span><span class="p">));</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">timeEnd</span><span class="p">(</span><span class="s1">&#39;memoized&#39;</span><span class="p">);</span> <span class="c1">// log 0.193ms</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And you&rsquo;re going to see that, the more you increment the <code>iterations</code> variable, the more the utility of the <code>memoize</code> function is important! <em>(but don&rsquo;t push it too far, I&rsquo;ve managed to freeze Chrome with a 75 value..)</em></p>
+
+<p>So, for all your CPU intensive tasks, think about implementing some memoize mechanism.<br/>
+But don&rsquo;t forget some of the downsides.</p>
+
+<p>You can&rsquo;t use it on a function that doesn&rsquo;t return the same result for the same input. It&rsquo;s not adapted to fast executing functions or not often called ones. Plus, the cache management have to be improved for heavy usages with some notion of retention and so on.</p>
+
+<p>Don&rsquo;t hesitate to share your opinion in the comments.</p>
+
+<p>If you want to discover more about Javascript, you can have a look to this <a href="/categories/learn-js">serie of articles</a></p>
+</div>
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://cyrilf.com">cyrilf</a>
+            
+        </span>
+    </span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-03T16:42:00+01:00" pubdate data-updated="true">Jan 3<span>rd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/javascript/'>javascript</a>, <a class='category' href='/categories/learn-js/'>learn-js</a>, <a class='category' href='/categories/learning/'>learning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/currying-spice-up-your-javascript-functions" title="Previous Post: Currying, spice up your javascript functions">&laquo; Currying, spice up your javascript functions</a> /
+      
+        &nbsp;&nbsp; <a class="basic-alignment" href="/" title="Home">Home</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section id="comments-section">
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/memoization-speed-up-your-javascript-performance">Memoization, speed up your javascript performance</a>
+      </li>
+    
+      <li class="post">
+        <a href="/currying-spice-up-your-javascript-functions">Currying, spice up your javascript functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/git-bisect-your-bug-hunting-best-friend">Git bisect your bug hunting best friend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deploying-a-rails-app-on-your-own-server-the-ultimate-guide">Deploying a Rails App on Your Own Server - The Ultimate Guide</a>
+      </li>
+    
+      <li class="post">
+        <a href="/discover-emmet-and-improve-your-coding-speed">Discover Emmet and improve your coding speed</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - requireMind -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/memoization-speed-up-your-javascript-performance';
+        var disqus_url = 'http://requiremind.com/memoization-speed-up-your-javascript-performance';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

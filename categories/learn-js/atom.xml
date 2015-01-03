@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: javascript | require 'mind']]></title>
-  <link href="http://requiremind.com/categories/javascript/atom.xml" rel="self"/>
+  <title><![CDATA[Category: learn-js | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/learn-js/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
   <updated>2015-01-03T22:54:27+01:00</updated>
   <id>http://requiremind.com/</id>

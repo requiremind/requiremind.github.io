@@ -4,7 +4,7 @@
   <title><![CDATA[Category: learning | require 'mind']]></title>
   <link href="http://requiremind.com/categories/learning/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
-  <updated>2015-01-03T00:51:25+01:00</updated>
+  <updated>2015-01-03T22:54:27+01:00</updated>
   <id>http://requiremind.com/</id>
   <author>
     <name><![CDATA[requireMind]]></name>
@@ -12,6 +12,205 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Memoization, speed up your javascript performance]]></title>
+    <link href="http://requiremind.com/memoization-speed-up-your-javascript-performance"/>
+    <updated>2015-01-03T16:42:00+01:00</updated>
+    <id>http://requiremind.com/memoization-speed-up-your-javascript-performance</id>
+    <content type="html"><![CDATA[<p>Now that web apps and websites are getting bigger and bigger, performances have become a really important point to focus on. This article will introduce you the concept of <code>memoization</code> that will allow you to improve your functions performances through some cache mechanisms.</p>
+
+<p>Fasten your seatbelt, I&rsquo;m starting the engine!</p>
+
+<!-- more -->
+
+
+<p><img class="center" src="/images/memoize/turing.jpg" title="&lsquo;turing&rsquo; &lsquo;turing&rsquo;" ></p>
+
+<h3>Introduction</h3>
+
+<p>Memoization is a simple mechanism that consist in caching the result of computed values. This allows the next function call, done with the same parameters, to hit the cache rather than re-computing this values.<br/>
+The cache is indexed by the input arguments. If the arguments exist in the cache, then the cached value is returned. Otherwise, the function is executed and the newly computed value is added to the cache.</p>
+
+<p>Let&rsquo;s see a basic example.</p>
+
+<h3>Basic example</h3>
+
+<p>``` js
+var speedAlert = function(speed) {
+  var limitation = 75;
+  // Imagine the following line being an extra CPU intensive task
+  return (speed > limitation) ? true : false;
+};</p>
+
+<p>var radar = {
+  // some properties and functions
+  // &hellip;
+};</p>
+
+<p>radar.on(&lsquo;carDetected&rsquo;, function(car) {
+  // The following function can then be called many times
+  if(speedAlert(car.speed)) {</p>
+
+<pre><code>radar.triggerFlash();
+</code></pre>
+
+<p>  }
+});
+```</p>
+
+<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic terteniary computation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
+
+<p>This is where <code>memoization</code> enter! Let&rsquo;s refactor the speedAlert method then.</p>
+
+<p>``` js
+var speedAlert = (function() {
+  var cache      = {};
+  var limitation = 75;</p>
+
+<p>  function f(speed) {</p>
+
+<pre><code>if(speed in cache) {
+  console.log('hit cache');
+  return cache[speed];
+}
+
+// Not in the cache, so compute the value
+var computation = (speed &gt; limitation) ? true : false;
+cache[speed]    = computation;
+
+return cache[speed];
+</code></pre>
+
+<p>  }</p>
+
+<p>  return f;
+})();</p>
+
+<p>// Now let&rsquo;s call this method manually
+speedAlert(90); // return true
+speedAlert(70); // return false
+speedAlert(90); // hit cache + return true
+```</p>
+
+<p>In the last line of the previous example, you can see that the computation hasn&rsquo;t been made. The code has fetch the value from the cache and returned it.
+This is the process of memoization.
+When this method is called, it will look inside his cache to see if it had already compute the value for this <code>speed</code> parameter and return it, or compute the value and push it into the cache.</p>
+
+<p>So now, everytime this method is called with the same argument, it won&rsquo;t compute nothing and this is a large amount of time earned.</p>
+
+<p>I want to point out that here the <code>limitation</code> variable (75) is stored inside the function. This is an important fact to notice. Indeed, if this value was global or outside this function, we wouldn&rsquo;t be able to memoize <code>speedAlert</code> because then, his result would be influenced by some external properties and won&rsquo;t depends only on his inputs.</p>
+
+<p>Here is a quick example of what I just said:</p>
+
+<p>``` js
+var limitation = 75;</p>
+
+<p>var speedAlert = // same definition as before except the limitation assignation has been moved outside</p>
+
+<p>speedAlert(70); // return false
+speedAlert(70); // hit cache + return false
+limitation = 50;
+speedAlert(70); // hit cache + return false /!\ it should be true
+```</p>
+
+<p>You see, the result is already cached for the input <code>70</code>, so it doesn&rsquo;t care about the limitation change as it will never trigger the computation again.
+It&rsquo;s important to understand that only the functions from which the result is influenced by the input are able to be memoized. This mean functions that always respect this: <code>f(x) === f(x)</code></p>
+
+<h3>Advanced usage</h3>
+
+<p>We saw memoization on a basic example with only a single argument. But this process can also handles multiple arguments. Plus, we were doing the <code>memoization</code> implementation inside the function but we can write a memoize function that will take a function as a parameter. This way, we can apply memoization to any functions.</p>
+
+<p>``` js
+function memoize(fn, resolver) {
+  var memoized = function() {</p>
+
+<pre><code>resolver  = resolver || JSON.stringify;
+
+var cache = memoized.cache;
+var args  = Array.prototype.slice.call(arguments);
+var key   = resolver.apply(this, args);
+
+if(key in cache) {
+  console.log('hit cache');
+  return cache[key];
+}
+
+var result = fn.apply(this, arguments);
+cache[key] = result;
+
+return result;
+
+// This could have been done with this one-liner too ;)
+// return (key in cache) ? cache[key] : (cache[key] = fn.apply(this, arguments));
+</code></pre>
+
+<p>  };</p>
+
+<p>  memoized.cache = {};</p>
+
+<p>  return memoized;
+}</p>
+
+<p>```</p>
+
+<p>Time for explanations, the <code>memoize</code> function takes two parameters, a function (the one we want to memoize) and an <em>optional</em> resolver.</p>
+
+<p>Now that our <code>memoize</code> is more &lsquo;abstract&rsquo;, we can have multiple arguments passed to our function. So the <code>key</code> for the <code>cache</code> can&rsquo;t be as simple as the first argument anymore. That&rsquo;s why we&rsquo;re asking for a resolver. His goal is to take the <code>arguments</code> and compute a key for it. In this example, we&rsquo;re using <code>JSON.stringify</code> as a <code>resolver</code>, but this one is not bullet-proof as it won&rsquo;t work with all cases, but I don&rsquo;t want to complicate this example.</p>
+
+<p>``` js</p>
+
+<p>var speedAlert = memoize(function(speed) {
+  var limitation = 75;
+  // Imagine the following line being an extra CPU intensive task
+  return (speed > limitation) ? true : false;
+});</p>
+
+<p>speedAlert(50); // return false
+speedAlert(50); // hit cache + return false
+speedAlert(90); // return true
+speedAlert(90); // hit cache + return true
+```</p>
+
+<p>So now, our <code>speedAlert</code> method is a normal function declaration and the memoize wrapper handles all the memoization process for us. That is pretty neat.</p>
+
+<p>That&rsquo;s it for this article I hope you..</p>
+
+<blockquote><p>Don&rsquo;t stop here! How could I see that it improve my performance.</p></blockquote>
+
+<p>Ok ok, let&rsquo;s make a quick test with the well known <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonnaci sequence</a>. This function is really adapted to this example as it has a lot of recursive calls and regularly compute the same values.
+We&rsquo;re going to use some nice functions called <code>console.time</code> and <code>console.timeEnd</code> that give us the ability to easily track the time in our console.</p>
+
+<p>``` js
+function fibonacci(n) {
+  return (n === 0 || n === 1) ? n : fibonacci(n &ndash; 1) + fibonacci(n &ndash; 2);
+}</p>
+
+<p>var fibMemoize = memoize(fibonacci);
+var iterations = 35;</p>
+
+<p>console.time(&lsquo;non-memoized&rsquo;);
+console.log(fibMemoize(iterations));
+console.timeEnd(&lsquo;non-memoized&rsquo;); // log 195.896ms</p>
+
+<p>// Now this call is memoized, so it&rsquo;s just going to hit the cache
+console.time(&lsquo;memoized&rsquo;);
+console.log(fibMemoize(iterations));
+console.timeEnd(&lsquo;memoized&rsquo;); // log 0.193ms
+```</p>
+
+<p>And you&rsquo;re going to see that, the more you increment the <code>iterations</code> variable, the more the utility of the <code>memoize</code> function is important! <em>(but don&rsquo;t push it too far, I&rsquo;ve managed to freeze Chrome with a 75 value..)</em></p>
+
+<p>So, for all your CPU intensive tasks, think about implementing some memoize mechanism.<br/>
+But don&rsquo;t forget some of the downsides.</p>
+
+<p>You can&rsquo;t use it on a function that doesn&rsquo;t return the same result for the same input. It&rsquo;s not adapted to fast executing functions or not often called ones. Plus, the cache management have to be improved for heavy usages with some notion of retention and so on.</p>
+
+<p>Don&rsquo;t hesitate to share your opinion in the comments.</p>
+
+<p>If you want to discover more about Javascript, you can have a look to this <a href="/categories/learn-js">serie of articles</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Currying, spice up your javascript functions]]></title>
@@ -292,8 +491,9 @@ bindMouseMove(logger);</p>
 <p>I kept the examples simple so that you easily understand the concept. If you run the second one in your console, you&rsquo;ll see that it&rsquo;s logging everytime you move/click with your mouse.</p>
 
 <p>Voilà, you reached the end of this article! To go further you can even try to refactor and then add the <code>curry</code> function to the <code>Function.prototype</code> itself.<br/>
-I hope you&rsquo;ve learn something new here and that you&rsquo;re going to use it on your own projects. Feel free to write any comments.<br/>
-See you and have fun with your developments!</p>
+I hope you&rsquo;ve learn something new here and that you&rsquo;re going to use it on your own projects. Feel free to write any comments.</p>
+
+<p>If you want to discover more about Javascript, you can have a look to this <a href="/categories/learn-js">serie of articles</a></p>
 ]]></content>
   </entry>
   
