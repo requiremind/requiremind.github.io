@@ -189,3 +189,5 @@ But don't forget some of the downsides.
 You can't use it on a function that doesn't return the same result for the same input. It's not adapted to fast executing functions or not often called ones. Plus, the cache management have to be improved for heavy usages with some notion of retention and so on.
 
 Don't hesitate to share your opinion in the comments.
+
+If you want to discover more about Javascript, you can have a look to this [serie of articles](/categories/learn-js)

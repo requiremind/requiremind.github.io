@@ -7,6 +7,7 @@ author: cyrilf
 categories: 
 - javascript
 - learning
+- learn-js
 ---
 
 Currying is an interesting technique that will power up your functions usage. In this article we're going to explain it from basic example to some more advanced use cases and you'll see that knowing this pattern, will give you some extra power as a developer.
@@ -260,4 +261,5 @@ I kept the examples simple so that you easily understand the concept. If you run
 
 Voilà, you reached the end of this article! To go further you can even try to refactor and then add the `curry` function to the `Function.prototype` itself.  
 I hope you've learn something new here and that you're going to use it on your own projects. Feel free to write any comments.  
-See you and have fun with your developments!
+
+If you want to discover more about Javascript, you can have a look to this [serie of articles](/categories/learn-js)
