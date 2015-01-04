@@ -104,6 +104,15 @@ body {
 	}
 
 	#content {
+		article {
+			header h1.entry-title.article-title {
+			  &:not(.index-title) {
+					font-weight: 700;
+					font-size: 60px;
+					letter-spacing: -0.02em;
+			  }
+			}
+		}
 		> article {
 			padding-left: 0px;
 			padding-right: 0px;
@@ -123,7 +132,18 @@ article {
 
 	.entry-content {
 		h3 {
-			font-style: italic
+		  font-size: 32px;
+		  font-style: normal;
+		  font-weight: 300;
+		  letter-spacing: -0.02em;
+		  line-height: 1.2;
+		  margin-top: 1em;
+		}
+
+		h4 {
+			font-size: 20px;
+		  font-style: normal;
+		  font-weight: normal;
 		}
 	}
 

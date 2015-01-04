@@ -1,7 +1,7 @@
 {% unless page.no_header %}
   <header>
     {% if index %}
-      <h1 class="entry-title article-title"><a href="{{ root_url }}{{ post.url }}">{% if site.titlecase %}{{ post.title | titlecase }}{% else %}{{ post.title }}{% endif %}</a></h1><div class="by-author">{% include post/author.html %}</div><div class="clear"></div>
+      <h1 class="entry-title index-title article-title"><a href="{{ root_url }}{{ post.url }}">{% if site.titlecase %}{{ post.title | titlecase }}{% else %}{{ post.title }}{% endif %}</a></h1><div class="by-author">{% include post/author.html %}</div><div class="clear"></div>
     {% else %}
       <h1 class="entry-title article-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1><div class="by-author">{% include post/author.html %}</div><div class="clear"></div>
     {% endif %}
