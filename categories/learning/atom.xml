@@ -4,7 +4,7 @@
   <title><![CDATA[Category: learning | require 'mind']]></title>
   <link href="http://requiremind.com/categories/learning/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
-  <updated>2015-01-04T17:22:52+01:00</updated>
+  <updated>2015-01-04T18:13:16+01:00</updated>
   <id>http://requiremind.com/</id>
   <author>
     <name><![CDATA[requireMind]]></name>
@@ -155,7 +155,12 @@ return result;
 
 <p>Time for explanations, the <code>memoize</code> function takes two parameters, a function (the one we want to memoize) and an <em>optional</em> resolver.</p>
 
-<p>Now that our <code>memoize</code> is more &lsquo;abstract&rsquo;, we can have multiple arguments passed to our function. So the <code>key</code> for the <code>cache</code> can&rsquo;t be as simple as the first argument anymore. That&rsquo;s why we&rsquo;re asking for a resolver. His goal is to take the <code>arguments</code> and compute a key for it. In this example, we&rsquo;re using <code>JSON.stringify</code> as a <code>resolver</code>, but this one is not bullet-proof as it won&rsquo;t work with all cases, but I don&rsquo;t want to complicate this example.</p>
+<p>Now that our <code>memoize</code> is more &lsquo;abstract&rsquo;, we can have multiple arguments passed to our function. So the <code>key</code> for the <code>cache</code> can&rsquo;t be as simple as the first argument anymore. That&rsquo;s why we&rsquo;re asking for a resolver. His goal is to take the <code>arguments</code> and compute a key for it.</p>
+
+<p><em>Note: In the previous example, we&rsquo;re using <code>JSON.stringify</code> as a <code>resolver</code>, but this one is not a bullet-proof solution as it won&rsquo;t work with all cases, plus, keep in mind that <code>key in cache</code> syntax is definitely not optimzed but allows this example to stay clear and light.<br/>
+That&rsquo;s why the cache management here is really basic. A way to start optimizing it could be by using a <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">weak map</a> rather than an object (cool feature coming in ES6)</em></p>
+
+<p>Time has come to play with it!</p>
 
 <p>``` js</p>
 
