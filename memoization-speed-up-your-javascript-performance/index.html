@@ -155,7 +155,7 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
 </span><span class='line'>  <span class="c1">// Imagine the following line being an extra CPU intensive task</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">;</span>
 </span><span class='line'><span class="p">};</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">var</span> <span class="nx">radar</span> <span class="o">=</span> <span class="p">{</span>
@@ -172,7 +172,7 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic terteniary computation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
+<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic operation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
 
 <p>This is where <code>memoization</code> enter! Let&rsquo;s refactor the speedAlert method then.</p>
 
@@ -199,7 +199,6 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
-<span class='line-number'>24</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">cache</span>      <span class="o">=</span> <span class="p">{};</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
@@ -210,9 +209,8 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 </span><span class='line'>      <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">];</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// Not in the cache, so compute the value</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">computation</span> <span class="o">=</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">]</span>    <span class="o">=</span> <span class="nx">computation</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// Not in the cache, so compute the value and put it in the cache</span>
+</span><span class='line'>    <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">]</span> <span class="o">=</span> <span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">];</span>
 </span><span class='line'>  <span class="p">}</span>
@@ -335,7 +333,7 @@ It&rsquo;s important to understand that only the functions from which the result
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="nx">memoize</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
 </span><span class='line'>  <span class="c1">// Imagine the following line being an extra CPU intensive task</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">;</span>
 </span><span class='line'><span class="p">});</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span> <span class="c1">// return false</span>

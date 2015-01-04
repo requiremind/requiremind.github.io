@@ -130,12 +130,9 @@
 
 <p>To begin, a definition won&rsquo;t hurt.</p>
 
-<p>So, currying allows you to invoke a function that build and return you another one prefilled with the arguments you gave.  You can see it as partially applying a function.
-And now you&rsquo;re supposed to say:</p>
+<p>Currying is a process which allows you to bind some arguments to a function so that, by the next invocation, these values are already fixed. It&rsquo;s oftenly referred as &lsquo;partial functions&rsquo;. You can see it as a way to prefilled some of the arguments to obtain a more specific function.</p>
 
-<blockquote><p><em>What?!</em></p></blockquote>
-
-<p>Yeah it might be blurry.. so it&rsquo;s a perfect time for a basic example!</p>
+<p>But, enough talking it&rsquo;s time for a basic code example!</p>
 
 <h3>Basic example</h3>
 
@@ -168,24 +165,10 @@ And now you&rsquo;re supposed to say:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Ok so now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
+<p>Now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
 This allows us to create more specific likers function as <em>bookLiker</em> or <em>tedTalkLiker</em> in our case.</p>
 
-<blockquote><p>Cool, but.. what if we just specified two arguments in the first one?</p></blockquote>
-
-<p>Yes! You&rsquo;re right. The following function can easily do the same job:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">liker</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="s1">&#39;I like this &#39;</span> <span class="o">+</span> <span class="nx">type</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>But this one was a basic example to introduce you with this pattern.
-It&rsquo;s now time to move forward into the concept.</p>
+<p>It was the most basic example to introduce you with this concept, so it&rsquo;s now time to move forward.</p>
 
 <h3>Advanced usage</h3>
 
@@ -248,7 +231,7 @@ It then returns a function. When you then call this function, the old arguments 
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re moving towards the final syntax.</p>
+<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re getting closer to the final syntax.</p>
 
 <h4>2 &ndash; A better implementation</h4>
 
@@ -308,7 +291,7 @@ It then returns a function. When you then call this function, the old arguments 
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
+<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, a major advantage is that the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
 
 <p>And we&rsquo;re done! I hope you liked it.</p>
 

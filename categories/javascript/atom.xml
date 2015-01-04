@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | require 'mind']]></title>
   <link href="http://requiremind.com/categories/javascript/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
-  <updated>2015-01-03T22:54:27+01:00</updated>
+  <updated>2015-01-04T17:22:52+01:00</updated>
   <id>http://requiremind.com/</id>
   <author>
     <name><![CDATA[requireMind]]></name>
@@ -40,7 +40,7 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 var speedAlert = function(speed) {
   var limitation = 75;
   // Imagine the following line being an extra CPU intensive task
-  return (speed > limitation) ? true : false;
+  return speed > limitation;
 };</p>
 
 <p>var radar = {
@@ -59,7 +59,7 @@ var speedAlert = function(speed) {
 });
 ```</p>
 
-<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic terteniary computation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
+<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic operation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
 
 <p>This is where <code>memoization</code> enter! Let&rsquo;s refactor the speedAlert method then.</p>
 
@@ -75,9 +75,8 @@ var speedAlert = (function() {
   return cache[speed];
 }
 
-// Not in the cache, so compute the value
-var computation = (speed &gt; limitation) ? true : false;
-cache[speed]    = computation;
+// Not in the cache, so compute the value and put it in the cache
+cache[speed] = speed &gt; limitation;
 
 return cache[speed];
 </code></pre>
@@ -163,7 +162,7 @@ return result;
 <p>var speedAlert = memoize(function(speed) {
   var limitation = 75;
   // Imagine the following line being an extra CPU intensive task
-  return (speed > limitation) ? true : false;
+  return speed > limitation;
 });</p>
 
 <p>speedAlert(50); // return false
@@ -230,12 +229,9 @@ But don&rsquo;t forget some of the downsides.</p>
 
 <p>To begin, a definition won&rsquo;t hurt.</p>
 
-<p>So, currying allows you to invoke a function that build and return you another one prefilled with the arguments you gave.  You can see it as partially applying a function.
-And now you&rsquo;re supposed to say:</p>
+<p>Currying is a process which allows you to bind some arguments to a function so that, by the next invocation, these values are already fixed. It&rsquo;s oftenly referred as &lsquo;partial functions&rsquo;. You can see it as a way to prefilled some of the arguments to obtain a more specific function.</p>
 
-<blockquote><p><em>What?!</em></p></blockquote>
-
-<p>Yeah it might be blurry.. so it&rsquo;s a perfect time for a basic example!</p>
+<p>But, enough talking it&rsquo;s time for a basic code example!</p>
 
 <h3>Basic example</h3>
 
@@ -259,23 +255,10 @@ tedLiker(&lsquo;The art of misdirection&rsquo;); // I like this TED talk: The ar
 
 <p>```</p>
 
-<p>Ok so now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
+<p>Now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
 This allows us to create more specific likers function as <em>bookLiker</em> or <em>tedTalkLiker</em> in our case.</p>
 
-<blockquote><p>Cool, but.. what if we just specified two arguments in the first one?</p></blockquote>
-
-<p>Yes! You&rsquo;re right. The following function can easily do the same job:</p>
-
-<p>``` js
-var liker = function(type, name) {</p>
-
-<pre><code>return 'I like this ' + type + ': ' + name;
-</code></pre>
-
-<p>}
-```
-But this one was a basic example to introduce you with this pattern.
-It&rsquo;s now time to move forward into the concept.</p>
+<p>It was the most basic example to introduce you with this concept, so it&rsquo;s now time to move forward.</p>
 
 <h3>Advanced usage</h3>
 
@@ -325,7 +308,7 @@ naiveCurry(sendMessage, &lsquo;SH&rsquo;, &lsquo;IA&rsquo;)(&lsquo;Stop boring m
 sendMessageFromSherlock(&lsquo;IA&rsquo;, &lsquo;Stop boring me and think. It\&rsquo;s the new sexy.&rsquo;);
 ```</p>
 
-<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re moving towards the final syntax.</p>
+<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re getting closer to the final syntax.</p>
 
 <h4>2 &ndash; A better implementation</h4>
 
@@ -364,7 +347,7 @@ sendMessageCurried(&lsquo;Sherlock&rsquo;)(&lsquo;Watson&rsquo;)(&lsquo;You see,
 fromSherlocktoWatson(&lsquo;You see, but you do not observe&rsquo;);
 ```</p>
 
-<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
+<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, a major advantage is that the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
 
 <p>And we&rsquo;re done! I hope you liked it.</p>
 

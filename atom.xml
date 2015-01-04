@@ -4,7 +4,7 @@
   <title><![CDATA[require 'mind']]></title>
   <link href="http://requiremind.com/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
-  <updated>2015-01-03T22:54:27+01:00</updated>
+  <updated>2015-01-04T17:22:52+01:00</updated>
   <id>http://requiremind.com/</id>
   <author>
     <name><![CDATA[requireMind]]></name>
@@ -56,7 +56,7 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
 </span><span class='line'>  <span class="c1">// Imagine the following line being an extra CPU intensive task</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">;</span>
 </span><span class='line'><span class="p">};</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">var</span> <span class="nx">radar</span> <span class="o">=</span> <span class="p">{</span>
@@ -73,7 +73,7 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic terteniary computation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
+<p>As you can see the method <code>speedAlert</code> will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic operation :) ). So everytime we call it, we&rsquo;re going to use a lot of CPU time.</p>
 
 <p>This is where <code>memoization</code> enter! Let&rsquo;s refactor the speedAlert method then.</p>
 
@@ -100,7 +100,6 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
-<span class='line-number'>24</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">cache</span>      <span class="o">=</span> <span class="p">{};</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
@@ -111,9 +110,8 @@ The cache is indexed by the input arguments. If the arguments exist in the cache
 </span><span class='line'>      <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">];</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// Not in the cache, so compute the value</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">computation</span> <span class="o">=</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">]</span>    <span class="o">=</span> <span class="nx">computation</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// Not in the cache, so compute the value and put it in the cache</span>
+</span><span class='line'>    <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">]</span> <span class="o">=</span> <span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">speed</span><span class="p">];</span>
 </span><span class='line'>  <span class="p">}</span>
@@ -236,7 +234,7 @@ It&rsquo;s important to understand that only the functions from which the result
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">speedAlert</span> <span class="o">=</span> <span class="nx">memoize</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">limitation</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
 </span><span class='line'>  <span class="c1">// Imagine the following line being an extra CPU intensive task</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">speed</span> <span class="o">&gt;</span> <span class="nx">limitation</span><span class="p">;</span>
 </span><span class='line'><span class="p">});</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">speedAlert</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span> <span class="c1">// return false</span>
@@ -319,12 +317,9 @@ But don&rsquo;t forget some of the downsides.</p>
 
 <p>To begin, a definition won&rsquo;t hurt.</p>
 
-<p>So, currying allows you to invoke a function that build and return you another one prefilled with the arguments you gave.  You can see it as partially applying a function.
-And now you&rsquo;re supposed to say:</p>
+<p>Currying is a process which allows you to bind some arguments to a function so that, by the next invocation, these values are already fixed. It&rsquo;s oftenly referred as &lsquo;partial functions&rsquo;. You can see it as a way to prefilled some of the arguments to obtain a more specific function.</p>
 
-<blockquote><p><em>What?!</em></p></blockquote>
-
-<p>Yeah it might be blurry.. so it&rsquo;s a perfect time for a basic example!</p>
+<p>But, enough talking it&rsquo;s time for a basic code example!</p>
 
 <h3>Basic example</h3>
 
@@ -357,24 +352,10 @@ And now you&rsquo;re supposed to say:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Ok so now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
+<p>Now it should be more clear for you. The <code>liker</code> is a <em>curried function</em>. As you can see, we use it to <em>prefill</em> the first argument before the final function is executed.
 This allows us to create more specific likers function as <em>bookLiker</em> or <em>tedTalkLiker</em> in our case.</p>
 
-<blockquote><p>Cool, but.. what if we just specified two arguments in the first one?</p></blockquote>
-
-<p>Yes! You&rsquo;re right. The following function can easily do the same job:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">liker</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="s1">&#39;I like this &#39;</span> <span class="o">+</span> <span class="nx">type</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>But this one was a basic example to introduce you with this pattern.
-It&rsquo;s now time to move forward into the concept.</p>
+<p>It was the most basic example to introduce you with this concept, so it&rsquo;s now time to move forward.</p>
 
 <h3>Advanced usage</h3>
 
@@ -437,7 +418,7 @@ It then returns a function. When you then call this function, the old arguments 
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re moving towards the final syntax.</p>
+<p>Well that&rsquo;s fine, but as you can see the implementation is quite naive and can&rsquo;t resolve all the currying case, but we&rsquo;re getting closer to the final syntax.</p>
 
 <h4>2 &ndash; A better implementation</h4>
 
@@ -497,7 +478,7 @@ It then returns a function. When you then call this function, the old arguments 
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
+<p>Wohohoh! We&rsquo;ve made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, a major advantage is that the curried function is totally transparent as it still can behave as a normal one (<em>look at the third line on this example, we can call it in a &lsquo;normal&rsquo; way</em>).</p>
 
 <p>And we&rsquo;re done! I hope you liked it.</p>
 
@@ -4495,7 +4476,7 @@ You&rsquo;re going to learn new tricks, use them and improve your skills with th
 <pre><code>cd
 </code></pre>
 
-<blockquote><p>Good, and if I want to move back a folder</p></blockquote>
+<blockquote><p>Good, and if I want to move up one directory</p></blockquote>
 
 <pre><code>cd ..
 </code></pre>

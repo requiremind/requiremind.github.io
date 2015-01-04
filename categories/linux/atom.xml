@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | require 'mind']]></title>
   <link href="http://requiremind.com/categories/linux/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
-  <updated>2015-01-03T22:54:27+01:00</updated>
+  <updated>2015-01-04T17:22:52+01:00</updated>
   <id>http://requiremind.com/</id>
   <author>
     <name><![CDATA[requireMind]]></name>
@@ -170,7 +170,7 @@ You&rsquo;re going to learn new tricks, use them and improve your skills with th
 <pre><code>cd
 </code></pre>
 
-<blockquote><p>Good, and if I want to move back a folder</p></blockquote>
+<blockquote><p>Good, and if I want to move up one directory</p></blockquote>
 
 <pre><code>cd ..
 </code></pre>
