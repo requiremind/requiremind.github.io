@@ -187,6 +187,27 @@ console.timeEnd('memoized'); // log 0.193ms
 
 And you're going to see that, the more you increment the `iterations` variable, the more the utility of the `memoize` function is important! _(but don't push it too far, I've managed to freeze Chrome with a 75 value..)_
 
+#### Even better
+
+But we can do even better than this! _(thanks Samuel Rouse for pointing this out on the comments!)_  
+The trick is simple.  
+Here, the fibonacci function is calling itself recursively. But it's calling recursively on a non-memoized function. The performances are really improved if the recursivity is based on a memoized function.  
+This is how we can do it:
+
+``` js
+var fibonacci = memoize(function(n) {
+  return (n === 0 || n === 1) ? n : fibonacci(n - 1) + fibonacci(n - 2);
+});
+
+```
+
+You can see that `fibonacci` is now a memoized function which implies that all recursive calls are memoized too. And this is a **huge** performance gain.  
+Indeed, when you call `fibonacci(35)` it will call `fibonacci(34) + fibonacci(33)`. Recursively, `fibonacci(34)` will call `fibonacci(33) + fibonacci(32)` and as you can see, `fibonacci(33)` has already been computed (thanks to the memoize), so we hit the cache.  
+So now, you can easily increase the iterations number! :D
+
+___
+
+  
 So, for all your CPU intensive tasks, think about implementing some memoize mechanism.  
 But don't forget some of the downsides. 
 
