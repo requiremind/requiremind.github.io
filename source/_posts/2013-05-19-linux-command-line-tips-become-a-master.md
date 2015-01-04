@@ -28,7 +28,7 @@ Ready? Go ahead.
 
     cd
 
-> Good, and if I want to move back a folder
+> Good, and if I want to move up one directory
 
     cd ..
 

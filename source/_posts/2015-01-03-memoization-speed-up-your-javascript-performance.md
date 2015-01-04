@@ -31,7 +31,7 @@ Let's see a basic example.
 var speedAlert = function(speed) {
   var limitation = 75;
   // Imagine the following line being an extra CPU intensive task
-  return (speed > limitation) ? true : false;
+  return speed > limitation;
 };
 
 var radar = {
@@ -47,7 +47,7 @@ radar.on('carDetected', function(car) {
 });
 ```
 
-As you can see the method `speedAlert` will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic terteniary computation :) ). So everytime we call it, we're going to use a lot of CPU time.
+As you can see the method `speedAlert` will be called many times. Imagine that inside this method there is a lot of computing going on (not just this basic operation :) ). So everytime we call it, we're going to use a lot of CPU time.
 
 This is where `memoization` enter! Let's refactor the speedAlert method then.
 
@@ -62,9 +62,8 @@ var speedAlert = (function() {
       return cache[speed];
     }
 
-    // Not in the cache, so compute the value
-    var computation = (speed > limitation) ? true : false;
-    cache[speed]    = computation;
+    // Not in the cache, so compute the value and put it in the cache
+    cache[speed] = speed > limitation;
     
     return cache[speed];
   }
@@ -145,7 +144,7 @@ Now that our `memoize` is more 'abstract', we can have multiple arguments passed
 var speedAlert = memoize(function(speed) {
   var limitation = 75;
   // Imagine the following line being an extra CPU intensive task
-  return (speed > limitation) ? true : false;
+  return speed > limitation;
 });
 
 speedAlert(50); // return false

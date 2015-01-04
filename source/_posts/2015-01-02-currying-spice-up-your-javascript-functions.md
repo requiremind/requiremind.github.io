@@ -22,12 +22,9 @@ It's time to cook, let's spice it up!
 
 To begin, a definition won't hurt.
 
-So, currying allows you to invoke a function that build and return you another one prefilled with the arguments you gave.  You can see it as partially applying a function.
-And now you're supposed to say:
+Currying is a process which allows you to bind some arguments to a function so that, by the next invocation, these values are already fixed. It's oftenly referred as 'partial functions'. You can see it as a way to prefilled some of the arguments to obtain a more specific function.
 
-> _What?!_
-
-Yeah it might be blurry.. so it's a perfect time for a basic example!
+But, enough talking it's time for a basic code example!
 
 ### Basic example
 
@@ -48,20 +45,10 @@ tedLiker('The art of misdirection'); // I like this TED talk: The art of misdire
 
 ```
 
-Ok so now it should be more clear for you. The `liker` is a _curried function_. As you can see, we use it to _prefill_ the first argument before the final function is executed.
+Now it should be more clear for you. The `liker` is a _curried function_. As you can see, we use it to _prefill_ the first argument before the final function is executed.
 This allows us to create more specific likers function as _bookLiker_ or _tedTalkLiker_ in our case.
 
-> Cool, but.. what if we just specified two arguments in the first one?
-
-Yes! You're right. The following function can easily do the same job:
-
-``` js
-var liker = function(type, name) {
-	return 'I like this ' + type + ': ' + name;
-}
-```
-But this one was a basic example to introduce you with this pattern.
-It's now time to move forward into the concept.
+It was the most basic example to introduce you with this concept, so it's now time to move forward.
 
 ### Advanced usage
 
@@ -105,7 +92,7 @@ var sendMessageFromSherlock = naiveCurry(sendMessage, 'SH');
 sendMessageFromSherlock('IA', 'Stop boring me and think. It\'s the new sexy.');
 ```
 
-Well that's fine, but as you can see the implementation is quite naive and can't resolve all the currying case, but we're moving towards the final syntax.
+Well that's fine, but as you can see the implementation is quite naive and can't resolve all the currying case, but we're getting closer to the final syntax.
 
 #### 2 - A better implementation
 
@@ -141,7 +128,7 @@ var fromSherlocktoWatson = sendMessageCurried('Sherlock', 'Watson');
 fromSherlocktoWatson('You see, but you do not observe');
 ```
 
-Wohohoh! We've made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, the curried function is totally transparent as it still can behave as a normal one (_look at the third line on this example, we can call it in a 'normal' way_).
+Wohohoh! We've made it! And as you can see, it can be quite useful to have this syntax available. Furthermore, a major advantage is that the curried function is totally transparent as it still can behave as a normal one (_look at the third line on this example, we can call it in a 'normal' way_).
 
 And we're done! I hope you liked it.
 
