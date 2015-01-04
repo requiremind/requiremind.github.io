@@ -51,18 +51,18 @@ body {
 		form .search {
 			border-radius: 0.2em 0.2em 0.2em 0.2em;
 			box-shadow: none;
-			border: 0px;
+			border: 1px solid lighten($nav-bg, 15);
 			padding-top: 0.3em;
 			padding-bottom: 0.3em;
 			padding-left: 0.5em;
 			padding-right: 0.5em;
-			background-color: $clouds;
 			color: $wet-asphalt;
+			background: transparent;
 
 			&:focus {
-				-webkit-box-shadow: $peter-river 0 0 4px, $peter-river 0 0 3px inset;
-				-moz-box-shadow: $peter-river 0 0 4px, $peter-river 0 0 3px inset;
-				box-shadow: $peter-river 0 0 4px, $peter-river 0 0 3px inset;
+				-webkit-box-shadow: $peter-river 0 0 1px, $peter-river 0 0 1px inset;
+				-moz-box-shadow: $peter-river 0 0 1px, $peter-river 0 0 1px inset;
+				box-shadow: $peter-river 0 0 1px, $peter-river 0 0 1px inset;
 			}
 		}
 
