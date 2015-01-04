@@ -137,7 +137,12 @@ function memoize(fn, resolver) {
 
 Time for explanations, the `memoize` function takes two parameters, a function (the one we want to memoize) and an _optional_ resolver.
 
-Now that our `memoize` is more 'abstract', we can have multiple arguments passed to our function. So the `key` for the `cache` can't be as simple as the first argument anymore. That's why we're asking for a resolver. His goal is to take the `arguments` and compute a key for it. In this example, we're using `JSON.stringify` as a `resolver`, but this one is not bullet-proof as it won't work with all cases, but I don't want to complicate this example.
+Now that our `memoize` is more 'abstract', we can have multiple arguments passed to our function. So the `key` for the `cache` can't be as simple as the first argument anymore. That's why we're asking for a resolver. His goal is to take the `arguments` and compute a key for it. 
+
+_Note: In the previous example, we're using `JSON.stringify` as a `resolver`, but this one is not a bullet-proof solution as it won't work with all cases, plus, keep in mind that `key in cache` syntax is definitely not optimzed but allows this example to stay clear and light.  
+That's why the cache management here is really basic. A way to start optimizing it could be by using a [weak map](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) rather than an object (cool feature coming in ES6)_
+
+Time has come to play with it!
 
 ``` js
 
