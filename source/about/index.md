@@ -46,7 +46,7 @@ This blog contains Tips'n'Tricks you can learn to live better and love your dev 
 
   <blockquote>
     <p>
-      His journey has begun and it's a tough one: taking over the world... but you can sometimes stumble into him roaming in Montreal.
+      His journey has begun and it's a tough one: taking over the world...
     </p>
   </blockquote>
 
