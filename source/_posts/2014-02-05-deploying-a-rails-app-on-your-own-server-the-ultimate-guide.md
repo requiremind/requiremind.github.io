@@ -16,7 +16,7 @@ categories:
 - security
 ---
 
-Recently I've been giving life to a project of my own ([6lock.com](https://6lock.com)) and I had to go through some steps to get the Rails app up and 
+Recently I've been giving life to a project of my own and I had to go through some steps to get the Rails app up and 
 running with the best possible conditions.
 
 In this tutorial, I'll try to show you how to deploy your Rails app on a *secured* Ubuntu Server 12.04 using *Capistrano*, *Unicorn*, *Nginx*. Part of my 
