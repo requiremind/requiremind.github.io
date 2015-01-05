@@ -9,6 +9,8 @@ categories:
 - batmanjs
 ---
 
+**UPDATE: [Batman.js is NO LONGER supported or maintained](http://www.shopify.com/technology/15646068-rebuilding-the-shopify-admin-improving-developer-productivity-by-deleting-28-000-lines-of-javascript)**
+
 I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes the choice pretty hard
 when you don’t know the subtleties of each. As a Rails developer, I chose Batman.js because of its “Rails orientation” and because I know that [Shopify](http://www.shopify.ca/) folks here in Canada
 are working hard to make things easy for us Rails developers (yes, they are developing Batman.js).
