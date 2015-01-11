@@ -63,13 +63,13 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user:
-github_repo_count: 0
+github_user: requiremind
+github_repo_count: 1
 github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: requiremind
 twitter_tweet_button: false
 
 # Google +1
@@ -78,7 +78,7 @@ google_plus_one_size: medium
 
 # Google Plus Profile
 # Hidden: No visible button, just add author information to search results
-googleplus_user:
+googleplus_user: +requiremind
 googleplus_hidden: false
 
 # Pinboard
@@ -98,5 +98,3 @@ google_analytics_tracking_id: UA-41030310-1
 
 # Facebook Like
 facebook_like: false
-
-highlight_js_color_theme: github
