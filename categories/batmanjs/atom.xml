@@ -4,7 +4,7 @@
   <title><![CDATA[Category: batmanjs | require 'mind']]></title>
   <link href="http://requiremind.com/categories/batmanjs/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
-  <updated>2015-01-04T22:07:54+01:00</updated>
+  <updated>2015-01-11T19:49:23+01:00</updated>
   <id>http://requiremind.com/</id>
   <author>
     <name><![CDATA[requireMind]]></name>
@@ -18,7 +18,9 @@
     <link href="http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial"/>
     <updated>2013-10-06T22:08:00+02:00</updated>
     <id>http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial</id>
-    <content type="html"><![CDATA[<p>I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes the choice pretty hard
+    <content type="html"><![CDATA[<p><strong>UPDATE: <a href="http://www.shopify.com/technology/15646068-rebuilding-the-shopify-admin-improving-developer-productivity-by-deleting-28-000-lines-of-javascript">Batman.js is NO LONGER supported or maintained</a></strong></p>
+
+<p>I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes the choice pretty hard
 when you don’t know the subtleties of each. As a Rails developer, I chose Batman.js because of its “Rails orientation” and because I know that <a href="http://www.shopify.ca/">Shopify</a> folks here in Canada
 are working hard to make things easy for us Rails developers (yes, they are developing Batman.js).</p>
 

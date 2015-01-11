@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: php | require 'mind']]></title>
+  <link href="http://requiremind.com/categories/php/atom.xml" rel="self"/>
+  <link href="http://requiremind.com/"/>
+  <updated>2015-01-11T19:49:23+01:00</updated>
+  <id>http://requiremind.com/</id>
+  <author>
+    <name><![CDATA[requireMind]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A Most Simple PHP MVC Beginners Tutorial]]></title>
+    <link href="http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial"/>
+    <updated>2015-01-04T21:30:00+01:00</updated>
+    <id>http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial</id>
+    <content type="html"><![CDATA[<p>A few months ago, a friend of mine started taking courses about web development. Like (almost) everyone else he began learning PHP and soon enough he was asked to develop a small handmade MVC application.
+So he went on the internet and started searching easily understandable tutorials, only to find out there was not that many good guides out there. Let&rsquo;s fix this.</p>
+
+<!-- more -->
+
+
+<p>Disclaimer: this tutorial is just my take on the subject. I do not guarantee that it will solve your problem. MVC is a design pattern really easy to grasp when you&rsquo;ve been working with it, yet a bit
+odd when you come across the first time. The application I will create is probably perfectly imperfect, this was originally a quick afternoon draft from a guy that has been working with Ruby on Rails
+the last couple years, it goes without saying that PHP was remotely a memory. Anyways, if you find anything in this article that you think could threaten the future of the universe, please yell at me in the comments below.</p>
+
+<p>Application Github repo: <a href="https://github.com/Raindal/php_mvc">https://github.com/Raindal/php_mvc</a></p>
+
+<p>Let&rsquo;s begin with the boring part.</p>
+
+<h3>MVC, what the f***?</h3>
+
+<p>Right now I&rsquo;m guessing you have at least a basic understanding of PHP. You&rsquo;ve probably been building small websites or applications already, to get a general idea of the possibilities.</p>
+
+<p>I suppose you&rsquo;ve been starting with putting everything in one file and you quickly moved on to using &ldquo;includes&rdquo; and &ldquo;requires&rdquo; (better even require_once) just to make your code more readable, easier
+to follow for you or someone else. You see, that transition you made was for your code to be clearer, and therefore, maintainable. Maybe you even know about such things as Separation of Concerns and
+DRY (Do not Repeat Yourself). If you don&rsquo;t know about those I suggest you take a quick look at it cause you&rsquo;ll come across that stuff a lot more than you&rsquo;d think if you plan on following the white rabbit.</p>
+
+<p>Here are some useful resources on the matter, just get a vague idea, do not get stuck on those (read the introductions at least I guess) :</p>
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Separation_of_concerns">Separation of Concerns</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY</a></li>
+</ul>
+
+
+<p>Well, MVC is a design pattern that suggests you organize your code in a way concerns are properly separated, and yet interact with each other in a certain fashion.</p>
+
+<p>MVC stands for Model View Controller as you may already know. That makes 3 types of concerns, I know this sounds a bit esoteric but I have faith you&rsquo;ll get it by reading on. Just to make things simpler,
+just imagine you have an application and in that application you have at least those 3 folders : models, views and controllers. Those folders contain specific files (no shit Sherlock). Now, those files
+are classified that way for a good reason: they have to carry on different tasks.</p>
+
+<p>In the end: models fetch and mold data which is in turn sent to the view and therefore diplayed. The controller is managing the process.</p>
+
+<h3>Building an example app</h3>
+
+<p>Let&rsquo;s get the basic stuff done: create a database <strong>php_mvc</strong> that contains a table <strong>posts</strong> with 3 columns <strong>id</strong> (INT PRIMARY auto_increment), <strong>author</strong> (VARCHAR 255, note that in a real life
+situation you could also put an index on this one as searching through posts with a sepcific author may happen quite often) and <strong>content</strong> (TEXT).</p>
+
+<p>Let&rsquo;s move on to creating our first file: index.php.<br/>
+The first thing it&rsquo;s going to do is making sure we have something to query the database any time later in the execution.<br/>
+As this is a pretty specific thing we&rsquo;re gonna put it in a specific file that we&rsquo;re going to require in our index.php.</p>
+
+<p>Note that I&rsquo;m working in WAMP. My project root is at C:\wamp\www\php_mvc_blog</p>
+
+<p><code>php index.php
+&lt;?php
+  require_once('connection.php');
+?&gt;
+</code></p>
+
+<p>Let&rsquo;s write the actual file.</p>
+
+<p>``` php connection.php
+&lt;?php
+  class Db {</p>
+
+<pre><code>private static $instance = NULL;
+
+private function __construct() {}
+
+private function __clone() {}
+
+public static function getInstance() {
+  if (!isset(self::$instance)) {
+    $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+    self::$instance = new PDO('mysql:host=localhost;dbname=php_mvc', 'root', '', $pdo_options);
+  }
+  return self::$instance;
+}
+</code></pre>
+
+<p>  }
+?>
+```</p>
+
+<p>You may have to change the 12th line to match your database user/password. Here my user is <code>root</code> and I do not have a password.</p>
+
+<p>As you may have noticed we&rsquo;re just creating a singleton class. This allows us to return an instance of the connection and always the same as we only need one to execute all our queries. As the class is a singleton, we make <code>__construct()</code> and <code>__clone()</code> private so that no one can call <code>new Db()</code>. It has an <code>$instance</code> variable that retains the connection object (PDO here). In the end, we have access to our &ldquo;connection object&rdquo; through <code>Db::getInstance()</code>.</p>
+
+<p>Note that singletons are not the only way to handle that, it&rsquo;s just been a common way for years but this may not be the best approach depending on your needs:
+<a href="http://stackoverflow.com/questions/4595964/is-there-a-use-case-for-singletons-with-database-access-in-php">see this post on StackOverflow for instance</a>.</p>
+
+<p>Anyways, we can go on with our index file.</p>
+
+<p>``` php index.php
+&lt;?php
+  require_once(&lsquo;connection.php&rsquo;);</p>
+
+<p>  if (isset($<em>GET[&lsquo;controller&rsquo;]) &amp;&amp; isset($</em>GET[&lsquo;action&rsquo;])) {</p>
+
+<pre><code>$controller = $_GET['controller'];
+$action     = $_GET['action'];
+</code></pre>
+
+<p>  } else {</p>
+
+<pre><code>$controller = 'pages';
+$action     = 'home';
+</code></pre>
+
+<p>  }</p>
+
+<p>  require_once(&lsquo;views/layout.php&rsquo;);
+?>
+```</p>
+
+<p>Here is the whole file.
+Note that this index.php file is going to receive all the requests. This means that every link would have to point to /?x=y or /index.php?x=y.</p>
+
+<p>The if statement is gonna check whether we have the parameters controller and action set and store them in variables. If we do not have such parameters we just make <strong>pages</strong> the default controller
+and <strong>home</strong> the default action. You may not know where we&rsquo;re going with this but you should get the idea by reading on. Every request when hiting our index file is going to be routed to a
+controller (just a file defining a class) and an action in that controller (just a method).</p>
+
+<p>Finally we require the only part of our application that does not (theoretically) change: the layout.</p>
+
+<p>Let&rsquo;s create this file.</p>
+
+<p>``` php views/layout.php
+<DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body></p>
+
+<pre><code>&lt;header&gt;
+  &lt;a href='http://requiremind.com/php_mvc_blog'&gt;Home&lt;/a&gt;
+&lt;/header&gt;
+
+&lt;?php require_once('routes.php'); ?&gt;
+
+&lt;footer&gt;
+  Copyright
+&lt;/footer&gt;
+</code></pre>
+
+<p>  <body>
+<html>
+```</p>
+
+<p>As you can see, we put it in a new <em>views/</em> folder because it is something displayed on the users' screen, in other words it is rendered. It contains only our header with the different links you could
+find in a basic menu and a footer. Note that while I&rsquo;m working on WAMP for this guide the root of my application is not / but /php_mvc_blog (the name of my folder under www/ in WAMP).</p>
+
+<p>In the middle we require another file: routes.php. The only part we still need is the main area of our page. We can determine what view we need to put there depending on our previously set <em>$controller</em>
+and <em>$action</em> variables. The routes.php file is gonna take care of that.</p>
+
+<p>This file is not in the views folder but at the root of our application.</p>
+
+<p>``` php routes.php
+&lt;?php
+  function call($controller, $action) {</p>
+
+<pre><code>// require the file that matches the controller name
+require_once('controllers/' . $controller . '_controller.php');
+
+// create a new instance of the needed controller
+switch($controller) {
+  case 'pages':
+    $controller = new PagesController();
+  break;
+}
+
+// call the action
+$controller-&gt;{ $action }();
+</code></pre>
+
+<p>  }</p>
+
+<p>  // just a list of the controllers we have and their actions
+  // we consider those &ldquo;allowed&rdquo; values
+  $controllers = array(&lsquo;pages&rsquo; => [&lsquo;home&rsquo;, &lsquo;error&rsquo;]);</p>
+
+<p>  // check that the requested controller and action are both allowed
+  // if someone tries to access something else he will be redirected to the error action of the pages controller
+  if (array_key_exists($controller, $controllers)) {</p>
+
+<pre><code>if (in_array($action, $controllers[$controller])) {
+  call($controller, $action);
+} else {
+  call('pages', 'error');
+}
+</code></pre>
+
+<p>  } else {</p>
+
+<pre><code>call('pages', 'error');
+</code></pre>
+
+<p>  }
+?>
+```</p>
+
+<p>Ok so we want our routes.php to output the html that was requested one way or another. To fetch the right view (file containing the html we need) we have 2 things: a controller name and an action name.<br/>
+We can write a function <code>call</code> that will take those 2 arguments and call the action of the controller as done in the previous code sample.</p>
+
+<p>We&rsquo;re doing great. Let&rsquo;s continue and write our first controller for the call function to find the file.</p>
+
+<p>``` php controllers/pages_controller.php
+&lt;?php
+  class PagesController {</p>
+
+<pre><code>public function home() {
+  $first_name = 'Jon';
+  $last_name  = 'Snow';
+  require_once('views/pages/home.php');
+}
+
+public function error() {
+  require_once('views/pages/error.php');
+}
+</code></pre>
+
+<p>  }
+?>
+```</p>
+
+<p>The class is rather straightforward. We have 2 public functions as expected: <code>home()</code> and <code>error()</code>.<br/>
+As you can see, the first one is also defining some variables. We&rsquo;re doing this so we can later ouput their values in the view and not clutter our view with variables definition and other computation
+not related to anything visual. Separation of concerns.</p>
+
+<p>To keep things simple, we usually name the view after the action name and we store it under the controller name.</p>
+
+<p>Let&rsquo;s create both our views.</p>
+
+<p>``` php views/pages/home.php</p>
+
+<p><p>Hello there &lt;?php echo $first_name . &lsquo; &rsquo; . $last_name; ?>!<p></p>
+
+<p><p>You successfully landed on the home page. Congrats!</p>
+```</p>
+
+<p>Use those previously defined $first_name and $last_name where you see fit.</p>
+
+<p>``` php views/pages/error.php
+<p>Oops, this is the error page.</p></p>
+
+<p><p>Looks like something went wrong.</p>
+```</p>
+
+<p>Fantastic! We have a working sample of our MVC app. Navigate to <em>localhost/php_mvc_blog</em> and you should see the following:</p>
+
+<blockquote><p>Home<br/>
+Hello there Jon Snow! <br/>
+You successfully landed on the home page. Congrats!<br/>
+Copyright</p></blockquote>
+
+<h3>Improve the app with models and some data management</h3>
+
+<p>What we want now is to be able to query our database in a clean way and display the results.<br/>
+Say we want to be able to fetch a list of posts and display those, and same thing for one particular post.</p>
+
+<p>Let&rsquo;s modify our <em>routes.php</em> file to reflect that behaviour.</p>
+
+<p>Here is the final file:</p>
+
+<p>``` php routes.php
+&lt;?php
+  function call($controller, $action) {</p>
+
+<pre><code>require_once('controllers/' . $controller . '_controller.php');
+
+switch($controller) {
+  case 'pages':
+    $controller = new PagesController();
+  break;
+  case 'posts':
+    // we need the model to query the database later in the controller
+    require_once('models/post.php');
+    $controller = new PostsController();
+  break;
+}
+
+$controller-&gt;{ $action }();
+</code></pre>
+
+<p>  }</p>
+
+<p>  // we&rsquo;re adding an entry for the new controller and its actions
+  $controllers = array(&lsquo;pages&rsquo; => [&lsquo;home&rsquo;, &lsquo;error&rsquo;],</p>
+
+<pre><code>                   'posts' =&gt; ['index', 'show']);
+</code></pre>
+
+<p>  if (array_key_exists($controller, $controllers)) {</p>
+
+<pre><code>if (in_array($action, $controllers[$controller])) {
+  call($controller, $action);
+} else {
+  call('pages', 'error');
+}
+</code></pre>
+
+<p>  } else {</p>
+
+<pre><code>call('pages', 'error');
+</code></pre>
+
+<p>  }
+?>
+```</p>
+
+<p>Just pay attention to where I add a comment, those parts where modified.<br/>
+We can create the posts controller now and we will finish with the model.</p>
+
+<p>``` php controllers/posts_controller.php
+&lt;?php
+  class PostsController {</p>
+
+<pre><code>public function index() {
+  // we store all the posts in a variable
+  $posts = Post::all();
+  require_once('views/posts/index.php');
+}
+
+public function show() {
+  // we expect a url of form ?controller=posts&amp;action=show&amp;id=x
+  // without an id we just redirect to the error page as we need the post id to find it in the database
+  if (!isset($_GET['id']))
+    return call('pages', 'error');
+
+  // we use the given id to get the right post
+  $post = Post::find($_GET['id']);
+  require_once('views/posts/show.php');
+}
+</code></pre>
+
+<p>  }
+?>
+```</p>
+
+<p>As you may have noticed, the pages controller is managing static pages of our application whereas the posts controller is managing what we call a resource.<br/>
+The resource here is a post. A resource can usually be listed (index action), showed (show action), created, updated and destroyed.<br/>
+We will keep the focus on the first two as building a fully functional app is not the point of this article.</p>
+
+<p><code>Post::all()</code> and <code>Post::find()</code> refer to the model Post that has not yet been written. One of the best piece of advice I was ever given was to write the final code as I want it to be. This way
+I&rsquo;m sure I&rsquo;m writing the most beautiful code I can come up with and then I make sure it works.</p>
+
+<p>So here, when I fetch the posts I want it to look like <code>$posts = Post::all();</code> as this is clear and simple.</p>
+
+<p>Now we can move on to writing the model.</p>
+
+<p>``` php models/post.php
+&lt;?php
+  class Post {</p>
+
+<pre><code>// we define 3 attributes
+// they are public so that we can access them using $post-&gt;author directly
+public $id;
+public $author;
+public $content;
+
+public function __construct($id, $author, $content) {
+  $this-&gt;id      = $id;
+  $this-&gt;author  = $author;
+  $this-&gt;content = $content;
+}
+
+public static function all() {
+  $list = [];
+  $db = Db::getInstance();
+  $req = $db-&gt;query('SELECT * FROM posts');
+
+  // we create a list of Post objects from the database results
+  foreach($req-&gt;fetchAll() as $post) {
+    $list[] = new Post($post['id'], $post['author'], $post['content']);
+  }
+
+  return $list;
+}
+
+public static function find($id) {
+  $db = Db::getInstance();
+  // we make sure $id is an integer
+  $id = intval($id);
+  $req = $db-&gt;prepare('SELECT * FROM posts WHERE id = :id');
+  // the query was prepared, now we replace :id with our actual $id value
+  $req-&gt;execute(array('id' =&gt; $id));
+  $post = $req-&gt;fetch();
+
+  return new Post($post['id'], $post['author'], $post['content']);
+}
+</code></pre>
+
+<p>  }
+?>
+```</p>
+
+<p>Our model is a class with 3 attributes.<br/>
+It has a constructor so we can call <code>$post = new Post('Neil', 'A Most Simple PHP MVC Beginners Tutorial')</code> if need be.<br/>
+I think this is pretty much straightforward but let me know in the comments below if something needs more explanation.</p>
+
+<p>Let&rsquo;s modify our layout to add a link to the posts in the header.</p>
+
+<p>Here is the final file.</p>
+
+<p>``` php views/layout.php
+<DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body></p>
+
+<pre><code>&lt;header&gt;
+  &lt;a href='http://requiremind.com/php_mvc_blog'&gt;Home&lt;/a&gt;
+  &lt;a href='?controller=posts&amp;action=index'&gt;Posts&lt;/a&gt;
+&lt;/header&gt;
+
+&lt;?php require_once('routes.php'); ?&gt;
+
+&lt;footer&gt;
+  Copyright
+&lt;/footer&gt;
+</code></pre>
+
+<p>  <body>
+<html>
+```</p>
+
+<p>Ok now final step we have to create the views we require in the posts controller.</p>
+
+<p>``` php views/posts/index.php
+<p>Here is a list of all posts:</p></p>
+
+<p>&lt;?php foreach($posts as $post) { ?>
+  <p></p>
+
+<pre><code>&lt;?php echo $post-&gt;author; ?&gt;
+&lt;a href='?controller=posts&amp;action=show&amp;id=&lt;?php echo $post-&gt;id; ?&gt;'&gt;See content&lt;/a&gt;
+</code></pre>
+
+<p>  </p>
+&lt;?php } ?>
+```</p>
+
+<p>And</p>
+
+<p>``` php views/posts/show.php
+<p>This is the requested post:</p></p>
+
+<p><p>&lt;?php echo $post->author; ?></p>
+<p>&lt;?php echo $post->content; ?></p>
+```</p>
+
+<p>We need to have some data in the database so add some manually as we do not have a feature for this yet.<br/>
+I&rsquo;m using phpmyadmin for this matter.</p>
+
+<p>I created 2 posts :</p>
+
+<ul>
+<li>one with author &ldquo;Jon Snow&rdquo; and content &ldquo;The Wall will fall.&rdquo;</li>
+<li>the other with author &ldquo;Khal Drogo&rdquo; and content &ldquo;I may be dead but I&rsquo;m still the most awesome character.&rdquo; (and you shall not disagree on that one)</li>
+</ul>
+
+
+<p>Now go ahead and test everything in your browser.</p>
+
+<p>What you&rsquo;ve seen here is a way of separating the concerns in an MVC style.<br/>
+Note that a lot of stuff is open to interpretation. This way of seeing things is mostly inspired by what I&rsquo;m used to do with Rails.</p>
+
+<p>If you want to go further down the road you should check out some framework like Symphony for PHP, Django for Python or Rails for Ruby.</p>
+
+<p>That&rsquo;s it folks! Hope it helps. Until next time.</p>
+]]></content>
+  </entry>
+  
+</feed>

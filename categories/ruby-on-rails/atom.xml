@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby on rails | require 'mind']]></title>
   <link href="http://requiremind.com/categories/ruby-on-rails/atom.xml" rel="self"/>
   <link href="http://requiremind.com/"/>
-  <updated>2015-01-04T22:07:54+01:00</updated>
+  <updated>2015-01-11T19:49:23+01:00</updated>
   <id>http://requiremind.com/</id>
   <author>
     <name><![CDATA[requireMind]]></name>
@@ -18,7 +18,7 @@
     <link href="http://requiremind.com/deploying-a-rails-app-on-your-own-server-the-ultimate-guide"/>
     <updated>2014-02-05T23:28:00+01:00</updated>
     <id>http://requiremind.com/deploying-a-rails-app-on-your-own-server-the-ultimate-guide</id>
-    <content type="html"><![CDATA[<p>Recently I&rsquo;ve been giving life to a project of my own (<a href="https://6lock.com">6lock.com</a>) and I had to go through some steps to get the Rails app up and
+    <content type="html"><![CDATA[<p>Recently I&rsquo;ve been giving life to a project of my own and I had to go through some steps to get the Rails app up and
 running with the best possible conditions.</p>
 
 <p>In this tutorial, I&rsquo;ll try to show you how to deploy your Rails app on a <em>secured</em> Ubuntu Server 12.04 using <em>Capistrano</em>, <em>Unicorn</em>, <em>Nginx</em>. Part of my
@@ -918,7 +918,9 @@ middle of the assets precompilation. To fix this I just had to set up some swap 
     <link href="http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial"/>
     <updated>2013-10-06T22:08:00+02:00</updated>
     <id>http://requiremind.com/ruby-on-rails-4-and-batman-dot-js-another-getting-started-tutorial</id>
-    <content type="html"><![CDATA[<p>I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes the choice pretty hard
+    <content type="html"><![CDATA[<p><strong>UPDATE: <a href="http://www.shopify.com/technology/15646068-rebuilding-the-shopify-admin-improving-developer-productivity-by-deleting-28-000-lines-of-javascript">Batman.js is NO LONGER supported or maintained</a></strong></p>
+
+<p>I’ve never been using JS frameworks before, this is why I wanted to give it a shot. Many options here: AngularJS, Ember.js, Backbone.js, etc, makes the choice pretty hard
 when you don’t know the subtleties of each. As a Rails developer, I chose Batman.js because of its “Rails orientation” and because I know that <a href="http://www.shopify.ca/">Shopify</a> folks here in Canada
 are working hard to make things easy for us Rails developers (yes, they are developing Batman.js).</p>
 
@@ -2015,7 +2017,7 @@ association and <code>has_one</code> with <code>belongs_to</code> for a one-to-o
     <link href="http://requiremind.com/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0"/>
     <updated>2013-05-26T01:38:00+02:00</updated>
     <id>http://requiremind.com/riding-rails-4-along-with-mongoid-and-ruby-2-dot-0</id>
-    <content type="html"><![CDATA[<p>You&rsquo;re not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine: <a href="https://6lock.com">6LOCK</a>,
+    <content type="html"><![CDATA[<p>You&rsquo;re not without knowing that Rails 4 is about to kick in in a few days (weeks?), are you? In a recent hobby project of mine
 I tested out MongoDB, together with Mongoid (the ORM that comes in replacement of ActiveRecord for querying the MongoDB database) and other pretty cool stuff. As I had a great time using it
 I wanted to give it a try using the all new and shiny Rails 4 and Ruby 2.</p>
 

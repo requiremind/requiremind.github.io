@@ -1,4 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: 
 
-Sitemap: http://requiremind.com/sitemap.xml
+Sitemap: http://requiremind.com/sitemap.xml 

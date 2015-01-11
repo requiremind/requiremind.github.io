@@ -1,0 +1,815 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>A Most Simple PHP MVC Beginners Tutorial | require 'mind'</title>
+
+	<meta name="author" content="requireMind">
+	
+	<meta name="description" content="Tips'n'Tricks you can learn to live better and love your dev life!">
+
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="/atom.xml" rel="alternate" title="require 'mind'" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400" />
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/.min.css" /> -->
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body class="post-template">
+  
+  <header id="site-head" class="site-head-small">
+
+  <div class="vertical">
+    <div id="site-head-content" class="inner">
+      <h1 class="blog-title"><a class="no-rollover" href="/">require 'mind'</a></h1>
+      <h2 class="blog-description">Learn. Live. Love. Dev.</h2>
+    </div>
+  </div>
+</header>
+  <main class="content" role="main"><article class="post">
+  
+	<h1 class="post-title">A Most Simple PHP MVC Beginners Tutorial</h1>
+	<span class="post-meta">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://neilrosenstech.com/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+</span>
+	<span class="post-meta">the 04 Jan 2015</span>
+
+	<section class="post-content">
+		<p>A few months ago, a friend of mine started taking courses about web development. Like (almost) everyone else he began learning PHP and soon enough he was asked to develop a small handmade MVC application.
+So he went on the internet and started searching easily understandable tutorials, only to find out there was not that many good guides out there. Let&rsquo;s fix this.</p>
+
+<!-- more -->
+
+
+<p>Disclaimer: this tutorial is just my take on the subject. I do not guarantee that it will solve your problem. MVC is a design pattern really easy to grasp when you&rsquo;ve been working with it, yet a bit
+odd when you come across the first time. The application I will create is probably perfectly imperfect, this was originally a quick afternoon draft from a guy that has been working with Ruby on Rails
+the last couple years, it goes without saying that PHP was remotely a memory. Anyways, if you find anything in this article that you think could threaten the future of the universe, please yell at me in the comments below.</p>
+
+<p>Application Github repo: <a href="https://github.com/Raindal/php_mvc">https://github.com/Raindal/php_mvc</a></p>
+
+<p>Let&rsquo;s begin with the boring part.</p>
+
+<h3>MVC, what the f***?</h3>
+
+<p>Right now I&rsquo;m guessing you have at least a basic understanding of PHP. You&rsquo;ve probably been building small websites or applications already, to get a general idea of the possibilities.</p>
+
+<p>I suppose you&rsquo;ve been starting with putting everything in one file and you quickly moved on to using &ldquo;includes&rdquo; and &ldquo;requires&rdquo; (better even require_once) just to make your code more readable, easier
+to follow for you or someone else. You see, that transition you made was for your code to be clearer, and therefore, maintainable. Maybe you even know about such things as Separation of Concerns and
+DRY (Do not Repeat Yourself). If you don&rsquo;t know about those I suggest you take a quick look at it cause you&rsquo;ll come across that stuff a lot more than you&rsquo;d think if you plan on following the white rabbit.</p>
+
+<p>Here are some useful resources on the matter, just get a vague idea, do not get stuck on those (read the introductions at least I guess) :</p>
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Separation_of_concerns">Separation of Concerns</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY</a></li>
+</ul>
+
+
+<p>Well, MVC is a design pattern that suggests you organize your code in a way concerns are properly separated, and yet interact with each other in a certain fashion.</p>
+
+<p>MVC stands for Model View Controller as you may already know. That makes 3 types of concerns, I know this sounds a bit esoteric but I have faith you&rsquo;ll get it by reading on. Just to make things simpler,
+just imagine you have an application and in that application you have at least those 3 folders : models, views and controllers. Those folders contain specific files (no shit Sherlock). Now, those files
+are classified that way for a good reason: they have to carry on different tasks.</p>
+
+<p>In the end: models fetch and mold data which is in turn sent to the view and therefore diplayed. The controller is managing the process.</p>
+
+<h3>Building an example app</h3>
+
+<p>Let&rsquo;s get the basic stuff done: create a database <strong>php_mvc</strong> that contains a table <strong>posts</strong> with 3 columns <strong>id</strong> (INT PRIMARY auto_increment), <strong>author</strong> (VARCHAR 255, note that in a real life
+situation you could also put an index on this one as searching through posts with a sepcific author may happen quite often) and <strong>content</strong> (TEXT).</p>
+
+<p>Let&rsquo;s move on to creating our first file: index.php.<br/>
+The first thing it&rsquo;s going to do is making sure we have something to query the database any time later in the execution.<br/>
+As this is a pretty specific thing we&rsquo;re gonna put it in a specific file that we&rsquo;re going to require in our index.php.</p>
+
+<p>Note that I&rsquo;m working in WAMP. My project root is at C:\wamp\www\php_mvc_blog</p>
+
+<figure class='code'><figcaption><span>index.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;connection.php&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&rsquo;s write the actual file.</p>
+
+<figure class='code'><figcaption><span>connection.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">Db</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="nv">$instance</span> <span class="o">=</span> <span class="k">NULL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">function</span> <span class="nf">__clone</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getInstance</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isset</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nv">$pdo_options</span><span class="p">[</span><span class="nx">PDO</span><span class="o">::</span><span class="na">ATTR_ERRMODE</span><span class="p">]</span> <span class="o">=</span> <span class="nx">PDO</span><span class="o">::</span><span class="na">ERRMODE_EXCEPTION</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PDO</span><span class="p">(</span><span class="s1">&#39;mysql:host=localhost;dbname=php_mvc&#39;</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nv">$pdo_options</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$instance</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You may have to change the 12th line to match your database user/password. Here my user is <code>root</code> and I do not have a password.</p>
+
+<p>As you may have noticed we&rsquo;re just creating a singleton class. This allows us to return an instance of the connection and always the same as we only need one to execute all our queries. As the class is a singleton, we make <code>__construct()</code> and <code>__clone()</code> private so that no one can call <code>new Db()</code>. It has an <code>$instance</code> variable that retains the connection object (PDO here). In the end, we have access to our &ldquo;connection object&rdquo; through <code>Db::getInstance()</code>.</p>
+
+<p>Note that singletons are not the only way to handle that, it&rsquo;s just been a common way for years but this may not be the best approach depending on your needs:
+<a href="http://stackoverflow.com/questions/4595964/is-there-a-use-case-for-singletons-with-database-access-in-php">see this post on StackOverflow for instance</a>.</p>
+
+<p>Anyways, we can go on with our index file.</p>
+
+<figure class='code'><figcaption><span>index.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;connection.php&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;controller&#39;</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$controller</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;controller&#39;</span><span class="p">];</span>
+</span><span class='line'>    <span class="nv">$action</span>     <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$controller</span> <span class="o">=</span> <span class="s1">&#39;pages&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nv">$action</span>     <span class="o">=</span> <span class="s1">&#39;home&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;views/layout.php&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here is the whole file.
+Note that this index.php file is going to receive all the requests. This means that every link would have to point to /?x=y or /index.php?x=y.</p>
+
+<p>The if statement is gonna check whether we have the parameters controller and action set and store them in variables. If we do not have such parameters we just make <strong>pages</strong> the default controller
+and <strong>home</strong> the default action. You may not know where we&rsquo;re going with this but you should get the idea by reading on. Every request when hiting our index file is going to be routed to a
+controller (just a file defining a class) and an action in that controller (just a method).</p>
+
+<p>Finally we require the only part of our application that does not (theoretically) change: the layout.</p>
+
+<p>Let&rsquo;s create this file.</p>
+
+<figure class='code'><figcaption><span>views/layout.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">&lt;DOCTYPE html&gt;</span>
+</span><span class='line'><span class="x">&lt;html&gt;</span>
+</span><span class='line'><span class="x">  &lt;head&gt;</span>
+</span><span class='line'><span class="x">  &lt;/head&gt;</span>
+</span><span class='line'><span class="x">  &lt;body&gt;</span>
+</span><span class='line'><span class="x">    &lt;header&gt;</span>
+</span><span class='line'><span class="x">      &lt;a href=&#39;/php_mvc_blog&#39;&gt;Home&lt;/a&gt;</span>
+</span><span class='line'><span class="x">    &lt;/header&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;?php</span> <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;routes.php&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span><span class="x"></span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    &lt;footer&gt;</span>
+</span><span class='line'><span class="x">      Copyright</span>
+</span><span class='line'><span class="x">    &lt;/footer&gt;</span>
+</span><span class='line'><span class="x">  &lt;body&gt;</span>
+</span><span class='line'><span class="x">&lt;html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see, we put it in a new <em>views/</em> folder because it is something displayed on the users&#8217; screen, in other words it is rendered. It contains only our header with the different links you could
+find in a basic menu and a footer. Note that while I&rsquo;m working on WAMP for this guide the root of my application is not / but /php_mvc_blog (the name of my folder under www/ in WAMP).</p>
+
+<p>In the middle we require another file: routes.php. The only part we still need is the main area of our page. We can determine what view we need to put there depending on our previously set <em>$controller</em>
+and <em>$action</em> variables. The routes.php file is gonna take care of that.</p>
+
+<p>This file is not in the views folder but at the root of our application.</p>
+
+<figure class='code'><figcaption><span>routes.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">function</span> <span class="nf">call</span><span class="p">(</span><span class="nv">$controller</span><span class="p">,</span> <span class="nv">$action</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// require the file that matches the controller name</span>
+</span><span class='line'>    <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;controllers/&#39;</span> <span class="o">.</span> <span class="nv">$controller</span> <span class="o">.</span> <span class="s1">&#39;_controller.php&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// create a new instance of the needed controller</span>
+</span><span class='line'>    <span class="k">switch</span><span class="p">(</span><span class="nv">$controller</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">case</span> <span class="s1">&#39;pages&#39;</span><span class="o">:</span>
+</span><span class='line'>        <span class="nv">$controller</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PagesController</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// call the action</span>
+</span><span class='line'>    <span class="nv">$controller</span><span class="o">-&gt;</span><span class="p">{</span> <span class="nv">$action</span> <span class="p">}();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// just a list of the controllers we have and their actions</span>
+</span><span class='line'>  <span class="c1">// we consider those &quot;allowed&quot; values</span>
+</span><span class='line'>  <span class="nv">$controllers</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;pages&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;home&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// check that the requested controller and action are both allowed</span>
+</span><span class='line'>  <span class="c1">// if someone tries to access something else he will be redirected to the error action of the pages controller</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nb">array_key_exists</span><span class="p">(</span><span class="nv">$controller</span><span class="p">,</span> <span class="nv">$controllers</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$action</span><span class="p">,</span> <span class="nv">$controllers</span><span class="p">[</span><span class="nv">$controller</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">call</span><span class="p">(</span><span class="nv">$controller</span><span class="p">,</span> <span class="nv">$action</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">call</span><span class="p">(</span><span class="s1">&#39;pages&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">call</span><span class="p">(</span><span class="s1">&#39;pages&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ok so we want our routes.php to output the html that was requested one way or another. To fetch the right view (file containing the html we need) we have 2 things: a controller name and an action name.<br/>
+We can write a function <code>call</code> that will take those 2 arguments and call the action of the controller as done in the previous code sample.</p>
+
+<p>We&rsquo;re doing great. Let&rsquo;s continue and write our first controller for the call function to find the file.</p>
+
+<figure class='code'><figcaption><span>controllers/pages_controller.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">PagesController</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">home</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nv">$first_name</span> <span class="o">=</span> <span class="s1">&#39;Jon&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="nv">$last_name</span>  <span class="o">=</span> <span class="s1">&#39;Snow&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;views/pages/home.php&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">error</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;views/pages/error.php&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The class is rather straightforward. We have 2 public functions as expected: <code>home()</code> and <code>error()</code>.<br/>
+As you can see, the first one is also defining some variables. We&rsquo;re doing this so we can later ouput their values in the view and not clutter our view with variables definition and other computation
+not related to anything visual. Separation of concerns.</p>
+
+<p>To keep things simple, we usually name the view after the action name and we store it under the controller name.</p>
+
+<p>Let&rsquo;s create both our views.</p>
+
+<figure class='code'><figcaption><span>views/pages/home.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">&lt;p&gt;Hello there </span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$first_name</span> <span class="o">.</span> <span class="s1">&#39; &#39;</span> <span class="o">.</span> <span class="nv">$last_name</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x">!&lt;p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">&lt;p&gt;You successfully landed on the home page. Congrats!&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Use those previously defined $first_name and $last_name where you see fit.</p>
+
+<figure class='code'><figcaption><span>views/pages/error.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">&lt;p&gt;Oops, this is the error page.&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">&lt;p&gt;Looks like something went wrong.&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Fantastic! We have a working sample of our MVC app. Navigate to <em>localhost/php_mvc_blog</em> and you should see the following:</p>
+
+<blockquote><p>Home<br/>
+Hello there Jon Snow! <br/>
+You successfully landed on the home page. Congrats!<br/>
+Copyright</p></blockquote>
+
+<h3>Improve the app with models and some data management</h3>
+
+<p>What we want now is to be able to query our database in a clean way and display the results.<br/>
+Say we want to be able to fetch a list of posts and display those, and same thing for one particular post.</p>
+
+<p>Let&rsquo;s modify our <em>routes.php</em> file to reflect that behaviour.</p>
+
+<p>Here is the final file:</p>
+
+<figure class='code'><figcaption><span>routes.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">function</span> <span class="nf">call</span><span class="p">(</span><span class="nv">$controller</span><span class="p">,</span> <span class="nv">$action</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;controllers/&#39;</span> <span class="o">.</span> <span class="nv">$controller</span> <span class="o">.</span> <span class="s1">&#39;_controller.php&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">switch</span><span class="p">(</span><span class="nv">$controller</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">case</span> <span class="s1">&#39;pages&#39;</span><span class="o">:</span>
+</span><span class='line'>        <span class="nv">$controller</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PagesController</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">case</span> <span class="s1">&#39;posts&#39;</span><span class="o">:</span>
+</span><span class='line'>        <span class="c1">// we need the model to query the database later in the controller</span>
+</span><span class='line'>        <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;models/post.php&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="nv">$controller</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PostsController</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nv">$controller</span><span class="o">-&gt;</span><span class="p">{</span> <span class="nv">$action</span> <span class="p">}();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// we&#39;re adding an entry for the new controller and its actions</span>
+</span><span class='line'>  <span class="nv">$controllers</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;pages&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;home&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">],</span>
+</span><span class='line'>                       <span class="s1">&#39;posts&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;show&#39;</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nb">array_key_exists</span><span class="p">(</span><span class="nv">$controller</span><span class="p">,</span> <span class="nv">$controllers</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$action</span><span class="p">,</span> <span class="nv">$controllers</span><span class="p">[</span><span class="nv">$controller</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">call</span><span class="p">(</span><span class="nv">$controller</span><span class="p">,</span> <span class="nv">$action</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">call</span><span class="p">(</span><span class="s1">&#39;pages&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">call</span><span class="p">(</span><span class="s1">&#39;pages&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Just pay attention to where I add a comment, those parts where modified.<br/>
+We can create the posts controller now and we will finish with the model.</p>
+
+<figure class='code'><figcaption><span>controllers/posts_controller.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">PostsController</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// we store all the posts in a variable</span>
+</span><span class='line'>      <span class="nv">$posts</span> <span class="o">=</span> <span class="nx">Post</span><span class="o">::</span><span class="na">all</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;views/posts/index.php&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">show</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// we expect a url of form ?controller=posts&amp;action=show&amp;id=x</span>
+</span><span class='line'>      <span class="c1">// without an id we just redirect to the error page as we need the post id to find it in the database</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">call</span><span class="p">(</span><span class="s1">&#39;pages&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// we use the given id to get the right post</span>
+</span><span class='line'>      <span class="nv">$post</span> <span class="o">=</span> <span class="nx">Post</span><span class="o">::</span><span class="na">find</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]);</span>
+</span><span class='line'>      <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;views/posts/show.php&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you may have noticed, the pages controller is managing static pages of our application whereas the posts controller is managing what we call a resource.<br/>
+The resource here is a post. A resource can usually be listed (index action), showed (show action), created, updated and destroyed.<br/>
+We will keep the focus on the first two as building a fully functional app is not the point of this article.</p>
+
+<p><code>Post::all()</code> and <code>Post::find()</code> refer to the model Post that has not yet been written. One of the best piece of advice I was ever given was to write the final code as I want it to be. This way
+I&rsquo;m sure I&rsquo;m writing the most beautiful code I can come up with and then I make sure it works.</p>
+
+<p>So here, when I fetch the posts I want it to look like <code>$posts = Post::all();</code> as this is clear and simple.</p>
+
+<p>Now we can move on to writing the model.</p>
+
+<figure class='code'><figcaption><span>models/post.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">Post</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// we define 3 attributes</span>
+</span><span class='line'>    <span class="c1">// they are public so that we can access them using $post-&gt;author directly</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nv">$id</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nv">$author</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nv">$content</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$author</span><span class="p">,</span> <span class="nv">$content</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span>      <span class="o">=</span> <span class="nv">$id</span><span class="p">;</span>
+</span><span class='line'>      <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">author</span>  <span class="o">=</span> <span class="nv">$author</span><span class="p">;</span>
+</span><span class='line'>      <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">content</span> <span class="o">=</span> <span class="nv">$content</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">all</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nv">$list</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>      <span class="nv">$db</span> <span class="o">=</span> <span class="nx">Db</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+</span><span class='line'>      <span class="nv">$req</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM posts&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// we create a list of Post objects from the database results</span>
+</span><span class='line'>      <span class="k">foreach</span><span class="p">(</span><span class="nv">$req</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$post</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nv">$list</span><span class="p">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Post</span><span class="p">(</span><span class="nv">$post</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="nv">$post</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">],</span> <span class="nv">$post</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="nv">$list</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">find</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nv">$db</span> <span class="o">=</span> <span class="nx">Db</span><span class="o">::</span><span class="na">getInstance</span><span class="p">();</span>
+</span><span class='line'>      <span class="c1">// we make sure $id is an integer</span>
+</span><span class='line'>      <span class="nv">$id</span> <span class="o">=</span> <span class="nb">intval</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+</span><span class='line'>      <span class="nv">$req</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM posts WHERE id = :id&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="c1">// the query was prepared, now we replace :id with our actual $id value</span>
+</span><span class='line'>      <span class="nv">$req</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">));</span>
+</span><span class='line'>      <span class="nv">$post</span> <span class="o">=</span> <span class="nv">$req</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="nx">Post</span><span class="p">(</span><span class="nv">$post</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="nv">$post</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">],</span> <span class="nv">$post</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Our model is a class with 3 attributes.<br/>
+It has a constructor so we can call <code>$post = new Post('Neil', 'A Most Simple PHP MVC Beginners Tutorial')</code> if need be.<br/>
+I think this is pretty much straightforward but let me know in the comments below if something needs more explanation.</p>
+
+<p>Let&rsquo;s modify our layout to add a link to the posts in the header.</p>
+
+<p>Here is the final file.</p>
+
+<figure class='code'><figcaption><span>views/layout.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">&lt;DOCTYPE html&gt;</span>
+</span><span class='line'><span class="x">&lt;html&gt;</span>
+</span><span class='line'><span class="x">  &lt;head&gt;</span>
+</span><span class='line'><span class="x">  &lt;/head&gt;</span>
+</span><span class='line'><span class="x">  &lt;body&gt;</span>
+</span><span class='line'><span class="x">    &lt;header&gt;</span>
+</span><span class='line'><span class="x">      &lt;a href=&#39;/php_mvc_blog&#39;&gt;Home&lt;/a&gt;</span>
+</span><span class='line'><span class="x">      &lt;a href=&#39;?controller=posts&amp;action=index&#39;&gt;Posts&lt;/a&gt;</span>
+</span><span class='line'><span class="x">    &lt;/header&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;?php</span> <span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;routes.php&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span><span class="x"></span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    &lt;footer&gt;</span>
+</span><span class='line'><span class="x">      Copyright</span>
+</span><span class='line'><span class="x">    &lt;/footer&gt;</span>
+</span><span class='line'><span class="x">  &lt;body&gt;</span>
+</span><span class='line'><span class="x">&lt;html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ok now final step we have to create the views we require in the posts controller.</p>
+
+<figure class='code'><figcaption><span>views/posts/index.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">&lt;p&gt;Here is a list of all posts:&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;?php</span> <span class="k">foreach</span><span class="p">(</span><span class="nv">$posts</span> <span class="k">as</span> <span class="nv">$post</span><span class="p">)</span> <span class="p">{</span> <span class="cp">?&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;p&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$post</span><span class="o">-&gt;</span><span class="na">author</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;a href=&#39;?controller=posts&amp;action=show&amp;id=</span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$post</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x">&#39;&gt;See content&lt;/a&gt;</span>
+</span><span class='line'><span class="x">  &lt;/p&gt;</span>
+</span><span class='line'><span class="cp">&lt;?php</span> <span class="p">}</span> <span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And</p>
+
+<figure class='code'><figcaption><span>views/posts/show.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">&lt;p&gt;This is the requested post:&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">&lt;p&gt;</span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$post</span><span class="o">-&gt;</span><span class="na">author</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x">&lt;/p&gt;</span>
+</span><span class='line'><span class="x">&lt;p&gt;</span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$post</span><span class="o">-&gt;</span><span class="na">content</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We need to have some data in the database so add some manually as we do not have a feature for this yet.<br/>
+I&rsquo;m using phpmyadmin for this matter.</p>
+
+<p>I created 2 posts :</p>
+
+<ul>
+<li>one with author &ldquo;Jon Snow&rdquo; and content &ldquo;The Wall will fall.&rdquo;</li>
+<li>the other with author &ldquo;Khal Drogo&rdquo; and content &ldquo;I may be dead but I&rsquo;m still the most awesome character.&rdquo; (and you shall not disagree on that one)</li>
+</ul>
+
+
+<p>Now go ahead and test everything in your browser.</p>
+
+<p>What you&rsquo;ve seen here is a way of separating the concerns in an MVC style.<br/>
+Note that a lot of stuff is open to interpretation. This way of seeing things is mostly inspired by what I&rsquo;m used to do with Rails.</p>
+
+<p>If you want to go further down the road you should check out some framework like Symphony for PHP, Django for Python or Rails for Ruby.</p>
+
+<p>That&rsquo;s it folks! Hope it helps. Until next time.</p>
+
+	</section>
+
+
+  <footer class="post-footer">
+  <section class="author">
+    <span class="post-meta">
+  
+
+
+
+    <span class="byline author vcard">
+        by
+        <span class="fn">
+            
+                <a href="http://neilrosenstech.com/">Neil Rosenstech</a>
+            
+        </span>
+    </span>
+</span>
+  </section>
+  <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=A Most Simple PHP MVC Beginners Tutorial&amp;url=http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+    </a>
+  </section>
+  <p class="meta links-posts">
+    
+      <a class="basic-alignment left" href="/memoization-speed-up-your-javascript-performance" title="Previous Post: Memoization, speed up your javascript performance">&laquo; Memoization, speed up your javascript performance</a> /
+    
+      &nbsp; <a class="basic-alignment" href="/" title="Home">Home</a> &nbsp;
+    
+  </p>
+</footer>
+  <hr>
+  
+    <div class="share">
+</div>
+
+  
+  
+  <section id="comment">
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article></main>
+  <footer class="site-footer"><a class="subscribe icon-feed" href="http://requiremind.com/atom.xml"><span class="tooltip">Subscribe!</span></a>
+
+
+<div class="inner">
+
+
+Follow us on
+
+
+
+<a class="social twitter" href="http://twitter.com/requiremind" title="Twitter">Twitter</a>
+
+
+
+<a class="social github" href="http://github.com/requiremind" title="GitHub">GitHub</a>
+
+
+
+<a class="social google_plus" href="http://plus.google.com/+requiremind" title="Google+">Google+</a>
+
+
+<section class="copyright">All content copyright <a href="/">requireMind</a> © 2015 • All rights reserved • Published with <a href="http://octopress.org">Octopress</a></section>
+
+</div>
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script> -->
+<!--<script>hljs.initHighlightingOnLoad()</script>-->
+
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'requiremind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial';
+        var disqus_url = 'http://requiremind.com/a-most-simple-php-mvc-beginners-tutorial';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-41030310-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</body>
+</html>
