@@ -2,28 +2,36 @@
 layout: default
 ---
 
-<div class="blog-index">
-  {% assign index = true %}
-  {% for post in paginator.posts %}
+{% assign index = true %}
+{% assign is_first_post = true %}
+
+{% for post in paginator.posts %}
   {% assign content = post.content %}
-    <article>
+    <article class="post">
       {% include article.html %}
     </article>
-  {% endfor %}
-  <div class="pagination">
-    {% if paginator.next_page %}
-      <a class="prev" href="{{paginator.next_page}}">&larr; Older</a>
+{% endfor %}
+
+<nav class="pagination" role="pagination">
+  {% if paginator.previous_page %}
+    {% assign url = site.paginate_directory | append:'/' | append:paginator.previous_page %}
+
+    {% if paginator.previous_page == 1 %}
+      {% assign url = "/" %}
     {% endif %}
-    <a href="/archives">Blog Archives</a>
-    {% if paginator.previous_page %}
-    <a class="next" href="{{paginator.previous_page}}">Newer &rarr;</a>
-    {% endif %}
-  </div>
-</div>
-<aside class="sidebar">
-  {% if site.blog_index_asides.size %}
-    {% include_array blog_index_asides %}
-  {% else %}
-    {% include_array default_asides %}
+
+    <a class="newer-posts" href="{{ url }}"> ← Newer Posts </a>
   {% endif %}
-</aside>
+
+  <span class="page-number">
+    Page {{ paginator.page }} of {{ paginator.total_pages }}
+  </span>
+
+  {% if paginator.next_page %}
+    <a class="older-posts"
+        href="{{ site.paginate_directory }}/{{ paginator.next_page }}">
+      Older Posts →
+    </a>
+  {% endif %}
+</nav>
+
