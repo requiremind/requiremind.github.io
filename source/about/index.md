@@ -13,7 +13,7 @@ This blog contains Tips'n'Tricks you can learn to live better and love your dev 
 
 ## Authors
 
-#### Cyril Francesconi
+#### [Cyril Francesconi](http://cyrilf.com)
 
 A french web developer. I love the web. I write code. I solve problems. I learn new things. I think, search and dream.  
 Travel lover, always eager about the next one.
@@ -25,7 +25,7 @@ Couchsurfer and human lover.
 - [LinkedIn](http://linkedin.com/in/cyrilfrancesconi)
 - [Cyril F](http://cyrilf.com)
 
-#### Neil Rosenstech
+#### [Neil Rosenstech](http://neilrosenstech.com)
 
 His journey has begun and it's a tough one: taking over the world...
 

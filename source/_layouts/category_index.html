@@ -1,7 +1,10 @@
 ---
-layout: default
+layout: page
 ---
 
+<header>
+    <h1 class="post-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
+</header>
 {% for post in site.categories[page.category] %}
 	{% include archive_post.html %}
 {% endfor %}
