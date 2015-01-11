@@ -13,7 +13,7 @@
 		</h2>
 	</header>
 	<span class="post-meta">{% include post/author.html %}</span>
-	<span class="post-meta">on {{ post.date | date: "%d %b %Y" }}</span>
+	<span class="post-meta">the {{ post.date | date: "%d %b %Y" }}</span>
 	<section class="post-excerpt">
 		{{ content | excerpt }}
 	</section>
@@ -23,7 +23,7 @@
 	</header>
 	<h1 class="post-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
 	<span class="post-meta">{% include post/author.html %}</span>
-	<span class="post-meta">on {{ page.date | date: "%d %b %Y" }}</span>
+	<span class="post-meta">the {{ page.date | date: "%d %b %Y" }}</span>
 
 	<section class="post-content">
 		{{ content }}
