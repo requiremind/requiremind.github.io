@@ -421,14 +421,16 @@ table.plain {
 
     display: inline-block;
     position: relative;
-    padding-bottom: 3px;
+    padding-bottom: 1px;
 
     &:after {
         content: '';
         display: block;
         margin: auto;
-        height: 3px;
+        height: 1px;
         width: 0px;
+        position: relative;
+        top: -11px;
         background: transparent;
         transition: width .7s ease, background-color .7s ease;
     }
