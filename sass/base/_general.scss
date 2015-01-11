@@ -149,6 +149,7 @@ h6 {
 a {
     color: #4a4a4a;
     transition: color ease 0.3s;
+    outline: 0;
 }
 
 a:hover {
@@ -382,6 +383,10 @@ table.plain {
     color: #fff;
     background: #303538 no-repeat center center;
     background-size: cover;
+
+    #site-head-content {
+        background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(44, 62, 80, 0.3), rgba(0,0,0,0));
+    }
 }
 
 /* Yo-logo. Yolo-go. Upload one in ghost/settings/ */
@@ -405,17 +410,46 @@ table.plain {
 /* The details of your blog. Defined in ghost/settings/ */
 .blog-title {
     margin: 10px 0 10px 0;
-    font-size: 5rem;
+    font-size: 5em;
     letter-spacing: -1px;
+    font-weight: lighter;
+
+    -webkit-transition: letter-spacing, .7s;
+    -moz-transition: letter-spacing, .7s;
+    -o-transition: letter-spacing, .7s;
+    transition: letter-spacing, .7s;
+
+    display: inline-block;
+    position: relative;
+    padding-bottom: 3px;
+
+    &:after {
+        content: '';
+        display: block;
+        margin: auto;
+        height: 3px;
+        width: 0px;
+        background: transparent;
+        transition: width .7s ease, background-color .7s ease;
+    }
+
+    &:hover {
+        letter-spacing: 7px;
+
+        &:after {
+            width: 100%;
+            background: #ecf0f1;
+        }
+    }
 }
 
 .blog-description {
     margin: 0;
-    font-size: 1.8rem;
+    font-size: 1.6em;
     line-height: 1.5em;
     font-weight: 300;
     font-family: 'Droid Serif', serif;
-    letter-spacing: 0;
+    letter-spacing: 3px;
 }
 
 /* Every post, on every page, gets this style on its <article> tag */
