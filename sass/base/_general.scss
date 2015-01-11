@@ -1,3 +1,9 @@
+/*
+    This file is from the ghost theme.
+    It's awful to work with.. no variable usage and all :'(
+    But well, at least the site ui is better now
+*/
+
 /* ===================================================================
    Table of Contents
    =================================================================== */
@@ -718,6 +724,35 @@ table.plain {
 .older-posts:hover,
 .newer-posts:hover {
     border-color: #9EABB3;
+}
+
+/*
+ Navigation
+*/
+
+.navigation {
+    position: relative;
+    width: 80%;
+    max-width: 700px;
+    margin: 0 auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.3rem;
+    color: #9EABB3;
+    text-align: center;
+}
+
+.navigation a {
+    color: #BBC7CC;
+    text-decoration: underline;
+    margin-right: 15px;
+}
+
+.navigation a:last-child {
+    margin-right: 0;
+}
+
+.navigation a:hover {
+    color: #50585D;
 }
 
 

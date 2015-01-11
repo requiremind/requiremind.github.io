@@ -5,6 +5,7 @@
   {% include header.html %}
   <main class="content" role="main">
     {{ content | expand_urls: root_url }}
+    {% include navigation.html %}
   </main>
   <footer class="site-footer">{% include footer.html %}</footer>
   {% include after_footer.html %}
