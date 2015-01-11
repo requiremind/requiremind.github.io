@@ -98,3 +98,5 @@ google_analytics_tracking_id: UA-41030310-1
 
 # Facebook Like
 facebook_like: false
+
+highlight_js_color_theme: github

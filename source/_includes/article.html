@@ -1,34 +1,29 @@
-{% unless page.no_header %}
-  <header>
-    {% if index %}
-      <h1 class="entry-title index-title article-title"><a href="{{ root_url }}{{ post.url }}">{% if site.titlecase %}{{ post.title | titlecase }}{% else %}{{ post.title }}{% endif %}</a></h1><div class="by-author">{% include post/author.html %}</div><div class="clear"></div>
-    {% else %}
-      <h1 class="entry-title article-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1><div class="by-author">{% include post/author.html %}</div><div class="clear"></div>
-    {% endif %}
-    {% unless page.meta == false %}
-      <p class="meta">
-        {% if !index %}
-          {% include post/date.html %}{{ time }}
-        {% endif %}
-        {% if site.disqus_short_name and page.comments != false and post.comments != false and site.disqus_show_comment_count == true %}
-         | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#disqus_thread">Comments</a>
-        {% endif %}
-      </p>
-    {% endunless %}
-  </header>
-{% endunless %}
 {% if index %}
-  <div class="entry-content">{{ content | excerpt }}</div>
-  {% capture excerpted %}{{ content | has_excerpt }}{% endcapture %}
-  {% if excerpted == 'true' %}
-    <footer>
-      <a rel="full-article" href="{{ root_url }}{{ post.url }}">{{ site.excerpt_link }}</a>
-    </footer>
-  {% elsif site.disqus_short_name and post.comments == true %}
-    <footer>
-      <a class="goto-comments" href="{{ root_url }}{{ post.url }}#comments-section">Comments</a>
-    </footer>
-  {% endif %}
+	{% if is_first_post %}
+		{% assign is_first_post = false %}
+	{% endif %}
+	<header class="post-header">
+		<span class="post-meta">{{ post.date | date: "%d %b %Y" }}</span>
+		<h2 class="post-title">
+			{% if post.external-url %}
+			<a href="{{ post.external-url }}">
+			{% else %}
+			<a href="{{ root_url }}{{ post.url }}">
+			{% endif %}
+				{% if site.titlecase %}{{ post.title | titlecase }}{% else %}{{ post.title }}{% endif %}</a>
+		</h2>
+	</header>
+	<section class="post-excerpt">
+		{{ content | excerpt }}
+	</section>
 {% else %}
-<div class="entry-content">{{ content }}</div>
+	<header class="post-header">
+		<a id="blog-logo" href="{{ site.root }}">{{ site.title }}</a>
+	</header>
+	<span class="post-meta">{{ page.date | date: "%d %b %Y" }}</span>
+	<h1 class="post-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
+
+	<section class="post-content">
+		{{ content }}
+	</section>
 {% endif %}
