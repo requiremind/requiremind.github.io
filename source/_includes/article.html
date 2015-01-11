@@ -18,9 +18,6 @@
 		{{ content | excerpt }}
 	</section>
 {% else %}
-	<header class="post-header">
-		<a id="blog-logo" href="{{ site.root }}">{{ site.title }}</a>
-	</header>
 	<h1 class="post-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
 	<span class="post-meta">{% include post/author.html %}</span>
 	<span class="post-meta">the {{ page.date | date: "%d %b %Y" }}</span>

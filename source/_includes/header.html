@@ -1,4 +1,8 @@
-<header id="site-head">
+{% if page.url == "/index.html" %}
+  <header id="site-head">
+{% else %}
+  <header id="site-head" class="site-head-small">
+{% endif %}
   <div class="vertical">
     <div id="site-head-content" class="inner">
       <h1 class="blog-title"><a class="no-rollover" href="{{ site.root }}">{{ site.title }}</a></h1>
