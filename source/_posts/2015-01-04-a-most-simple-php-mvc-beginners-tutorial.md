@@ -417,6 +417,6 @@ Now go ahead and test everything in your browser.
 What you've seen here is a way of separating the concerns in an MVC style.  
 Note that a lot of stuff is open to interpretation. This way of seeing things is mostly inspired by what I'm used to do with Rails.
 
-If you want to go further down the road you should check out some framework like Symphony for PHP, Django for Python or Rails for Ruby.
+If you want to go further down the road you should check out some framework like Symfony for PHP, Django for Python or Rails for Ruby.
 
 That's it folks! Hope it helps. Until next time.
