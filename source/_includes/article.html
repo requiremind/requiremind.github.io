@@ -12,15 +12,15 @@
 				{% if site.titlecase %}{{ post.title | titlecase }}{% else %}{{ post.title }}{% endif %}</a>
 		</h2>
 	</header>
-	<span class="post-meta">{% include post/author.html %}</span>
-	<span class="post-meta">the {{ post.date | date: "%d %b %Y" }}</span>
+	<span class="post-meta">{% include post/author.html %}</span><br>
+	<span class="post-meta">{{ post.date | date: "%d %b %Y" }}, it was {{ post.date | date: "%A" }}</span>
 	<section class="post-excerpt">
 		{{ content | excerpt }}
 	</section>
 {% else %}
 	<h1 class="post-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
-	<span class="post-meta">{% include post/author.html %}</span>
-	<span class="post-meta">the {{ page.date | date: "%d %b %Y" }}</span>
+	<span class="post-meta">{% include post/author.html %}</span><br>
+	<span class="post-meta">{{ page.date | date: "%d %b %Y" }}, it was {{ page.date | date: "%A" }}</span>
 
 	<section class="post-content">
 		{{ content }}
